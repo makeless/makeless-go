@@ -1,6 +1,6 @@
 # go-saas
 
-Extendable SaaS Application
+Extendable SaaS Application Package
 
 ## Usage
 

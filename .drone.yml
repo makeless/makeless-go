@@ -1,0 +1,24 @@
+kind: pipeline
+type: docker
+name: docker
+
+steps:
+  - name: install
+    image: golang
+    commands:
+      - make install
+
+  - name: linter
+    image: golangci/golangci-lint:v1.23
+    commands:
+      - make linter
+
+  - name: ls-lint
+    image: byrnedo/alpine-curl
+    commands:
+      - curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.8.0/ls-lint-linux && chmod +x ls-lint && ./ls-lint
+
+  - name: test
+    image: golang
+    commands:
+      - make test-coverage
