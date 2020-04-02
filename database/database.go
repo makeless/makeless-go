@@ -3,18 +3,19 @@ package saas_database
 import (
 	"fmt"
 	"github.com/jinzhu/gorm"
+	"github.com/loeffel-io/go-saas/model"
 	"sync"
 )
 
 type Database struct {
 	connection *gorm.DB
 
-	Dialect    string
-	Username   string
-	Password   string
-	Database   string
-	Host       string
-	Port       string
+	Dialect  string
+	Username string
+	Password string
+	Database string
+	Host     string
+	Port     string
 	*sync.RWMutex
 }
 
@@ -97,5 +98,8 @@ func (database *Database) GetConnection() *gorm.DB {
 }
 
 func (database *Database) AutoMigrate() error {
-	return database.GetConnection().AutoMigrate().Error
+	return database.GetConnection().AutoMigrate(
+		new(saas_model.User),
+		new(saas_model.Token),
+	).Error
 }

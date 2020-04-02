@@ -1,8 +1,6 @@
 package saas_api
 
-import "github.com/gin-gonic/gin"
-
-func (api *Api) Extend(handler func(engine *gin.Engine)) {
+func (api *Api) Extend(handler func(api *Api)) {
 	api.Lock()
 	defer api.Unlock()
 

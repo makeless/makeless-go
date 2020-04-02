@@ -3,13 +3,15 @@ package saas_api
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/loeffel-io/go-saas/database"
+	"github.com/loeffel-io/go-saas/logger"
 	"sync"
 )
 
 type Api struct {
 	engine   *gin.Engine
-	handlers []func(engine *gin.Engine)
+	handlers []func(api *Api)
 
+	Logger   saas_logger.Logger
 	Database *saas_database.Database
 	Tls      *Tls
 	Port     string
@@ -45,7 +47,7 @@ func (api *Api) getTls() *Tls {
 	return api.Tls
 }
 
-func (api *Api) getHandlers() []func(engine *gin.Engine) {
+func (api *Api) getHandlers() []func(api *Api) {
 	api.Lock()
 	defer api.Unlock()
 
@@ -57,6 +59,13 @@ func (api *Api) createEngine() {
 	defer api.Unlock()
 
 	api.engine = gin.Default()
+}
+
+func (api *Api) GetLogger() saas_logger.Logger {
+	api.RLock()
+	defer api.RUnlock()
+
+	return api.Logger
 }
 
 func (api *Api) GetEngine() *gin.Engine {
@@ -76,7 +85,7 @@ func (api *Api) Start() error {
 	api.GetEngine().GET("/ok", api.ok)
 
 	for _, handler := range api.getHandlers() {
-		handler(api.GetEngine())
+		handler(api)
 	}
 
 	if api.Tls != nil {
