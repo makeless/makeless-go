@@ -20,10 +20,24 @@ func main() {
 		RWMutex:  new(sync.RWMutex),
 	}
 
+	// security
+	security := &saas_security_basic.Basic{
+		Database: database,
+		RWMutex:  new(sync.RWMutex),
+	}
+
+	// jwt
+	jwt := &saas_api.Jwt{
+		Key:     os.Getenv("JWT_KEY"),
+		RWMutex: new(sync.RWMutex),
+	}
+
 	// api
 	api := &saas_api.Api{
 		Logger:   logger,
+		Security: security,
 		Database: database,
+		Jwt:      jwt,
 		Tls:      nil,
 		Port:     os.Getenv("API_PORT"),
 		Mode:     os.Getenv("API_MODE"),
@@ -38,7 +52,7 @@ func main() {
 	})
 
 	saas := &go_saas.Saas{
-		License:  "license",
+		License:  "abc",
 		Logger:   logger,
 		Database: database,
 		Api:      api,
