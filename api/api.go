@@ -19,13 +19,6 @@ type Api struct {
 	*sync.RWMutex
 }
 
-func (api *Api) getDatabase() *saas_database.Database {
-	api.RLock()
-	defer api.RUnlock()
-
-	return api.Database
-}
-
 func (api *Api) getMode() string {
 	api.RLock()
 	defer api.RUnlock()
@@ -66,6 +59,13 @@ func (api *Api) GetLogger() saas_logger.Logger {
 	defer api.RUnlock()
 
 	return api.Logger
+}
+
+func (api *Api) GetDatabase() *saas_database.Database {
+	api.RLock()
+	defer api.RUnlock()
+
+	return api.Database
 }
 
 func (api *Api) GetEngine() *gin.Engine {
