@@ -33,7 +33,7 @@ func main() {
 	// extend
 	api.Extend(func(api *saas_api.Api) {
 		api.GetEngine().GET("test", func(context *gin.Context) {
-			context.JSON(http.StatusAccepted, api.Response(nil, "test"))
+			context.JSON(http.StatusOK, api.Response(nil, "test"))
 		})
 	})
 
