@@ -1,6 +1,7 @@
 package go_saas
 
 import (
+	"fmt"
 	"github.com/loeffel-io/go-saas/api"
 	"github.com/loeffel-io/go-saas/database"
 	"github.com/loeffel-io/go-saas/logger"
@@ -20,6 +21,11 @@ func (saas Saas) getLicense() string {
 	defer saas.RUnlock()
 
 	return saas.License
+}
+
+func (saas Saas) validateLicense() bool {
+	saas.getLicense()
+	return true
 }
 
 func (saas Saas) GetLogger() saas_logger.Logger {
@@ -44,6 +50,10 @@ func (saas Saas) GetApi() *saas_api.Api {
 }
 
 func (saas Saas) Run() error {
+	if !saas.validateLicense() {
+		return fmt.Errorf("invalid saas license")
+	}
+
 	if err := saas.GetDatabase().Connect(); err != nil {
 		return err
 	}
