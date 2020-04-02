@@ -23,7 +23,7 @@ func (saas Saas) getLicense() string {
 	return saas.License
 }
 
-func (saas Saas) validateLicense() bool {
+func (saas Saas) isLicenseValid() bool {
 	saas.getLicense()
 	return true
 }
@@ -50,7 +50,7 @@ func (saas Saas) GetApi() *saas_api.Api {
 }
 
 func (saas Saas) Run() error {
-	if !saas.validateLicense() {
+	if !saas.isLicenseValid() {
 		return fmt.Errorf("invalid saas license")
 	}
 
