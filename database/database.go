@@ -8,6 +8,7 @@ import (
 
 type Database struct {
 	connection *gorm.DB
+
 	Dialect    string
 	Username   string
 	Password   string
@@ -95,6 +96,6 @@ func (database *Database) GetConnection() *gorm.DB {
 	return database.connection
 }
 
-func (database *Database) AutoMigrate() {
-	database.GetConnection().AutoMigrate()
+func (database *Database) AutoMigrate() error {
+	return database.GetConnection().AutoMigrate().Error
 }

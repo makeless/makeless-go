@@ -48,7 +48,13 @@ func (saas Saas) Run() error {
 		return err
 	}
 
-	saas.GetDatabase().AutoMigrate()
+	if err := saas.GetDatabase().AutoMigrate(); err != nil {
+		return err
+	}
+
+	if err := saas.GetApi().Start(); err != nil {
+		return err
+	}
 
 	return nil
 }
