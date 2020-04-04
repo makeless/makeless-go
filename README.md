@@ -2,6 +2,8 @@
 
 Extendable SaaS Application Package
 
+[![Build Status](https://ci.loeffel.io/api/badges/loeffel-io/go-saas/status.svg)](https://ci.loeffel.io/loeffel-io/go-saas)
+
 ## Usage
 
 ```go
