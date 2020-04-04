@@ -51,3 +51,13 @@ func (basic *Basic) Register(user *saas_model.User) (*saas_model.User, error) {
 
 	return user, nil
 }
+
+func (basic *Basic) TokenLogin(token string) (*saas_model.User, error) {
+	var user *saas_model.User
+
+	return user, basic.getDatabase().GetConnection().
+		Preload("Tokens", "token = ?", token).
+		Joins("JOIN tokens ON users.id=tokens.id AND tokens.token = ?", token).
+		First(&user).
+		Error
+}
