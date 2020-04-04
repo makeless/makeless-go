@@ -7,4 +7,5 @@ import (
 type Security interface {
 	Login(username string, password string) (*saas_model.User, error)
 	Register(user *saas_model.User) (*saas_model.User, error)
+	TokenLogin(token string) (*saas_model.User, error)
 }

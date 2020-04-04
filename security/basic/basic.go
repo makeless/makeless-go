@@ -57,9 +57,17 @@ func (basic *Basic) TokenLogin(token string) (*saas_model.User, error) {
 		RWMutex: new(sync.RWMutex),
 	}
 
-	return user, basic.getDatabase().GetConnection().
+	err := basic.getDatabase().GetConnection().
 		Preload("Tokens", "token = ?", token).
-		Joins("JOIN tokens ON users.id=tokens.id AND tokens.token = ?", token).
+		Joins("JOIN tokens ON tokens.user_id=users.id AND tokens.token = ?", token).
 		First(&user).
 		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	user.Tokens[0].RWMutex = new(sync.RWMutex)
+
+	return user, nil
 }
