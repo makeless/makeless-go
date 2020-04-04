@@ -21,7 +21,7 @@ func (basic *Basic) getDatabase() *saas_database.Database {
 }
 
 func (basic *Basic) Login(username string, password string) (*saas_model.User, error) {
-	var user = saas_model.User{
+	var user = &saas_model.User{
 		RWMutex: new(sync.RWMutex),
 	}
 
@@ -33,5 +33,21 @@ func (basic *Basic) Login(username string, password string) (*saas_model.User, e
 		return nil, jwt.ErrFailedAuthentication
 	}
 
-	return &user, nil
+	return user, nil
+}
+
+func (basic *Basic) Register(user *saas_model.User) (*saas_model.User, error) {
+	bcrypted, err := bcrypt.GenerateFromPassword([]byte(*user.GetPassword()), 14)
+
+	if err != nil {
+		return nil, err
+	}
+
+	user.SetPassword(string(bcrypted))
+
+	if err := basic.getDatabase().GetConnection().Create(&user).Error; err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }

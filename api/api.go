@@ -145,6 +145,8 @@ func (api *Api) Start() error {
 		{
 			authGroup.GET("/refresh_token", api.GetAuthMiddleware().RefreshHandler)
 			authGroup.GET("/logout", api.GetAuthMiddleware().LogoutHandler)
+
+			authGroup.GET("/token", api.tokens)
 		}
 	}
 

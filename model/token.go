@@ -16,3 +16,17 @@ type Token struct {
 
 	*sync.RWMutex `json:"-"`
 }
+
+func (token *Token) GetToken() *string {
+	token.RLock()
+	defer token.RUnlock()
+
+	return token.Token
+}
+
+func (token *Token) GetUserId() *uint {
+	token.RLock()
+	defer token.RUnlock()
+
+	return token.UserId
+}

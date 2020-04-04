@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/loeffel-io/go-saas/model"
-	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"sync"
 	"time"
@@ -28,9 +27,11 @@ func (api *Api) jwtMiddleware() (*jwt.GinJWTMiddleware, error) {
 			return jwt.MapClaims{}
 		},
 		IdentityHandler: func(c *gin.Context) interface{} {
+			userId, _ := api.GetUserId(c)
+
 			return &saas_model.User{
 				Model: gorm.Model{
-					ID: api.GetUserId(c),
+					ID: userId,
 				},
 			}
 		},
@@ -49,34 +50,32 @@ func (api *Api) jwtMiddleware() (*jwt.GinJWTMiddleware, error) {
 	})
 }
 
-func (api *Api) GetUserId(c *gin.Context) uint {
-	return uint(jwt.ExtractClaims(c)[api.getJwt().getId()].(float64))
+// GetUserId returns the current jwt user id if exists
+func (api *Api) GetUserId(c *gin.Context) (uint, error) {
+	claims := jwt.ExtractClaims(c)
+
+	userId, exists := claims[api.getJwt().getId()]
+
+	if !exists {
+		return 0, jwt.ErrFailedAuthentication
+	}
+
+	return uint(userId.(float64)), nil
 }
 
 func (api *Api) register(c *gin.Context) {
-	var user = saas_model.User{
+	var user = &saas_model.User{
 		RWMutex: new(sync.RWMutex),
 	}
 
-	// bind json
 	if err := c.Bind(&user); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, api.Response(err.Error(), nil))
 		return
 	}
 
-	// crypt password
-	bcrypted, err := bcrypt.GenerateFromPassword([]byte(*user.GetPassword()), 14)
+	user, err := api.GetSecurity().Register(user)
 
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, api.Response(err.Error(), nil))
-		return
-	}
-
-	// update user password
-	user.SetPassword(string(bcrypted))
-
-	// create user
-	if err := api.GetDatabase().GetConnection().Create(&user).Error; err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, api.Response(err.Error(), nil))
 		return
 	}
