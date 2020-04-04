@@ -17,6 +17,13 @@ type Token struct {
 	*sync.RWMutex `json:"-"`
 }
 
+func (token *Token) GetId() uint {
+	token.RLock()
+	defer token.RUnlock()
+
+	return token.ID
+}
+
 func (token *Token) GetToken() *string {
 	token.RLock()
 	defer token.RUnlock()

@@ -18,5 +18,9 @@ func (database *Database) CreateToken(token *saas_model.Token) (*saas_model.Toke
 }
 
 func (database *Database) DeleteToken(token *saas_model.Token) error {
-	return database.GetConnection().Delete(&token).Error
+	return database.GetConnection().
+		Unscoped().
+		Where("tokens.id = ? AND tokens.token = ? AND tokens.user_id = ?", token.GetId(), token.GetToken(), token.GetUserId()).
+		Delete(&token).
+		Error
 }
