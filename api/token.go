@@ -50,3 +50,33 @@ func (api *Api) createToken(c *gin.Context) {
 
 	c.JSON(http.StatusOK, api.Response(nil, token))
 }
+
+func (api *Api) deleteToken(c *gin.Context) {
+	userId, err := api.GetUserId(c)
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, api.Response(err.Error(), nil))
+		return
+	}
+
+	var token = &saas_model.Token{
+		RWMutex: new(sync.RWMutex),
+	}
+
+	if err := c.Bind(&token); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, api.Response(err.Error(), nil))
+		return
+	}
+
+	if *token.GetUserId() != userId {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, api.Response("token authorization failed", nil))
+		return
+	}
+
+	if err = api.GetDatabase().DeleteToken(token); err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, api.Response(err.Error(), nil))
+		return
+	}
+
+	c.JSON(http.StatusOK, api.Response(nil, token))
+}

@@ -151,6 +151,7 @@ func (api *Api) Start() error {
 			// tokens
 			authGroup.GET("/token", api.tokens)
 			authGroup.POST("/token", api.createToken)
+			authGroup.DELETE("/token", api.deleteToken)
 		}
 	}
 
