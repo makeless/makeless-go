@@ -53,7 +53,9 @@ func (basic *Basic) Register(user *saas_model.User) (*saas_model.User, error) {
 }
 
 func (basic *Basic) TokenLogin(token string) (*saas_model.User, error) {
-	var user *saas_model.User
+	var user = &saas_model.User{
+		RWMutex: new(sync.RWMutex),
+	}
 
 	return user, basic.getDatabase().GetConnection().
 		Preload("Tokens", "token = ?", token).
