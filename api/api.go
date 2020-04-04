@@ -160,7 +160,7 @@ func (api *Api) Start() error {
 		handler(api)
 	}
 
-	if api.Tls != nil {
+	if api.getTls() != nil {
 		return api.GetEngine().RunTLS(":"+api.getPort(), api.getTls().getCertPath(), api.getTls().getKeyPath())
 	}
 
