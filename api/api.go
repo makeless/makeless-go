@@ -137,16 +137,20 @@ func (api *Api) Start() error {
 	{
 		apiGroup.GET("/ok", api.ok)
 
+		// auth
 		apiGroup.POST("/login", api.GetAuthMiddleware().LoginHandler)
 		apiGroup.POST("/register", api.register)
 
 		authGroup := apiGroup.Group("/auth")
 		authGroup.Use(api.GetAuthMiddleware().MiddlewareFunc())
 		{
+			// auth
 			authGroup.GET("/refresh_token", api.GetAuthMiddleware().RefreshHandler)
 			authGroup.GET("/logout", api.GetAuthMiddleware().LogoutHandler)
 
+			// tokens
 			authGroup.GET("/token", api.tokens)
+			authGroup.POST("/token", api.createToken)
 		}
 	}
 
