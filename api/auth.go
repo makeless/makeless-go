@@ -52,9 +52,11 @@ func (api *Api) jwtMiddleware() (*jwt.GinJWTMiddleware, error) {
 		Unauthorized: func(c *gin.Context, code int, message string) {
 			c.JSON(code, api.Response(message, nil))
 		},
-		TokenLookup:   "header: Authorization, query: token, cookie: jwt",
-		TokenHeadName: "Bearer",
-		TimeFunc:      time.Now,
+		TimeFunc:       time.Now,
+		SendCookie:     true,
+		SecureCookie:   false, //non HTTPS dev environments
+		CookieHTTPOnly: true,
+		TokenLookup:    "cookie:token",
 	})
 }
 
