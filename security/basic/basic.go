@@ -20,12 +20,12 @@ func (basic *Basic) getDatabase() *saas_database.Database {
 	return basic.Database
 }
 
-func (basic *Basic) Login(username string, password string) (*saas_model.User, error) {
+func (basic *Basic) Login(email string, password string) (*saas_model.User, error) {
 	var user = &saas_model.User{
 		RWMutex: new(sync.RWMutex),
 	}
 
-	if err := basic.getDatabase().GetConnection().Where("username = ?", username).Find(&user).Error; err != nil {
+	if err := basic.getDatabase().GetConnection().Where("email = ?", email).Find(&user).Error; err != nil {
 		return nil, jwt.ErrFailedAuthentication
 	}
 

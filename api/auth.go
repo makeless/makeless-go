@@ -36,7 +36,15 @@ func (api *Api) jwtMiddleware() (*jwt.GinJWTMiddleware, error) {
 			}
 		},
 		Authenticator: func(c *gin.Context) (interface{}, error) {
-			return api.GetSecurity().Login(c.PostForm("username"), c.PostForm("password"))
+			var login = &saas_model.Login{
+				RWMutex: new(sync.RWMutex),
+			}
+
+			if err := c.Bind(&login); err != nil {
+				return nil, err
+			}
+
+			return api.GetSecurity().Login(*login.GetEmail(), *login.GetPassword())
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
 			return true
