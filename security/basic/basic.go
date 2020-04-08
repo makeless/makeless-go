@@ -37,7 +37,7 @@ func (basic *Basic) Login(email string, password string) (*saas_model.User, erro
 }
 
 func (basic *Basic) Register(user *saas_model.User) (*saas_model.User, error) {
-	bcrypted, err := bcrypt.GenerateFromPassword([]byte(*user.GetPassword()), 14)
+	bcrypted, err := bcrypt.GenerateFromPassword([]byte(*user.GetPassword()), bcrypt.MinCost)
 
 	if err != nil {
 		return nil, err
