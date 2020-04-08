@@ -56,7 +56,8 @@ func (api *Api) jwtMiddleware() (*jwt.GinJWTMiddleware, error) {
 		SendCookie:     true,
 		SecureCookie:   false, //non HTTPS dev environments
 		CookieHTTPOnly: true,
-		TokenLookup:    "cookie:token",
+		CookieName:     "jwt",
+		TokenLookup:    "cookie:jwt",
 	})
 }
 
