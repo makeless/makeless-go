@@ -7,8 +7,8 @@ import (
 
 func (api *Api) cors() gin.HandlerFunc {
 	config := cors.DefaultConfig()
-	config.AllowAllOrigins = true
-	config.AddAllowHeaders("Authorization")
+	config.AllowOrigins = api.getOrigins()
+	config.AllowCredentials = true
 
 	return cors.New(config)
 }

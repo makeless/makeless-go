@@ -17,11 +17,19 @@ type Api struct {
 	Logger   saas_logger.Logger
 	Security saas_security.Security
 	Database *saas_database.Database
+	Origins  []string
 	Jwt      *Jwt
 	Tls      *Tls
 	Port     string
 	Mode     string
 	*sync.RWMutex
+}
+
+func (api *Api) getOrigins() []string {
+	api.RLock()
+	defer api.RUnlock()
+
+	return api.Origins
 }
 
 func (api *Api) getMode() string {
