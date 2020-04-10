@@ -101,5 +101,6 @@ func (database *Database) AutoMigrate() error {
 	return database.GetConnection().AutoMigrate(
 		new(saas_model.User),
 		new(saas_model.Token),
+		new(saas_model.Team),
 	).Error
 }

@@ -3,7 +3,6 @@ package saas_api
 import (
 	"github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"github.com/loeffel-io/go-saas/model"
 	"net/http"
 	"sync"
@@ -20,7 +19,7 @@ func (api *Api) jwtMiddleware() (*jwt.GinJWTMiddleware, error) {
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			if v, ok := data.(*saas_model.User); ok {
 				return jwt.MapClaims{
-					api.getJwt().getId(): v.ID,
+					api.getJwt().getId(): v.Id,
 				}
 			}
 
@@ -30,8 +29,8 @@ func (api *Api) jwtMiddleware() (*jwt.GinJWTMiddleware, error) {
 			userId, _ := api.GetUserId(c)
 
 			return &saas_model.User{
-				Model: gorm.Model{
-					ID: userId,
+				Model: saas_model.Model{
+					Id: userId,
 				},
 			}
 		},

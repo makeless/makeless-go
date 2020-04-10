@@ -1,12 +1,11 @@
 package saas_model
 
 import (
-	"github.com/jinzhu/gorm"
 	"sync"
 )
 
 type Token struct {
-	gorm.Model
+	Model
 	Token *string `gorm:"unique;not null" json:"token" binding:"required"`
 	Read  *bool   `gorm:"not null" json:"read" binding:"required"`
 	Write *bool   `gorm:"not null" json:"write" binding:"required"`
@@ -21,7 +20,7 @@ func (token *Token) GetId() uint {
 	token.RLock()
 	defer token.RUnlock()
 
-	return token.ID
+	return token.Id
 }
 
 func (token *Token) GetToken() *string {
