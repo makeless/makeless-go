@@ -12,7 +12,7 @@ func (database *Database) GetUser(userId uint) (*saas_model.User, error) {
 
 	return user, database.GetConnection().
 		Select([]string{
-			"users.id", "users.first_name", "users.last_name",
+			"users.id", "users.name",
 			"users.username", "users.email",
 		}).
 		Preload("Teams").

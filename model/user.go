@@ -6,11 +6,10 @@ import (
 
 type User struct {
 	Model
-	FirstName *string `gorm:"not null" json:"firstName" binding:"required"`
-	LastName  *string `gorm:"not null" json:"lastName" binding:"required"`
-	Username  *string `gorm:"unique;not null" json:"username" binding:"required"`
-	Password  *string `gorm:"not null" json:"password,omitempty" binding:"required"`
-	Email     *string `gorm:"unique;not null" json:"email" binding:"required"`
+	Name     *string `gorm:"not null" json:"name" binding:"required"`
+	Username *string `gorm:"unique;not null" json:"username" binding:"required"`
+	Password *string `gorm:"not null" json:"password,omitempty" binding:"required"`
+	Email    *string `gorm:"unique;not null" json:"email" binding:"required"`
 
 	Teams  []*Team  `gorm:"many2many:user_teams;" json:"teams"`
 	Tokens []*Token `json:"tokens"`
@@ -18,18 +17,11 @@ type User struct {
 	*sync.RWMutex `json:"-"`
 }
 
-func (user *User) GetFirstName() *string {
+func (user *User) GetName() *string {
 	user.RLock()
 	defer user.RUnlock()
 
-	return user.FirstName
-}
-
-func (user *User) GetLastName() *string {
-	user.RLock()
-	defer user.RUnlock()
-
-	return user.LastName
+	return user.Name
 }
 
 func (user *User) GetUsername() *string {
