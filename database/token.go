@@ -14,7 +14,9 @@ func (database *Database) GetTokens(userId uint) ([]*saas_model.Token, error) {
 }
 
 func (database *Database) CreateToken(token *saas_model.Token) (*saas_model.Token, error) {
-	return token, database.GetConnection().Create(&token).Error
+	return token, database.GetConnection().
+		Create(&token).
+		Error
 }
 
 func (database *Database) DeleteToken(token *saas_model.Token) error {

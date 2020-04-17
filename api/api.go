@@ -157,10 +157,20 @@ func (api *Api) Start() error {
 			authGroup.GET("/refresh-token", api.GetAuthMiddleware().RefreshHandler)
 			authGroup.GET("/logout", api.GetAuthMiddleware().LogoutHandler)
 
-			// tokens
+			// settings -> profile
+			authGroup.PATCH("/profile", api.updateProfile)
+
+			// settings -> tokens
 			authGroup.GET("/token", api.tokens)
 			authGroup.POST("/token", api.createToken)
 			authGroup.DELETE("/token", api.deleteToken)
+
+			// team
+			teamGroup := authGroup.Group("/team")
+			{
+				// settings -> profile
+				teamGroup.PATCH("/profile", api.updateProfileTeam)
+			}
 		}
 	}
 

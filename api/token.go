@@ -38,7 +38,7 @@ func (api *Api) createToken(c *gin.Context) {
 		RWMutex: new(sync.RWMutex),
 	}
 
-	if err := c.Bind(&token); err != nil {
+	if err := c.ShouldBind(&token); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, api.Response(err.Error(), nil))
 		return
 	}
@@ -64,7 +64,7 @@ func (api *Api) deleteToken(c *gin.Context) {
 		RWMutex: new(sync.RWMutex),
 	}
 
-	if err := c.Bind(&token); err != nil {
+	if err := c.ShouldBind(&token); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, api.Response(err.Error(), nil))
 		return
 	}

@@ -39,7 +39,7 @@ func (api *Api) jwtMiddleware() (*jwt.GinJWTMiddleware, error) {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err := c.Bind(&login); err != nil {
+			if err := c.ShouldBind(&login); err != nil {
 				return nil, err
 			}
 
@@ -78,7 +78,7 @@ func (api *Api) register(c *gin.Context) {
 		RWMutex: new(sync.RWMutex),
 	}
 
-	if err := c.Bind(&user); err != nil {
+	if err := c.ShouldBind(&user); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, api.Response(err.Error(), nil))
 		return
 	}

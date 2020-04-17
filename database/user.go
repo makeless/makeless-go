@@ -11,10 +11,7 @@ func (database *Database) GetUser(userId uint) (*saas_model.User, error) {
 	}
 
 	return user, database.GetConnection().
-		Select([]string{
-			"users.id", "users.name",
-			"users.username", "users.email",
-		}).
+		Select("users.id, users.name, users.username, users.email").
 		Preload("Teams").
 		Where("users.id = ?", userId).
 		First(&user).
