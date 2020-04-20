@@ -1,6 +1,5 @@
 package saas_api
 
-import "C"
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/loeffel-io/go-saas/model"
