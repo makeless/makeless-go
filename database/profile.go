@@ -17,10 +17,7 @@ func (database *Database) UpdateProfile(user *saas_model.User, userId uint) (*sa
 func (database *Database) UpdateProfileTeam(team *saas_model.Team, teamId uint, userId uint) (*saas_model.Team, error) {
 	return team, database.GetConnection().
 		Model(&team).
-		Related(&saas_model.User{
-			Model: saas_model.Model{Id: userId},
-		}, "Users").
-		Where("teams.id = ?", teamId).
+		Where("teams.id = ? AND teams.user_id = ?", teamId, userId).
 		Update(map[string]interface{}{
 			"name": team.Name,
 		}).
