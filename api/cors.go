@@ -7,6 +7,7 @@ import (
 
 func (api *Api) cors() gin.HandlerFunc {
 	config := cors.DefaultConfig()
+	log.Fatalf("%+v", api.getOrigins())
 	config.AllowOrigins = api.getOrigins()
 	config.AllowCredentials = true
 	config.AddAllowHeaders("TEAM")
