@@ -160,6 +160,10 @@ func (api *Api) Start() error {
 			// settings -> profile
 			authGroup.PATCH("/profile", api.updateProfile)
 
+			// settings -> team
+			authGroup.POST("/team", api.createTeam)
+			authGroup.DELETE("/team", api.deleteTeam)
+
 			// settings -> tokens
 			authGroup.GET("/token", api.tokens)
 			authGroup.POST("/token", api.createToken)

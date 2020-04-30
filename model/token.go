@@ -10,7 +10,7 @@ type Token struct {
 	Read  *bool   `gorm:"not null" json:"read" binding:"required"`
 	Write *bool   `gorm:"not null" json:"write" binding:"required"`
 
-	UserId *uint `gorm:"not null" json:"userId"`
+	UserId *uint `gorm:"not null" json:"userId" binding:"-"`
 	User   *User `json:"user"`
 
 	*sync.RWMutex `json:"-"`

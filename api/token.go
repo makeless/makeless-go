@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/loeffel-io/go-saas/model"
 	"net/http"
-	"sync"
 )
 
 func (api *Api) tokens(c *gin.Context) {
@@ -17,7 +16,7 @@ func (api *Api) tokens(c *gin.Context) {
 
 	var tokens []*saas_model.Token
 
-	if tokens, err = api.GetDatabase().GetTokens(userId); err != nil {
+	if tokens, err = api.GetDatabase().GetTokens(&userId); err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, api.Response(err.Error(), nil))
 		return
 	}
@@ -33,17 +32,14 @@ func (api *Api) createToken(c *gin.Context) {
 		return
 	}
 
-	var token = &saas_model.Token{
-		UserId:  &userId,
-		RWMutex: new(sync.RWMutex),
-	}
+	var token *saas_model.Token
 
 	if err := c.ShouldBind(&token); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, api.Response(err.Error(), nil))
 		return
 	}
 
-	if token, err = api.GetDatabase().CreateToken(token); err != nil {
+	if token, err = api.GetDatabase().CreateToken(token, &userId); err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, api.Response(err.Error(), nil))
 		return
 	}
@@ -59,17 +55,14 @@ func (api *Api) deleteToken(c *gin.Context) {
 		return
 	}
 
-	var token = &saas_model.Token{
-		UserId:  &userId,
-		RWMutex: new(sync.RWMutex),
-	}
+	var token *saas_model.Token
 
 	if err := c.ShouldBind(&token); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, api.Response(err.Error(), nil))
 		return
 	}
 
-	if err = api.GetDatabase().DeleteToken(token); err != nil {
+	if err = api.GetDatabase().DeleteToken(token, &userId); err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, api.Response(err.Error(), nil))
 		return
 	}
