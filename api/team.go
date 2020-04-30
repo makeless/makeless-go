@@ -44,6 +44,11 @@ func (api *Api) deleteTeam(c *gin.Context) {
 		return
 	}
 
+	if err = api.GetDatabase().LeaveTeam(team, &userId); err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, api.Response(err.Error(), nil))
+		return
+	}
+
 	if err = api.GetDatabase().DeleteTeam(team, &userId); err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, api.Response(err.Error(), nil))
 		return

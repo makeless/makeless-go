@@ -18,7 +18,7 @@ func (database *Database) CreateTeam(team *saas_model.Team, userId *uint) (*saas
 		Error
 }
 
-func (database *Database) DeleteTeam(team *saas_model.Team, userId *uint) error {
+func (database *Database) LeaveTeam(team *saas_model.Team, userId *uint) error {
 	team.UserId = userId
 	team.RWMutex = new(sync.RWMutex)
 
@@ -27,6 +27,16 @@ func (database *Database) DeleteTeam(team *saas_model.Team, userId *uint) error 
 			Model: saas_model.Model{Id: *userId},
 		}).
 		Association("Teams").
+		Delete(team).
+		Error
+}
+
+func (database *Database) DeleteTeam(team *saas_model.Team, userId *uint) error {
+	team.UserId = userId
+	team.RWMutex = new(sync.RWMutex)
+
+	return database.GetConnection().
+		Where("teams.id = ? AND teams.user_id = ?", team.GetId(), team.GetUserId()).
 		Delete(team).
 		Error
 }

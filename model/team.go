@@ -13,3 +13,17 @@ type Team struct {
 
 	*sync.RWMutex `json:"-"`
 }
+
+func (team *Team) GetId() uint {
+	team.RLock()
+	defer team.RUnlock()
+
+	return team.Id
+}
+
+func (team *Team) GetUserId() *uint {
+	team.RLock()
+	defer team.RUnlock()
+
+	return team.UserId
+}
