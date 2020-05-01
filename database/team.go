@@ -36,6 +36,7 @@ func (database *Database) DeleteTeam(team *saas_model.Team, userId *uint) error 
 	team.RWMutex = new(sync.RWMutex)
 
 	return database.GetConnection().
+		Unscoped().
 		Where("teams.id = ? AND teams.user_id = ?", team.GetId(), team.GetUserId()).
 		Delete(team).
 		Error

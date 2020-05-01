@@ -4,6 +4,7 @@ import (
 	"github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/loeffel-io/go-saas/database"
+	"github.com/loeffel-io/go-saas/event"
 	"github.com/loeffel-io/go-saas/logger"
 	"github.com/loeffel-io/go-saas/security"
 	"sync"
@@ -15,6 +16,7 @@ type Api struct {
 	handlers       []func(api *Api)
 
 	Logger   saas_logger.Logger
+	Event    saas_event.Event
 	Security saas_security.Security
 	Database *saas_database.Database
 	Origins  []string
@@ -106,6 +108,13 @@ func (api *Api) GetLogger() saas_logger.Logger {
 	return api.Logger
 }
 
+func (api *Api) GetEvent() saas_event.Event {
+	api.RLock()
+	defer api.RUnlock()
+
+	return api.Event
+}
+
 func (api *Api) GetSecurity() saas_security.Security {
 	api.RLock()
 	defer api.RUnlock()
@@ -143,6 +152,7 @@ func (api *Api) Start() error {
 	// routes
 	apiGroup := api.GetEngine().Group("/api")
 	{
+		// basic
 		apiGroup.GET("/ok", api.ok)
 
 		// auth
@@ -152,6 +162,9 @@ func (api *Api) Start() error {
 		authGroup := apiGroup.Group("/auth")
 		authGroup.Use(api.GetAuthMiddleware().MiddlewareFunc())
 		{
+			// basic
+			authGroup.GET("/events", api.events)
+
 			// auth
 			authGroup.GET("/user", api.user)
 			authGroup.GET("/refresh-token", api.GetAuthMiddleware().RefreshHandler)

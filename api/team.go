@@ -1,6 +1,7 @@
 package saas_api
 
 import (
+	"github.com/gin-contrib/sse"
 	"github.com/gin-gonic/gin"
 	"github.com/loeffel-io/go-saas/model"
 	"net/http"
@@ -25,6 +26,10 @@ func (api *Api) createTeam(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, api.Response(err.Error(), nil))
 		return
 	}
+
+	api.GetEvent().Emit(userId, sse.Event{
+		Data: "blub",
+	})
 
 	c.JSON(http.StatusOK, api.Response(nil, team))
 }
@@ -54,5 +59,8 @@ func (api *Api) deleteTeam(c *gin.Context) {
 		return
 	}
 
+	api.GetEvent().Emit(userId, sse.Event{
+		Data: "blub2",
+	})
 	c.JSON(http.StatusOK, api.Response(nil, nil))
 }
