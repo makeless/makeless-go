@@ -1,7 +1,6 @@
 package saas_api
 
 import (
-	"fmt"
 	"github.com/gin-contrib/sse"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -26,9 +25,7 @@ func (api *Api) events(c *gin.Context) {
 	api.GetEvent().Subscribe(userId, clientId)
 
 	go func() {
-		api.GetEvent().Emit(userId, sse.Event{
-			Data: fmt.Sprintf("subscribed: %d", clientId),
-		})
+		api.GetEvent().Trigger(userId, "go-saas", "subscribed", clientId)
 	}()
 
 	for {
@@ -40,9 +37,7 @@ func (api *Api) events(c *gin.Context) {
 			w.Flush()
 		case <-w.CloseNotify():
 			api.GetEvent().Unsubscribe(userId, clientId)
-			api.GetEvent().Emit(userId, sse.Event{
-				Data: fmt.Sprintf("unsubscribed: %d", clientId),
-			})
+			api.GetEvent().Trigger(userId, "go-saas", "unsubscribed", clientId)
 			return
 		}
 	}

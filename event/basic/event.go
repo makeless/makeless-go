@@ -31,9 +31,22 @@ func (event *Event) Unsubscribe(userId uint, clientId uint) {
 	event.GetHub().DeleteClient(userId, clientId)
 }
 
-func (event *Event) Emit(userId uint, data sse.Event) {
-	for _, channel := range event.GetHub().GetUser(userId) {
-		channel <- data
+func (event *Event) Trigger(userId uint, channel string, id string, data interface{}) {
+	for _, client := range event.GetHub().GetUser(userId) {
+		client <- sse.Event{
+			Event: channel,
+			Retry: 3,
+			Data: Data{
+				Id:   id,
+				Data: data,
+			},
+		}
+	}
+}
+
+func (event *Event) Broadcast(channel string, id string, data interface{}) {
+	for userId := range event.GetHub().GetList() {
+		event.Trigger(userId, channel, id, data)
 	}
 }
 

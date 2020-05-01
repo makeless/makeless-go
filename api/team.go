@@ -1,7 +1,6 @@
 package saas_api
 
 import (
-	"github.com/gin-contrib/sse"
 	"github.com/gin-gonic/gin"
 	"github.com/loeffel-io/go-saas/model"
 	"net/http"
@@ -27,10 +26,7 @@ func (api *Api) createTeam(c *gin.Context) {
 		return
 	}
 
-	api.GetEvent().Emit(userId, sse.Event{
-		Data: "blub",
-	})
-
+	api.GetEvent().Trigger(userId, "go-saas", "team-created", team)
 	c.JSON(http.StatusOK, api.Response(nil, team))
 }
 
@@ -59,8 +55,6 @@ func (api *Api) deleteTeam(c *gin.Context) {
 		return
 	}
 
-	api.GetEvent().Emit(userId, sse.Event{
-		Data: "blub2",
-	})
+	api.GetEvent().Trigger(userId, "go-saas", "team-deleted", team)
 	c.JSON(http.StatusOK, api.Response(nil, nil))
 }

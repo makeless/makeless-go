@@ -9,6 +9,7 @@ type Event interface {
 	GetHub() Hub
 	Subscribe(userId uint, clientId uint)
 	Unsubscribe(userId uint, clientId uint)
-	Emit(userId uint, data sse.Event)
+	Trigger(userId uint, channel string, id string, data interface{})
+	Broadcast(channel string, id string, data interface{})
 	Listen(userId uint, clientId uint) chan sse.Event
 }
