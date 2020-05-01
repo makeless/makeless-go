@@ -35,9 +35,8 @@ func main() {
     }
     
     // event
-    hub := new(saas_event_basic.Hub).Init()
     event := &saas_event_basic.Event{
-        Hub:     hub,
+        Hub:     new(saas_event_basic.Hub).Init(),
         RWMutex: new(sync.RWMutex),
     }
     
