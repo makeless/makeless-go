@@ -38,7 +38,6 @@ func (api *Api) events(c *gin.Context) {
 		case <-w.CloseNotify():
 			api.GetEvent().Unsubscribe(userId, clientId)
 			api.GetEvent().Trigger(userId, "go-saas", "unsubscribed", clientId)
-			return
 		}
 	}
 }
