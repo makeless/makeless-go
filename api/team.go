@@ -55,6 +55,6 @@ func (api *Api) deleteTeam(c *gin.Context) {
 		return
 	}
 
-	api.GetEvent().Trigger(userId, "go-saas", "team-leaved-deleted", team)
+	api.GetEvent().Trigger(userId, "go-saas", "team-leaved-deleted", nil)
 	c.JSON(http.StatusOK, api.Response(nil, nil))
 }

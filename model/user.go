@@ -17,6 +17,10 @@ type User struct {
 	*sync.RWMutex `json:"-"`
 }
 
+func (user *User) GetId() uint {
+	return user.Id
+}
+
 func (user *User) GetName() *string {
 	user.RLock()
 	defer user.RUnlock()

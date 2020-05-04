@@ -190,6 +190,7 @@ func (api *Api) Start() error {
 
 				// settings -> team members
 				teamGroup.GET("/member", api.members)
+				teamGroup.DELETE("/member", api.removeMember)
 			}
 		}
 	}
