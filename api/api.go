@@ -187,6 +187,9 @@ func (api *Api) Start() error {
 			{
 				// settings -> profile
 				teamGroup.PATCH("/profile", api.updateProfileTeam)
+
+				// settings -> team members
+				teamGroup.GET("/member", api.members)
 			}
 		}
 	}
