@@ -5,8 +5,6 @@ import (
 )
 
 func (database *Database) GetMembers(users []*saas_model.User, teamId uint, userId uint) ([]*saas_model.User, error) {
-	database.connection.LogMode(true)
-
 	return users, database.GetConnection().
 		Model(&saas_model.Team{
 			Model:  saas_model.Model{Id: teamId},
