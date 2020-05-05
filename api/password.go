@@ -3,7 +3,7 @@ package saas_api
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/loeffel-io/go-saas/helper-model"
+	"github.com/loeffel-io/go-saas/helper_model"
 	"net/http"
 	"sync"
 )
