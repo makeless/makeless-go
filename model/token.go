@@ -6,12 +6,14 @@ import (
 
 type Token struct {
 	Model
-	Token *string `gorm:"unique;not null" json:"token" binding:"required"`
-	Read  *bool   `gorm:"not null" json:"read" binding:"required"`
-	Write *bool   `gorm:"not null" json:"write" binding:"required"`
+	Token *string `gorm:"unique;not null" json:"token" binding:"required,len=32"`
+	Note  *string `gorm:"not null" json:"note" binding:"required,min=4,max=30"`
 
 	UserId *uint `gorm:"not null" json:"userId" binding:"-"`
 	User   *User `json:"user"`
+
+	TeamId *uint `json:"teamId" binding:"-"`
+	Team   *User `json:"team"`
 
 	*sync.RWMutex `json:"-"`
 }
@@ -35,4 +37,11 @@ func (token *Token) GetUserId() *uint {
 	defer token.RUnlock()
 
 	return token.UserId
+}
+
+func (token *Token) GetTeamId() *uint {
+	token.RLock()
+	defer token.RUnlock()
+
+	return token.TeamId
 }

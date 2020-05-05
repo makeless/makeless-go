@@ -16,7 +16,7 @@ func (api *Api) tokens(c *gin.Context) {
 
 	var tokens []*saas_model.Token
 
-	if tokens, err = api.GetDatabase().GetTokens(&userId); err != nil {
+	if tokens, err = api.GetDatabase().GetTokens(tokens, &userId); err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, api.Response(err.Error(), nil))
 		return
 	}
