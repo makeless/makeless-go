@@ -1,6 +1,7 @@
 package saas_security_basic
 
 import (
+	"fmt"
 	"github.com/appleboy/gin-jwt/v2"
 	"github.com/loeffel-io/go-saas/database"
 	"github.com/loeffel-io/go-saas/model"
@@ -20,12 +21,12 @@ func (basic *Basic) getDatabase() *saas_database.Database {
 	return basic.Database
 }
 
-func (basic *Basic) Login(email string, password string) (*saas_model.User, error) {
+func (basic *Basic) Login(field string, id string, password string) (*saas_model.User, error) {
 	var user = &saas_model.User{
 		RWMutex: new(sync.RWMutex),
 	}
 
-	if err := basic.getDatabase().GetConnection().Where("email = ?", email).Find(&user).Error; err != nil {
+	if err := basic.getDatabase().GetConnection().Where(fmt.Sprintf("%s = ?", field), id).Find(&user).Error; err != nil {
 		return nil, jwt.ErrFailedAuthentication
 	}
 
@@ -37,7 +38,7 @@ func (basic *Basic) Login(email string, password string) (*saas_model.User, erro
 }
 
 func (basic *Basic) Register(user *saas_model.User) (*saas_model.User, error) {
-	bcrypted, err := bcrypt.GenerateFromPassword([]byte(*user.GetPassword()), bcrypt.MinCost)
+	bcrypted, err := basic.EncryptPassword(*user.GetPassword())
 
 	if err != nil {
 		return nil, err
@@ -70,4 +71,14 @@ func (basic *Basic) TokenLogin(token string) (*saas_model.User, error) {
 	user.Tokens[0].RWMutex = new(sync.RWMutex)
 
 	return user, nil
+}
+
+func (basic *Basic) EncryptPassword(password string) ([]byte, error) {
+	bcrypted, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return bcrypted, nil
 }

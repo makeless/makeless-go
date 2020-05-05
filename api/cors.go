@@ -9,7 +9,7 @@ func (api *Api) cors() gin.HandlerFunc {
 	config := cors.DefaultConfig()
 	config.AllowOrigins = api.getOrigins()
 	config.AllowCredentials = true
-	config.AddAllowHeaders("TEAM")
+	config.AddAllowHeaders("Team")
 
 	return cors.New(config)
 }

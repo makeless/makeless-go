@@ -167,6 +167,7 @@ func (api *Api) Start() error {
 
 			// auth
 			authGroup.GET("/user", api.user)
+			authGroup.PATCH("/password", api.updatePassword)
 			authGroup.GET("/refresh-token", api.GetAuthMiddleware().RefreshHandler)
 			authGroup.GET("/logout", api.GetAuthMiddleware().LogoutHandler)
 

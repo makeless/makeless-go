@@ -43,7 +43,7 @@ func (api *Api) jwtMiddleware() (*jwt.GinJWTMiddleware, error) {
 				return nil, err
 			}
 
-			return api.GetSecurity().Login(*login.GetEmail(), *login.GetPassword())
+			return api.GetSecurity().Login("email", *login.GetEmail(), *login.GetPassword())
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
 			return true
