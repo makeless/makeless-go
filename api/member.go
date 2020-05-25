@@ -1,10 +1,11 @@
 package saas_api
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/loeffel-io/go-saas/model"
 	"net/http"
 	"sync"
+
+	"github.com/gin-gonic/gin"
+	saas_model "github.com/go-saas/go-saas/model"
 )
 
 func (api *Api) members(c *gin.Context) {

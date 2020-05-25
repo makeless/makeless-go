@@ -3,8 +3,8 @@ package saas_security_basic
 import (
 	"fmt"
 	"github.com/appleboy/gin-jwt/v2"
-	"github.com/loeffel-io/go-saas/database"
-	"github.com/loeffel-io/go-saas/model"
+	"github.com/go-saas/go-saas/database"
+	"github.com/go-saas/go-saas/model"
 	"golang.org/x/crypto/bcrypt"
 	"sync"
 )

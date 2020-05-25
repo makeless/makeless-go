@@ -1,7 +1,7 @@
 package saas_security
 
 import (
-	"github.com/loeffel-io/go-saas/model"
+	"github.com/go-saas/go-saas/model"
 )
 
 type Security interface {

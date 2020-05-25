@@ -1,6 +1,6 @@
 package saas_database
 
-import "github.com/loeffel-io/go-saas/model"
+import "github.com/go-saas/go-saas/model"
 
 func (database *Database) UpdatePassword(userId uint, password string) error {
 	return database.GetConnection().

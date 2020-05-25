@@ -1,12 +1,13 @@
 package saas_api
 
 import (
-	"github.com/appleboy/gin-jwt/v2"
-	"github.com/gin-gonic/gin"
-	"github.com/loeffel-io/go-saas/model"
 	"net/http"
 	"sync"
 	"time"
+
+	jwt "github.com/appleboy/gin-jwt/v2"
+	"github.com/gin-gonic/gin"
+	saas_model "github.com/go-saas/go-saas/model"
 )
 
 func (api *Api) jwtMiddleware() (*jwt.GinJWTMiddleware, error) {

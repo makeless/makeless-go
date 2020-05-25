@@ -3,10 +3,10 @@ package saas_api
 import (
 	"github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
-	"github.com/loeffel-io/go-saas/database"
-	"github.com/loeffel-io/go-saas/event"
-	"github.com/loeffel-io/go-saas/logger"
-	"github.com/loeffel-io/go-saas/security"
+	"github.com/go-saas/go-saas/database"
+	"github.com/go-saas/go-saas/event"
+	"github.com/go-saas/go-saas/logger"
+	"github.com/go-saas/go-saas/security"
 	"sync"
 )
 

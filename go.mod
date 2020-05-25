@@ -1,4 +1,4 @@
-module github.com/loeffel-io/go-saas
+module github.com/go-saas/go-saas
 
 go 1.14
 
@@ -8,5 +8,6 @@ require (
 	github.com/gin-contrib/sse v0.1.0
 	github.com/gin-gonic/gin v1.6.2
 	github.com/jinzhu/gorm v1.9.12
+	github.com/go-saas/go-saas v0.0.0-20200505162953-67e3d2d27f22
 	golang.org/x/crypto v0.0.0-20200406173513-056763e48d71
 )

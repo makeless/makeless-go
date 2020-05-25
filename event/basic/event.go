@@ -2,7 +2,7 @@ package saas_event_basic
 
 import (
 	"github.com/gin-contrib/sse"
-	"github.com/loeffel-io/go-saas/event"
+	"github.com/go-saas/go-saas/event"
 	"sync"
 	"time"
 )

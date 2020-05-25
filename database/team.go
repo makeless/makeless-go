@@ -1,8 +1,9 @@
 package saas_database
 
 import (
-	"github.com/loeffel-io/go-saas/model"
 	"sync"
+
+	saas_model "github.com/go-saas/go-saas/model"
 )
 
 func (database *Database) CreateTeam(team *saas_model.Team, userId *uint) (*saas_model.Team, error) {

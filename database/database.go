@@ -3,7 +3,7 @@ package saas_database
 import (
 	"fmt"
 	"github.com/jinzhu/gorm"
-	"github.com/loeffel-io/go-saas/model"
+	"github.com/go-saas/go-saas/model"
 	"sync"
 )
 

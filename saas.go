@@ -2,10 +2,11 @@ package go_saas
 
 import (
 	"fmt"
-	"github.com/loeffel-io/go-saas/api"
-	"github.com/loeffel-io/go-saas/database"
-	"github.com/loeffel-io/go-saas/logger"
 	"sync"
+
+	saas_api "github.com/go-saas/go-saas/api"
+	saas_database "github.com/go-saas/go-saas/database"
+	saas_logger "github.com/go-saas/go-saas/logger"
 )
 
 type Saas struct {

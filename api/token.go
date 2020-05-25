@@ -2,7 +2,7 @@ package saas_api
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/loeffel-io/go-saas/model"
+	"github.com/go-saas/go-saas/model"
 	"net/http"
 )
 

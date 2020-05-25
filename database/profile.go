@@ -1,7 +1,7 @@
 package saas_database
 
 import (
-	"github.com/loeffel-io/go-saas/model"
+	"github.com/go-saas/go-saas/model"
 )
 
 func (database *Database) UpdateProfile(user *saas_model.User, userId uint) (*saas_model.User, error) {
