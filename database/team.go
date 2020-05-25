@@ -3,7 +3,7 @@ package saas_database
 import (
 	"sync"
 
-	saas_model "github.com/go-saas/go-saas/model"
+	"github.com/go-saas/go-saas/model"
 )
 
 func (database *Database) CreateTeam(team *saas_model.Team, userId *uint) (*saas_model.Team, error) {

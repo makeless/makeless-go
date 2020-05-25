@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"sync"
 
-	saas_api "github.com/go-saas/go-saas/api"
-	saas_database "github.com/go-saas/go-saas/database"
-	saas_logger "github.com/go-saas/go-saas/logger"
+	"github.com/go-saas/go-saas/api"
+	"github.com/go-saas/go-saas/database"
+	"github.com/go-saas/go-saas/logger"
 )
 
 type Saas struct {

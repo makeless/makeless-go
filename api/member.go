@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	"github.com/gin-gonic/gin"
-	saas_model "github.com/go-saas/go-saas/model"
+	"github.com/go-saas/go-saas/model"
 )
 
 func (api *Api) members(c *gin.Context) {

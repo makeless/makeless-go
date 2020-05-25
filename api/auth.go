@@ -5,9 +5,9 @@ import (
 	"sync"
 	"time"
 
-	jwt "github.com/appleboy/gin-jwt/v2"
+	"github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
-	saas_model "github.com/go-saas/go-saas/model"
+	"github.com/go-saas/go-saas/model"
 )
 
 func (api *Api) jwtMiddleware() (*jwt.GinJWTMiddleware, error) {
