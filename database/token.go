@@ -60,16 +60,19 @@ func (database *Database) GetTokensTeam(tokens []*saas_model.Token, teamId uint,
 		Error
 }
 
+// delete from multiple tables currently not supported by gorm
 func (database *Database) DeleteTokenTeam(token *saas_model.Token, teamId *uint, userId *uint) error {
 	token.UserId = userId
 	token.TeamId = teamId
 	token.RWMutex = new(sync.RWMutex)
-	database.connection.LogMode(true)
 
 	return database.GetConnection().
 		Unscoped().
-		Joins("JOIN teams ON teams.id = tokens.team_id").
-		Where("tokens.id = ? AND tokens.team_id = ? AND teams.user_id = ?", token.GetId(), token.GetTeamId(), token.GetUserId()).
-		Delete(&token).
+		Exec(
+			"DELETE tokens FROM `tokens` JOIN teams ON teams.id = tokens.team_id WHERE ((tokens.id = ? AND tokens.team_id = ? AND teams.user_id = ?))",
+			token.GetId(),
+			token.GetTeamId(),
+			token.GetUserId(),
+		).
 		Error
 }
