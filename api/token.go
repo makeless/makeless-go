@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/model"
 	"net/http"
+	"sync"
 )
 
 func (api *Api) tokens(c *gin.Context) {
@@ -63,6 +64,65 @@ func (api *Api) deleteToken(c *gin.Context) {
 	}
 
 	if err = api.GetDatabase().DeleteToken(token, &userId); err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, api.Response(err.Error(), nil))
+		return
+	}
+
+	c.JSON(http.StatusOK, api.Response(nil, nil))
+}
+
+func (api *Api) tokensTeam(c *gin.Context) {
+	userId, err := api.GetUserId(c)
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, api.Response(err.Error(), nil))
+		return
+	}
+
+	var header = &teamHeader{
+		RWMutex: new(sync.RWMutex),
+	}
+
+	if err = c.ShouldBindHeader(header); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, api.Response(err.Error(), nil))
+		return
+	}
+
+	var tokens []*saas_model.Token
+
+	if tokens, err = api.GetDatabase().GetTokensTeam(tokens, header.TeamId, &userId); err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, api.Response(err.Error(), nil))
+		return
+	}
+
+	c.JSON(http.StatusOK, api.Response(nil, tokens))
+}
+
+func (api *Api) deleteTokenTeam(c *gin.Context) {
+	userId, err := api.GetUserId(c)
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, api.Response(err.Error(), nil))
+		return
+	}
+
+	var header = &teamHeader{
+		RWMutex: new(sync.RWMutex),
+	}
+
+	if err = c.ShouldBindHeader(header); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, api.Response(err.Error(), nil))
+		return
+	}
+
+	var token *saas_model.Token
+
+	if err := c.ShouldBind(&token); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, api.Response(err.Error(), nil))
+		return
+	}
+
+	if err = api.GetDatabase().DeleteTokenTeam(token, &header.TeamId, &userId); err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, api.Response(err.Error(), nil))
 		return
 	}

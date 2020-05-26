@@ -192,6 +192,10 @@ func (api *Api) Start() error {
 				// settings -> team members
 				teamGroup.GET("/member", api.members)
 				teamGroup.DELETE("/member", api.removeMember)
+
+				// settings -> tokens
+				teamGroup.GET("/token", api.tokensTeam)
+				teamGroup.DELETE("/token", api.deleteTokenTeam)
 			}
 		}
 	}
