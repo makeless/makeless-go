@@ -1,6 +1,7 @@
 package saas_database
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/go-saas/go-saas/model"
@@ -40,5 +41,21 @@ func (database *Database) DeleteTeam(team *saas_model.Team, userId *uint) error 
 		Unscoped().
 		Where("teams.id = ? AND teams.user_id = ?", team.GetId(), team.GetUserId()).
 		Delete(team).
+		Error
+}
+
+// GetUsersTeam queries all team users without any security restrictions (!)
+func (database *Database) GetUsersTeam(search string, users []*saas_model.User, teamId *uint) ([]*saas_model.User, error) {
+	return users, database.GetConnection().
+		Select("users.id, users.name, users.username, users.email").
+		Where(
+			"users.name LIKE ? OR users.email LIKE ?",
+			fmt.Sprintf(`%s%s%s`, "%", search, "%"),
+			fmt.Sprintf(`%s%s%s`, "%", search, "%"),
+		).
+		Model(&saas_model.Team{
+			Model: saas_model.Model{Id: *teamId},
+		}).
+		Related(&users, "Users").
 		Error
 }

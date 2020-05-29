@@ -4,7 +4,7 @@ import (
 	"github.com/go-saas/go-saas/model"
 )
 
-func (database *Database) GetMembers(users []*saas_model.User, teamId uint, userId uint) ([]*saas_model.User, error) {
+func (database *Database) GetMembersTeam(users []*saas_model.User, teamId uint, userId uint) ([]*saas_model.User, error) {
 	return users, database.GetConnection().
 		Model(&saas_model.Team{
 			Model:  saas_model.Model{Id: teamId},
@@ -14,7 +14,7 @@ func (database *Database) GetMembers(users []*saas_model.User, teamId uint, user
 		Error
 }
 
-func (database *Database) RemoveMember(user *saas_model.User, teamId uint, userId uint) error {
+func (database *Database) RemoveMemberTeam(user *saas_model.User, teamId uint, userId uint) error {
 	return database.GetConnection().
 		Model(&saas_model.User{
 			Model: saas_model.Model{Id: user.GetId()},

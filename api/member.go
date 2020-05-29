@@ -8,7 +8,7 @@ import (
 	"github.com/go-saas/go-saas/model"
 )
 
-func (api *Api) members(c *gin.Context) {
+func (api *Api) membersTeam(c *gin.Context) {
 	userId, err := api.GetUserId(c)
 
 	if err != nil {
@@ -27,7 +27,7 @@ func (api *Api) members(c *gin.Context) {
 
 	var users []*saas_model.User
 
-	if users, err = api.GetDatabase().GetMembers(users, header.TeamId, userId); err != nil {
+	if users, err = api.GetDatabase().GetMembersTeam(users, header.TeamId, userId); err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, api.Response(err.Error(), nil))
 		return
 	}
@@ -35,7 +35,7 @@ func (api *Api) members(c *gin.Context) {
 	c.JSON(http.StatusOK, api.Response(nil, users))
 }
 
-func (api *Api) removeMember(c *gin.Context) {
+func (api *Api) removeMemberTeam(c *gin.Context) {
 	userId, err := api.GetUserId(c)
 
 	if err != nil {
@@ -61,7 +61,7 @@ func (api *Api) removeMember(c *gin.Context) {
 		return
 	}
 
-	if err = api.GetDatabase().RemoveMember(user, header.TeamId, userId); err != nil {
+	if err = api.GetDatabase().RemoveMemberTeam(user, header.TeamId, userId); err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, api.Response(err.Error(), nil))
 		return
 	}

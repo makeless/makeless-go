@@ -9,4 +9,7 @@ type Security interface {
 	Register(user *saas_model.User) (*saas_model.User, error)
 	TokenLogin(token string) (*saas_model.User, error)
 	EncryptPassword(password string) ([]byte, error)
+
+	IsTeamMember(teamId uint, userId uint) (bool, error)
+	IsTeamOwner(teamId uint, userId uint) (bool, error)
 }

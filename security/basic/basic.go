@@ -53,26 +53,6 @@ func (basic *Basic) Register(user *saas_model.User) (*saas_model.User, error) {
 	return user, nil
 }
 
-func (basic *Basic) TokenLogin(token string) (*saas_model.User, error) {
-	var user = &saas_model.User{
-		RWMutex: new(sync.RWMutex),
-	}
-
-	err := basic.getDatabase().GetConnection().
-		Preload("Tokens", "token = ?", token).
-		Joins("JOIN tokens ON tokens.user_id=users.id AND tokens.token = ?", token).
-		First(&user).
-		Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	user.Tokens[0].RWMutex = new(sync.RWMutex)
-
-	return user, nil
-}
-
 func (basic *Basic) EncryptPassword(password string) ([]byte, error) {
 	bcrypted, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
 

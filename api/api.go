@@ -189,13 +189,17 @@ func (api *Api) Start() error {
 				// settings -> profile
 				teamGroup.PATCH("/profile", api.updateProfileTeam)
 
-				// settings -> team members
-				teamGroup.GET("/member", api.members)
-				teamGroup.DELETE("/member", api.removeMember)
+				// settings -> members
+				teamGroup.GET("/member", api.membersTeam)
+				teamGroup.DELETE("/member", api.removeMemberTeam)
 
 				// settings -> tokens
 				teamGroup.GET("/token", api.tokensTeam)
+				teamGroup.POST("/token", api.createTokenTeam)
 				teamGroup.DELETE("/token", api.deleteTokenTeam)
+
+				// utils
+				teamGroup.GET("/user", api.usersTeam)
 			}
 		}
 	}

@@ -23,6 +23,8 @@ func (database *Database) GetTokens(tokens []*saas_model.Token, userId *uint) ([
 func (database *Database) CreateToken(token *saas_model.Token, userId *uint) (*saas_model.Token, error) {
 	token.UserId = userId
 	token.TeamId = nil
+	token.User = nil
+	token.Team = nil
 	token.RWMutex = new(sync.RWMutex)
 
 	return token, database.GetConnection().
@@ -69,10 +71,20 @@ func (database *Database) DeleteTokenTeam(token *saas_model.Token, teamId *uint,
 	return database.GetConnection().
 		Unscoped().
 		Exec(
-			"DELETE tokens FROM `tokens` JOIN teams ON teams.id = tokens.team_id WHERE ((tokens.id = ? AND tokens.team_id = ? AND teams.user_id = ?))",
+			"DELETE tokens FROM `tokens` JOIN teams ON teams.id = tokens.team_id WHERE tokens.id = ? AND tokens.team_id = ? AND teams.user_id = ?",
 			token.GetId(),
 			token.GetTeamId(),
 			token.GetUserId(),
 		).
+		Error
+}
+
+func (database *Database) CreateTokenTeam(token *saas_model.Token, teamId *uint) (*saas_model.Token, error) {
+	token.TeamId = teamId
+	token.User = nil
+	token.Team = nil
+
+	return token, database.GetConnection().
+		Create(&token).
 		Error
 }
