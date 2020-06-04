@@ -3,7 +3,7 @@ package saas_api
 import (
 	"github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas/database"
+	"github.com/go-saas/go-saas/database/go_saas_basic_database"
 	"github.com/go-saas/go-saas/event"
 	"github.com/go-saas/go-saas/jwt"
 	"github.com/go-saas/go-saas/logger"
@@ -20,7 +20,7 @@ type Api struct {
 	Logger   go_saas_logger.Logger
 	Event    go_saas_event.Event
 	Security go_saas_security.Security
-	Database *saas_database.Database
+	Database *go_saas_basic_database.saas_database
 	Jwt      go_saas_jwt.Jwt
 	Tls      go_saas_tls.Tls
 	Origins  []string
@@ -124,7 +124,7 @@ func (api *Api) GetSecurity() go_saas_security.Security {
 	return api.Security
 }
 
-func (api *Api) GetDatabase() *saas_database.Database {
+func (api *Api) GetDatabase() *go_saas_basic_database.saas_database {
 	api.RLock()
 	defer api.RUnlock()
 

@@ -3,13 +3,13 @@ package go_saas_basic_security
 import (
 	"fmt"
 	"github.com/appleboy/gin-jwt/v2"
-	"github.com/go-saas/go-saas/database"
+	"github.com/go-saas/go-saas/database/go_saas_basic_database"
 	"github.com/go-saas/go-saas/model"
 	"sync"
 )
 
 type Security struct {
-	Database *saas_database.Database
+	Database *go_saas_basic_database.Database
 	*sync.RWMutex
 }
 

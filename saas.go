@@ -2,17 +2,17 @@ package go_saas
 
 import (
 	"fmt"
+	"github.com/go-saas/go-saas/database/go_saas_basic_database"
 	"sync"
 
 	"github.com/go-saas/go-saas/api"
-	"github.com/go-saas/go-saas/database"
 	"github.com/go-saas/go-saas/logger"
 )
 
 type Saas struct {
 	License  string
 	Logger   go_saas_logger.Logger
-	Database *saas_database.Database
+	Database *go_saas_basic_database.Database
 	Api      *saas_api.Api
 	*sync.RWMutex
 }
@@ -36,7 +36,7 @@ func (saas Saas) GetLogger() go_saas_logger.Logger {
 	return saas.Logger
 }
 
-func (saas Saas) GetDatabase() *saas_database.Database {
+func (saas Saas) GetDatabase() *go_saas_basic_database.Database {
 	saas.RLock()
 	defer saas.RUnlock()
 

@@ -1,0 +1,28 @@
+package go_saas_basic_database
+
+import (
+	"github.com/go-saas/go-saas/model"
+)
+
+func (database *Database) GetTokens(user *go_saas_model.User, tokens []*go_saas_model.Token) ([]*go_saas_model.Token, error) {
+	return tokens, database.GetConnection().
+		Select([]string{"tokens.id", "tokens.note", "tokens.user_id", "tokens.team_id"}).
+		Where("tokens.user_id = ? AND tokens.team_id IS NULL", user.GetId()).
+		Order("tokens.id DESC").
+		Find(&tokens).
+		Error
+}
+
+func (database *Database) CreateToken(token *go_saas_model.Token) (*go_saas_model.Token, error) {
+	return token, database.GetConnection().
+		Create(&token).
+		Error
+}
+
+func (database *Database) DeleteToken(token *go_saas_model.Token) error {
+	return database.GetConnection().
+		Unscoped().
+		Where("tokens.id = ? AND tokens.user_id = ? AND tokens.team_id IS NULL", token.GetId(), token.GetUserId()).
+		Delete(&token).
+		Error
+}
