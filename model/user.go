@@ -1,4 +1,4 @@
-package saas_model
+package go_saas_model
 
 import (
 	"sync"

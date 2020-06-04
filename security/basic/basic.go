@@ -21,8 +21,8 @@ func (basic *Basic) getDatabase() *saas_database.Database {
 	return basic.Database
 }
 
-func (basic *Basic) Login(field string, id string, password string) (*saas_model.User, error) {
-	var user = &saas_model.User{
+func (basic *Basic) Login(field string, id string, password string) (*go_saas_model.User, error) {
+	var user = &go_saas_model.User{
 		RWMutex: new(sync.RWMutex),
 	}
 
@@ -37,7 +37,7 @@ func (basic *Basic) Login(field string, id string, password string) (*saas_model
 	return user, nil
 }
 
-func (basic *Basic) Register(user *saas_model.User) (*saas_model.User, error) {
+func (basic *Basic) Register(user *go_saas_model.User) (*go_saas_model.User, error) {
 	bcrypted, err := basic.EncryptPassword(*user.GetPassword())
 
 	if err != nil {

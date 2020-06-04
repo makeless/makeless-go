@@ -16,7 +16,7 @@ func (api *Api) createTeam(c *gin.Context) {
 		return
 	}
 
-	var team *saas_model.Team
+	var team *go_saas_model.Team
 
 	if err := c.ShouldBind(&team); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, api.Response(err.Error(), nil))
@@ -40,7 +40,7 @@ func (api *Api) deleteTeam(c *gin.Context) {
 		return
 	}
 
-	var team *saas_model.Team
+	var team *go_saas_model.Team
 
 	if err := c.ShouldBind(&team); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, api.Response(err.Error(), nil))
@@ -90,7 +90,7 @@ func (api *Api) usersTeam(c *gin.Context) {
 		return
 	}
 
-	var users []*saas_model.User
+	var users []*go_saas_model.User
 
 	if users, err = api.GetDatabase().GetUsersTeam(c.Query("search"), users, &header.TeamId); err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, api.Response(err.Error(), nil))

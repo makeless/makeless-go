@@ -99,8 +99,8 @@ func (database *Database) GetConnection() *gorm.DB {
 
 func (database *Database) AutoMigrate() error {
 	return database.GetConnection().AutoMigrate(
-		new(saas_model.User),
-		new(saas_model.Token),
-		new(saas_model.Team),
+		new(go_saas_model.User),
+		new(go_saas_model.Token),
+		new(go_saas_model.Team),
 	).Error
 }

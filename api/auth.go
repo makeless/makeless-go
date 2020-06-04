@@ -18,7 +18,7 @@ func (api *Api) jwtMiddleware() (*jwt.GinJWTMiddleware, error) {
 		MaxRefresh:  time.Hour,
 		IdentityKey: api.getJwt().getKey(),
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
-			if v, ok := data.(*saas_model.User); ok {
+			if v, ok := data.(*go_saas_model.User); ok {
 				return jwt.MapClaims{
 					api.getJwt().getId(): v.Id,
 				}
@@ -29,14 +29,14 @@ func (api *Api) jwtMiddleware() (*jwt.GinJWTMiddleware, error) {
 		IdentityHandler: func(c *gin.Context) interface{} {
 			userId, _ := api.GetUserId(c)
 
-			return &saas_model.User{
-				Model: saas_model.Model{
+			return &go_saas_model.User{
+				Model: go_saas_model.Model{
 					Id: userId,
 				},
 			}
 		},
 		Authenticator: func(c *gin.Context) (interface{}, error) {
-			var login = &saas_model.Login{
+			var login = &go_saas_model.Login{
 				RWMutex: new(sync.RWMutex),
 			}
 
@@ -75,7 +75,7 @@ func (api *Api) GetUserId(c *gin.Context) (uint, error) {
 }
 
 func (api *Api) register(c *gin.Context) {
-	var user = &saas_model.User{
+	var user = &go_saas_model.User{
 		RWMutex: new(sync.RWMutex),
 	}
 

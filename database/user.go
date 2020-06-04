@@ -5,8 +5,8 @@ import (
 	"sync"
 )
 
-func (database *Database) GetUser(userId uint) (*saas_model.User, error) {
-	var user = &saas_model.User{
+func (database *Database) GetUser(userId uint) (*go_saas_model.User, error) {
+	var user = &go_saas_model.User{
 		RWMutex: new(sync.RWMutex),
 	}
 

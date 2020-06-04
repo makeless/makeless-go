@@ -25,7 +25,7 @@ func (api *Api) membersTeam(c *gin.Context) {
 		return
 	}
 
-	var users []*saas_model.User
+	var users []*go_saas_model.User
 
 	if users, err = api.GetDatabase().GetMembersTeam(users, header.TeamId, userId); err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, api.Response(err.Error(), nil))
@@ -52,7 +52,7 @@ func (api *Api) removeMemberTeam(c *gin.Context) {
 		return
 	}
 
-	var user = &saas_model.User{
+	var user = &go_saas_model.User{
 		RWMutex: new(sync.RWMutex),
 	}
 

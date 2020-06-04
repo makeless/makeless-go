@@ -5,9 +5,9 @@ import (
 )
 
 type Security interface {
-	Login(field string, id string, password string) (*saas_model.User, error)
-	Register(user *saas_model.User) (*saas_model.User, error)
-	TokenLogin(token string) (*saas_model.User, error)
+	Login(field string, id string, password string) (*go_saas_model.User, error)
+	Register(user *go_saas_model.User) (*go_saas_model.User, error)
+	TokenLogin(token string) (*go_saas_model.User, error)
 	EncryptPassword(password string) ([]byte, error)
 
 	IsTeamMember(teamId uint, userId uint) (bool, error)

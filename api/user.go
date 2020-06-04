@@ -14,7 +14,7 @@ func (api *Api) user(c *gin.Context) {
 		return
 	}
 
-	var user *saas_model.User
+	var user *go_saas_model.User
 
 	if user, err = api.GetDatabase().GetUser(userId); err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, api.Response(err.Error(), nil))

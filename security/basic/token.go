@@ -5,8 +5,8 @@ import (
 	"sync"
 )
 
-func (basic *Basic) TokenLogin(token string) (*saas_model.User, error) {
-	var user = &saas_model.User{
+func (basic *Basic) TokenLogin(token string) (*go_saas_model.User, error) {
+	var user = &go_saas_model.User{
 		RWMutex: new(sync.RWMutex),
 	}
 

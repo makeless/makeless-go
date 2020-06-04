@@ -15,7 +15,7 @@ func (api *Api) updateProfile(c *gin.Context) {
 		return
 	}
 
-	var user = &saas_model.User{
+	var user = &go_saas_model.User{
 		RWMutex: new(sync.RWMutex),
 	}
 
@@ -49,7 +49,7 @@ func (api *Api) updateProfileTeam(c *gin.Context) {
 		return
 	}
 
-	var team = &saas_model.Team{
+	var team = &go_saas_model.Team{
 		RWMutex: new(sync.RWMutex),
 	}
 

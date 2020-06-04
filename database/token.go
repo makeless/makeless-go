@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-func (database *Database) GetTokens(tokens []*saas_model.Token, userId *uint) ([]*saas_model.Token, error) {
+func (database *Database) GetTokens(tokens []*go_saas_model.Token, userId *uint) ([]*go_saas_model.Token, error) {
 	return tokens, database.GetConnection().
 		Select([]string{
 			"tokens.id",
@@ -20,7 +20,7 @@ func (database *Database) GetTokens(tokens []*saas_model.Token, userId *uint) ([
 		Error
 }
 
-func (database *Database) CreateToken(token *saas_model.Token, userId *uint) (*saas_model.Token, error) {
+func (database *Database) CreateToken(token *go_saas_model.Token, userId *uint) (*go_saas_model.Token, error) {
 	token.UserId = userId
 	token.TeamId = nil
 	token.User = nil
@@ -32,7 +32,7 @@ func (database *Database) CreateToken(token *saas_model.Token, userId *uint) (*s
 		Error
 }
 
-func (database *Database) DeleteToken(token *saas_model.Token, userId *uint) error {
+func (database *Database) DeleteToken(token *go_saas_model.Token, userId *uint) error {
 	token.UserId = userId
 	token.TeamId = nil
 	token.RWMutex = new(sync.RWMutex)
@@ -44,7 +44,7 @@ func (database *Database) DeleteToken(token *saas_model.Token, userId *uint) err
 		Error
 }
 
-func (database *Database) GetTokensTeam(tokens []*saas_model.Token, teamId uint, userId *uint) ([]*saas_model.Token, error) {
+func (database *Database) GetTokensTeam(tokens []*go_saas_model.Token, teamId uint, userId *uint) ([]*go_saas_model.Token, error) {
 	return tokens, database.GetConnection().
 		Preload("User", func(db *gorm.DB) *gorm.DB {
 			return db.Select("users.id, users.name, users.username, users.email")
@@ -63,7 +63,7 @@ func (database *Database) GetTokensTeam(tokens []*saas_model.Token, teamId uint,
 }
 
 // delete from multiple tables currently not supported by gorm
-func (database *Database) DeleteTokenTeam(token *saas_model.Token, teamId *uint, userId *uint) error {
+func (database *Database) DeleteTokenTeam(token *go_saas_model.Token, teamId *uint, userId *uint) error {
 	token.UserId = userId
 	token.TeamId = teamId
 	token.RWMutex = new(sync.RWMutex)
@@ -79,7 +79,7 @@ func (database *Database) DeleteTokenTeam(token *saas_model.Token, teamId *uint,
 		Error
 }
 
-func (database *Database) CreateTokenTeam(token *saas_model.Token, teamId *uint) (*saas_model.Token, error) {
+func (database *Database) CreateTokenTeam(token *go_saas_model.Token, teamId *uint) (*go_saas_model.Token, error) {
 	token.TeamId = teamId
 	token.User = nil
 	token.Team = nil

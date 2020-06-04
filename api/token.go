@@ -16,7 +16,7 @@ func (api *Api) tokens(c *gin.Context) {
 		return
 	}
 
-	var tokens []*saas_model.Token
+	var tokens []*go_saas_model.Token
 
 	if tokens, err = api.GetDatabase().GetTokens(tokens, &userId); err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, api.Response(err.Error(), nil))
@@ -34,7 +34,7 @@ func (api *Api) createToken(c *gin.Context) {
 		return
 	}
 
-	var token *saas_model.Token
+	var token *go_saas_model.Token
 
 	if err := c.ShouldBind(&token); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, api.Response(err.Error(), nil))
@@ -57,7 +57,7 @@ func (api *Api) deleteToken(c *gin.Context) {
 		return
 	}
 
-	var token *saas_model.Token
+	var token *go_saas_model.Token
 
 	if err := c.ShouldBind(&token); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, api.Response(err.Error(), nil))
@@ -89,7 +89,7 @@ func (api *Api) tokensTeam(c *gin.Context) {
 		return
 	}
 
-	var tokens []*saas_model.Token
+	var tokens []*go_saas_model.Token
 
 	if tokens, err = api.GetDatabase().GetTokensTeam(tokens, header.TeamId, &userId); err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, api.Response(err.Error(), nil))
@@ -116,7 +116,7 @@ func (api *Api) deleteTokenTeam(c *gin.Context) {
 		return
 	}
 
-	var token *saas_model.Token
+	var token *go_saas_model.Token
 
 	if err := c.ShouldBind(&token); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, api.Response(err.Error(), nil))
@@ -160,7 +160,7 @@ func (api *Api) createTokenTeam(c *gin.Context) {
 		return
 	}
 
-	var token = &saas_model.Token{
+	var token = &go_saas_model.Token{
 		RWMutex: new(sync.RWMutex),
 	}
 

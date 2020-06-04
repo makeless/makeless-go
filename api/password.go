@@ -3,7 +3,7 @@ package saas_api
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas/helper_model"
+	"github.com/go-saas/go-saas/model"
 	"net/http"
 	"sync"
 )
@@ -16,7 +16,7 @@ func (api *Api) updatePassword(c *gin.Context) {
 		return
 	}
 
-	var passwordReset = &saas_helper_model.PasswordReset{
+	var passwordReset = &go_saas_model.PasswordReset{
 		RWMutex: new(sync.RWMutex),
 	}
 

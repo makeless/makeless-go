@@ -4,8 +4,8 @@ import "github.com/go-saas/go-saas/model"
 
 func (database *Database) UpdatePassword(userId uint, password string) error {
 	return database.GetConnection().
-		Model(&saas_model.User{
-			Model: saas_model.Model{Id: userId},
+		Model(&go_saas_model.User{
+			Model: go_saas_model.Model{Id: userId},
 		}).
 		Where("users.id = ?", userId).
 		Update(map[string]interface{}{
