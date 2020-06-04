@@ -8,12 +8,12 @@ import (
 type Database struct {
 	connection *gorm.DB
 
-	dialect  string
-	username string
-	password string
-	database string
-	host     string
-	port     string
+	Dialect  string
+	Username string
+	Password string
+	Database string
+	Host     string
+	Port     string
 	*sync.RWMutex
 }
 
@@ -21,40 +21,40 @@ func (database *Database) getDialect() string {
 	database.RLock()
 	defer database.RUnlock()
 
-	return database.dialect
+	return database.Dialect
 }
 
 func (database *Database) getUsername() string {
 	database.RLock()
 	defer database.RUnlock()
 
-	return database.username
+	return database.Username
 }
 
 func (database *Database) getPassword() string {
 	database.RLock()
 	defer database.RUnlock()
 
-	return database.password
+	return database.Password
 }
 
 func (database *Database) getDatabase() string {
 	database.RLock()
 	defer database.RUnlock()
 
-	return database.database
+	return database.Database
 }
 
 func (database *Database) getHost() string {
 	database.RLock()
 	defer database.RUnlock()
 
-	return database.host
+	return database.Host
 }
 
 func (database *Database) getPort() string {
 	database.RLock()
 	defer database.RUnlock()
 
-	return database.port
+	return database.Port
 }

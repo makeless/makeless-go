@@ -1,8 +1,7 @@
 package go_saas
 
 import (
-	"fmt"
-	"github.com/go-saas/go-saas/database/go_saas_basic_database"
+	"github.com/go-saas/go-saas/database"
 	"sync"
 
 	"github.com/go-saas/go-saas/api"
@@ -10,23 +9,10 @@ import (
 )
 
 type Saas struct {
-	License  string
 	Logger   go_saas_logger.Logger
-	Database *go_saas_basic_database.Database
+	Database go_saas_database.Database
 	Api      *saas_api.Api
 	*sync.RWMutex
-}
-
-func (saas Saas) getLicense() string {
-	saas.RLock()
-	defer saas.RUnlock()
-
-	return saas.License
-}
-
-func (saas Saas) isLicenseValid() bool {
-	saas.getLicense()
-	return true
 }
 
 func (saas Saas) GetLogger() go_saas_logger.Logger {
@@ -36,7 +22,7 @@ func (saas Saas) GetLogger() go_saas_logger.Logger {
 	return saas.Logger
 }
 
-func (saas Saas) GetDatabase() *go_saas_basic_database.Database {
+func (saas Saas) GetDatabase() go_saas_database.Database {
 	saas.RLock()
 	defer saas.RUnlock()
 
@@ -51,15 +37,11 @@ func (saas Saas) GetApi() *saas_api.Api {
 }
 
 func (saas Saas) Run() error {
-	if !saas.isLicenseValid() {
-		return fmt.Errorf("invalid saas license")
-	}
-
 	if err := saas.GetDatabase().Connect(); err != nil {
 		return err
 	}
 
-	if err := saas.GetDatabase().AutoMigrate(); err != nil {
+	if err := saas.GetDatabase().Migrate(); err != nil {
 		return err
 	}
 

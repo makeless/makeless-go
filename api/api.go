@@ -3,7 +3,7 @@ package saas_api
 import (
 	"github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas/database/go_saas_basic_database"
+	"github.com/go-saas/go-saas/database/basic"
 	"github.com/go-saas/go-saas/event"
 	"github.com/go-saas/go-saas/jwt"
 	"github.com/go-saas/go-saas/logger"
