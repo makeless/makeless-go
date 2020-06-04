@@ -15,7 +15,7 @@ type Api struct {
 	authMiddleware *jwt.GinJWTMiddleware
 	handlers       []func(api *Api)
 
-	Logger   saas_logger.Logger
+	Logger   go_saas_logger.Logger
 	Event    saas_event.Event
 	Security saas_security.Security
 	Database *saas_database.Database
@@ -101,7 +101,7 @@ func (api *Api) GetAuthMiddleware() *jwt.GinJWTMiddleware {
 	return api.authMiddleware
 }
 
-func (api *Api) GetLogger() saas_logger.Logger {
+func (api *Api) GetLogger() go_saas_logger.Logger {
 	api.RLock()
 	defer api.RUnlock()
 

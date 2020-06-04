@@ -7,8 +7,7 @@ import (
 type User struct {
 	Model
 	Name     *string `gorm:"not null" json:"name" binding:"required,min=4"`
-	Username *string `gorm:"unique;not null" json:"username" binding:"required"`
-	Password *string `gorm:"not null" json:"password,omitempty"` // binding:"required"
+	Password *string `gorm:"not null" json:"password,omitempty" binding:"required"`
 	Email    *string `gorm:"unique;not null" json:"email" binding:"required"`
 
 	Teams  []*Team  `gorm:"many2many:user_teams;" json:"teams"`
@@ -28,11 +27,11 @@ func (user *User) GetName() *string {
 	return user.Name
 }
 
-func (user *User) GetUsername() *string {
+func (user *User) GetPassword() *string {
 	user.RLock()
 	defer user.RUnlock()
 
-	return user.Username
+	return user.Password
 }
 
 func (user *User) SetPassword(password string) {
@@ -42,18 +41,18 @@ func (user *User) SetPassword(password string) {
 	user.Password = &password
 }
 
-func (user *User) GetPassword() *string {
-	user.RLock()
-	defer user.RUnlock()
-
-	return user.Password
-}
-
 func (user *User) GetEmail() *string {
 	user.RLock()
 	defer user.RUnlock()
 
 	return user.Email
+}
+
+func (user *User) GetTeams() []*Team {
+	user.RLock()
+	defer user.RUnlock()
+
+	return user.Teams
 }
 
 func (user *User) GetTokens() []*Token {

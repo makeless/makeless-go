@@ -1,4 +1,4 @@
-package saas_logger
+package go_saas_logger
 
 type Logger interface {
 	Fatal(err error)

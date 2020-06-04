@@ -22,3 +22,10 @@ func (passwordReset *PasswordReset) GetNewPassword() *string {
 
 	return passwordReset.NewPassword
 }
+
+func (passwordReset *PasswordReset) GetNewPasswordConfirmation() *string {
+	passwordReset.RLock()
+	defer passwordReset.RUnlock()
+
+	return passwordReset.NewPasswordConfirmation
+}

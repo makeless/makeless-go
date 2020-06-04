@@ -11,7 +11,7 @@ import (
 
 type Saas struct {
 	License  string
-	Logger   saas_logger.Logger
+	Logger   go_saas_logger.Logger
 	Database *saas_database.Database
 	Api      *saas_api.Api
 	*sync.RWMutex
@@ -29,7 +29,7 @@ func (saas Saas) isLicenseValid() bool {
 	return true
 }
 
-func (saas Saas) GetLogger() saas_logger.Logger {
+func (saas Saas) GetLogger() go_saas_logger.Logger {
 	saas.RLock()
 	defer saas.RUnlock()
 
