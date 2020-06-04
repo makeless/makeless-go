@@ -5,8 +5,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/database"
 	"github.com/go-saas/go-saas/event"
+	"github.com/go-saas/go-saas/jwt"
 	"github.com/go-saas/go-saas/logger"
 	"github.com/go-saas/go-saas/security"
+	"github.com/go-saas/go-saas/tls"
 	"sync"
 )
 
@@ -19,9 +21,9 @@ type Api struct {
 	Event    go_saas_event.Event
 	Security go_saas_security.Security
 	Database *saas_database.Database
+	Jwt      go_saas_jwt.Jwt
+	Tls      go_saas_tls.Tls
 	Origins  []string
-	Jwt      *Jwt
-	Tls      *Tls
 	Port     string
 	Mode     string
 	*sync.RWMutex
@@ -48,14 +50,14 @@ func (api *Api) getPort() string {
 	return api.Port
 }
 
-func (api *Api) getJwt() *Jwt {
+func (api *Api) getJwt() go_saas_jwt.Jwt {
 	api.RLock()
 	defer api.RUnlock()
 
 	return api.Jwt
 }
 
-func (api *Api) getTls() *Tls {
+func (api *Api) getTls() go_saas_tls.Tls {
 	api.RLock()
 	defer api.RUnlock()
 
@@ -210,7 +212,7 @@ func (api *Api) Start() error {
 	}
 
 	if api.getTls() != nil {
-		return api.GetEngine().RunTLS(":"+api.getPort(), api.getTls().getCertPath(), api.getTls().getKeyPath())
+		return api.GetEngine().RunTLS(":"+api.getPort(), api.getTls().GetCertPath(), api.getTls().GetKeyPath())
 	}
 
 	return api.GetEngine().Run(":" + api.getPort())

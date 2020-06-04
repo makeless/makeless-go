@@ -1,19 +1,17 @@
-package saas_api
+package go_saas_basic_jwt
 
-import (
-	"sync"
-)
+import "sync"
 
 type Jwt struct {
 	Key string
 	*sync.RWMutex
 }
 
-func (jwt *Jwt) getId() string {
+func (jwt *Jwt) GetId() string {
 	return "id"
 }
 
-func (jwt *Jwt) getKey() string {
+func (jwt *Jwt) GetKey() string {
 	jwt.RLock()
 	defer jwt.RUnlock()
 

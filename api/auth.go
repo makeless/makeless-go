@@ -13,14 +13,14 @@ import (
 func (api *Api) jwtMiddleware() (*jwt.GinJWTMiddleware, error) {
 	return jwt.New(&jwt.GinJWTMiddleware{
 		Realm:       "auth",
-		Key:         []byte(api.getJwt().getKey()),
+		Key:         []byte(api.getJwt().GetKey()),
 		Timeout:     time.Hour,
 		MaxRefresh:  time.Hour,
-		IdentityKey: api.getJwt().getKey(),
+		IdentityKey: api.getJwt().GetKey(),
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			if v, ok := data.(*go_saas_model.User); ok {
 				return jwt.MapClaims{
-					api.getJwt().getId(): v.Id,
+					api.getJwt().GetId(): v.Id,
 				}
 			}
 
@@ -65,7 +65,7 @@ func (api *Api) jwtMiddleware() (*jwt.GinJWTMiddleware, error) {
 func (api *Api) GetUserId(c *gin.Context) (uint, error) {
 	claims := jwt.ExtractClaims(c)
 
-	userId, exists := claims[api.getJwt().getId()]
+	userId, exists := claims[api.getJwt().GetId()]
 
 	if !exists {
 		return 0, jwt.ErrFailedAuthentication
