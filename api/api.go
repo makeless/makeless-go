@@ -16,8 +16,8 @@ type Api struct {
 	handlers       []func(api *Api)
 
 	Logger   go_saas_logger.Logger
-	Event    saas_event.Event
-	Security saas_security.Security
+	Event    go_saas_event.Event
+	Security go_saas_security.Security
 	Database *saas_database.Database
 	Origins  []string
 	Jwt      *Jwt
@@ -108,14 +108,14 @@ func (api *Api) GetLogger() go_saas_logger.Logger {
 	return api.Logger
 }
 
-func (api *Api) GetEvent() saas_event.Event {
+func (api *Api) GetEvent() go_saas_event.Event {
 	api.RLock()
 	defer api.RUnlock()
 
 	return api.Event
 }
 
-func (api *Api) GetSecurity() saas_security.Security {
+func (api *Api) GetSecurity() go_saas_security.Security {
 	api.RLock()
 	defer api.RUnlock()
 

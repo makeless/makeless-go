@@ -1,4 +1,4 @@
-package saas_event_basic
+package go_saas_basic_event
 
 type Data struct {
 	Id   string      `json:"id"`

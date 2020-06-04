@@ -1,4 +1,4 @@
-package saas_event_basic
+package go_saas_basic_event
 
 import (
 	"github.com/gin-contrib/sse"
@@ -8,7 +8,7 @@ import (
 )
 
 type Event struct {
-	Hub saas_event.Hub
+	Hub go_saas_event.Hub
 	*sync.RWMutex
 }
 
@@ -16,7 +16,7 @@ func (event *Event) NewClientId() uint {
 	return uint(time.Now().Unix())
 }
 
-func (event *Event) GetHub() saas_event.Hub {
+func (event *Event) GetHub() go_saas_event.Hub {
 	event.RLock()
 	defer event.RUnlock()
 

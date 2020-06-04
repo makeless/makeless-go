@@ -156,7 +156,7 @@ func (api *Api) createTokenTeam(c *gin.Context) {
 	}
 
 	if !isTeamOwner {
-		c.AbortWithStatusJSON(http.StatusBadRequest, api.Response(saas_security.NoTeamOwnerError, nil))
+		c.AbortWithStatusJSON(http.StatusBadRequest, api.Response(go_saas_security.NoTeamOwnerError, nil))
 		return
 	}
 

@@ -1,17 +1,20 @@
-package saas_security_basic
+package go_saas_basic_security
 
 import (
 	"github.com/go-saas/go-saas/model"
 	"sync"
 )
 
-func (basic *Basic) TokenLogin(token string) (*go_saas_model.User, error) {
+// FIXME: Add team (could be nil)
+func (security *Security) TokenLogin(token string) (*go_saas_model.User, error) {
 	var user = &go_saas_model.User{
 		RWMutex: new(sync.RWMutex),
 	}
 
-	err := basic.getDatabase().GetConnection().
-		Preload("Tokens", "token = ?", token).
+	err := security.getDatabase().GetConnection().
+		Select("users.id, users.name, users.username, users.email").
+		Preload("Tokens").
+		Preload("Teams").
 		Joins("JOIN tokens ON tokens.user_id=users.id AND tokens.token = ?", token).
 		First(&user).
 		Error
@@ -20,7 +23,13 @@ func (basic *Basic) TokenLogin(token string) (*go_saas_model.User, error) {
 		return nil, err
 	}
 
-	user.Tokens[0].RWMutex = new(sync.RWMutex)
+	for _, token := range user.GetTokens() {
+		token.RWMutex = new(sync.RWMutex)
+	}
+
+	for _, team := range user.GetTeams() {
+		team.RWMutex = new(sync.RWMutex)
+	}
 
 	return user, nil
 }

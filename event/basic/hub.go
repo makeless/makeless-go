@@ -1,4 +1,4 @@
-package saas_event_basic
+package go_saas_basic_event
 
 import (
 	"github.com/gin-contrib/sse"
@@ -11,7 +11,7 @@ type Hub struct {
 	*sync.RWMutex
 }
 
-func (hub *Hub) Init() saas_event.Hub {
+func (hub *Hub) Init() go_saas_event.Hub {
 	hub.List = make(map[uint]map[uint]chan sse.Event)
 	hub.RWMutex = new(sync.RWMutex)
 

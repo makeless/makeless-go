@@ -1,4 +1,4 @@
-package saas_security
+package go_saas_security
 
 import "errors"
 
