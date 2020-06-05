@@ -2,10 +2,10 @@ package go_saas_basic_http
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas"
 	"github.com/go-saas/go-saas/authenticator"
 	"github.com/go-saas/go-saas/database"
 	"github.com/go-saas/go-saas/event"
+	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/jwt"
 	"github.com/go-saas/go-saas/logger"
 	"github.com/go-saas/go-saas/security"
@@ -15,7 +15,7 @@ import (
 
 type Http struct {
 	Router        *gin.Engine
-	Handlers      map[string]func(saas *go_saas.Saas) error
+	Handlers      map[string]func(http go_saas_http.Http) error
 	Logger        go_saas_logger.Logger
 	Event         go_saas_event.Event
 	Authenticator go_saas_authenticator.Authenticator
@@ -36,7 +36,7 @@ func (http *Http) GetRouter() *gin.Engine {
 	return http.Router
 }
 
-func (http *Http) GetHandlers() map[string]func(saas *go_saas.Saas) error {
+func (http *Http) GetHandlers() map[string]func(http go_saas_http.Http) error {
 	http.RLock()
 	defer http.RUnlock()
 
@@ -113,12 +113,28 @@ func (http *Http) GetMode() string {
 	return http.Mode
 }
 
-func (http *Http) Start(saas *go_saas.Saas) error {
+func (http *Http) SetHandler(name string, handler func(http go_saas_http.Http) error) {
+	handlers := http.GetHandlers()
+
+	http.Lock()
+	defer http.Unlock()
+
+	handlers[name] = handler
+}
+
+func (http *Http) Response(error error, data interface{}) gin.H {
+	return gin.H{
+		"error": error,
+		"data":  data,
+	}
+}
+
+func (http *Http) Start() error {
 	router := http.GetRouter()
 	handlers := http.GetHandlers()
 
 	for _, handler := range handlers {
-		if err := handler(saas); err != nil {
+		if err := handler(http); err != nil {
 			return err
 		}
 	}
