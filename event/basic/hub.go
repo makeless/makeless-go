@@ -2,20 +2,12 @@ package go_saas_basic_event
 
 import (
 	"github.com/gin-contrib/sse"
-	"github.com/go-saas/go-saas/event"
 	"sync"
 )
 
 type Hub struct {
 	List map[uint]map[uint]chan sse.Event
 	*sync.RWMutex
-}
-
-func (hub *Hub) Init() go_saas_event.Hub {
-	hub.List = make(map[uint]map[uint]chan sse.Event)
-	hub.RWMutex = new(sync.RWMutex)
-
-	return hub
 }
 
 func (hub *Hub) GetList() map[uint]map[uint]chan sse.Event {

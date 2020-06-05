@@ -4,6 +4,15 @@ import (
 	"github.com/go-saas/go-saas/model"
 )
 
+func (database *Database) GetToken(token *go_saas_model.Token, value string) (*go_saas_model.Token, error) {
+	return token, database.GetConnection().
+		Preload("Team").
+		Preload("User").
+		Where("tokens.token = ?", value).
+		First(&token).
+		Error
+}
+
 func (database *Database) GetTokens(user *go_saas_model.User, tokens []*go_saas_model.Token) ([]*go_saas_model.Token, error) {
 	return tokens, database.GetConnection().
 		Select([]string{"tokens.id", "tokens.note", "tokens.user_id", "tokens.team_id"}).

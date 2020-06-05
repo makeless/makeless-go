@@ -5,31 +5,23 @@ import (
 	"sync"
 )
 
-// FIXME: Add team (could be nil)
-func (security *Security) TokenLogin(token string) (*go_saas_model.User, error) {
-	var user = &go_saas_model.User{
+func (security *Security) TokenLogin(value string) (*go_saas_model.User, *go_saas_model.Team, error) {
+	var err error
+	var token = &go_saas_model.Token{
 		RWMutex: new(sync.RWMutex),
 	}
 
-	err := security.getDatabase().GetConnection().
-		Select("users.id, users.name, users.username, users.email").
-		Preload("Tokens").
-		Preload("Teams").
-		Joins("JOIN tokens ON tokens.user_id=users.id AND tokens.token = ?", token).
-		First(&user).
-		Error
-
-	if err != nil {
-		return nil, err
+	if token, err = security.GetDatabase().GetToken(token, value); err != nil {
+		return nil, nil, err
 	}
 
-	for _, token := range user.GetTokens() {
-		token.RWMutex = new(sync.RWMutex)
+	if token.GetUser() != nil {
+		token.GetUser().RWMutex = new(sync.RWMutex)
 	}
 
-	for _, team := range user.GetTeams() {
-		team.RWMutex = new(sync.RWMutex)
+	if token.GetTeam() != nil {
+		token.GetTeam().RWMutex = new(sync.RWMutex)
 	}
 
-	return user, nil
+	return token.GetUser(), token.GetTeam(), nil
 }
