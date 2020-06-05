@@ -1,6 +1,8 @@
 package go_saas_http
 
 import (
+	"github.com/gin-gonic/gin"
+	"github.com/go-saas/go-saas"
 	"github.com/go-saas/go-saas/authenticator"
 	"github.com/go-saas/go-saas/database"
 	"github.com/go-saas/go-saas/event"
@@ -11,6 +13,8 @@ import (
 )
 
 type Http interface {
+	GetRouter() *gin.Engine
+	GetHandlers() map[string]func(saas *go_saas.Saas) error
 	GetLogger() go_saas_logger.Logger
 	GetEvent() go_saas_event.Event
 	GetAuthenticator() go_saas_authenticator.Authenticator
@@ -21,4 +25,5 @@ type Http interface {
 	GetOrigins() []string
 	GetPort() string
 	GetMode() string
+	Start(saas *go_saas.Saas) error
 }

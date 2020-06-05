@@ -1,6 +1,8 @@
 package go_saas_basic_http
 
 import (
+	"github.com/gin-gonic/gin"
+	"github.com/go-saas/go-saas"
 	"github.com/go-saas/go-saas/authenticator"
 	"github.com/go-saas/go-saas/database"
 	"github.com/go-saas/go-saas/event"
@@ -12,6 +14,8 @@ import (
 )
 
 type Http struct {
+	Router        *gin.Engine
+	Handlers      map[string]func(saas *go_saas.Saas) error
 	Logger        go_saas_logger.Logger
 	Event         go_saas_event.Event
 	Authenticator go_saas_authenticator.Authenticator
@@ -23,6 +27,20 @@ type Http struct {
 	Port          string
 	Mode          string
 	*sync.RWMutex
+}
+
+func (http *Http) GetRouter() *gin.Engine {
+	http.RLock()
+	defer http.RUnlock()
+
+	return http.Router
+}
+
+func (http *Http) GetHandlers() map[string]func(saas *go_saas.Saas) error {
+	http.RLock()
+	defer http.RUnlock()
+
+	return http.Handlers
 }
 
 func (http *Http) GetLogger() go_saas_logger.Logger {
@@ -93,4 +111,21 @@ func (http *Http) GetMode() string {
 	defer http.RUnlock()
 
 	return http.Mode
+}
+
+func (http *Http) Start(saas *go_saas.Saas) error {
+	router := http.GetRouter()
+	handlers := http.GetHandlers()
+
+	for _, handler := range handlers {
+		if err := handler(saas); err != nil {
+			return err
+		}
+	}
+
+	if http.GetTls() != nil {
+		return router.RunTLS(":"+http.GetPort(), http.GetTls().GetCertPath(), http.GetTls().GetKeyPath())
+	}
+
+	return router.Run(":" + http.GetPort())
 }
