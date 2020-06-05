@@ -7,7 +7,7 @@ import (
 )
 
 func (saas *Saas) ok(http go_saas_http.Http) error {
-	http.GetRouter().GET("/ok", func(c *gin.Context) {
+	http.GetRouter().GET("/api/ok", func(c *gin.Context) {
 		c.JSON(h.StatusOK, http.Response(nil, "ok"))
 	})
 

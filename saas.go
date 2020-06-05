@@ -50,6 +50,7 @@ func (saas *Saas) Init() error {
 	}
 
 	saas.SetRoute("ok", saas.ok)
+	saas.SetRoute("register", saas.register)
 
 	return nil
 }
