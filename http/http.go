@@ -20,10 +20,12 @@ type Http interface {
 	GetDatabase() go_saas_database.Database
 	GetTls() go_saas_tls.Tls
 	GetOrigins() []string
+	GetHeaders() []string
 	GetPort() string
 	GetMode() string
 	SetHandler(name string, handler func(http Http) error)
 	Response(error error, data interface{}) gin.H
 	CorsMiddleware(Origins []string, AllowHeaders []string) gin.HandlerFunc
+	TeamMemberMiddleware() gin.HandlerFunc
 	Start() error
 }

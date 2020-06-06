@@ -1,10 +1,12 @@
 package go_saas_basic_http
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
 
 func (http *Http) Start() error {
 	router := http.GetRouter()
-	router.Use(http.CorsMiddleware(http.GetOrigins(), []string{"Team"}))
+	router.Use(http.CorsMiddleware(http.GetOrigins(), http.GetHeaders()))
 	router.Use(gin.Recovery())
 
 	for _, handler := range http.GetHandlers() {

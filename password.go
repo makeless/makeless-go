@@ -14,14 +14,13 @@ func (saas *Saas) updatePassword(http go_saas_http.Http) error {
 		"/api/auth/password",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		func(c *gin.Context) {
-			var err error
 			userId := http.GetAuthenticator().GetAuthUserId(c)
 
+			var err error
 			var user = &go_saas_model.User{
 				Model:   go_saas_model.Model{Id: userId},
 				RWMutex: new(sync.RWMutex),
 			}
-
 			var passwordReset = &go_saas_model.PasswordReset{
 				RWMutex: new(sync.RWMutex),
 			}

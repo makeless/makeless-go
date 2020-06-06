@@ -22,6 +22,7 @@ type Http struct {
 	Database      go_saas_database.Database
 	Tls           go_saas_tls.Tls
 	Origins       []string
+	Headers       []string
 	Port          string
 	Mode          string
 	*sync.RWMutex
@@ -88,6 +89,13 @@ func (http *Http) GetOrigins() []string {
 	defer http.RUnlock()
 
 	return http.Origins
+}
+
+func (http *Http) GetHeaders() []string {
+	http.RLock()
+	defer http.RUnlock()
+
+	return http.Headers
 }
 
 func (http *Http) GetPort() string {
