@@ -10,6 +10,7 @@ type Database interface {
 	Migrate() error
 
 	User
+	Password
 	Team
 	Member
 	Profile

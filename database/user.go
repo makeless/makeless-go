@@ -6,5 +6,4 @@ type User interface {
 	GetUser(user *go_saas_model.User) (*go_saas_model.User, error)
 	GetUserByField(user *go_saas_model.User, field string, value string) (*go_saas_model.User, error)
 	CreateUser(user *go_saas_model.User) (*go_saas_model.User, error)
-	UpdateUserPassword(user *go_saas_model.User, password string) error
 }

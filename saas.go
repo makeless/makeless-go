@@ -73,7 +73,8 @@ func (saas *Saas) Init(path string) error {
 	saas.SetRoute("refreshToken", saas.refreshToken)
 	saas.SetRoute("events", saas.events)
 	saas.SetRoute("user", saas.user)
-	saas.SetRoute("updateUserPassword", saas.updateUserPassword)
+	saas.SetRoute("updatePassword", saas.updatePassword)
+	saas.SetRoute("updateProfile", saas.updateProfile)
 
 	return nil
 }

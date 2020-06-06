@@ -8,9 +8,9 @@ import (
 	"sync"
 )
 
-func (saas *Saas) user(http go_saas_http.Http) error {
-	http.GetRouter().GET(
-		"/api/auth/user",
+func (saas *Saas) updateProfile(http go_saas_http.Http) error {
+	http.GetRouter().PATCH(
+		"/api/auth/profile",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		func(c *gin.Context) {
 			userId := http.GetAuthenticator().GetAuthUserId(c)
@@ -21,7 +21,12 @@ func (saas *Saas) user(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if user, err = http.GetDatabase().GetUser(user); err != nil {
+			if err = c.ShouldBind(&user); err != nil {
+				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+				return
+			}
+
+			if user, err = http.GetDatabase().UpdateProfile(user); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
