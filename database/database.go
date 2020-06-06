@@ -12,7 +12,6 @@ type Database interface {
 	User
 	Team
 	Member
-	Password
 	Profile
 	Token
 	TokenTeam

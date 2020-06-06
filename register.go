@@ -15,7 +15,7 @@ func (saas *Saas) register(http go_saas_http.Http) error {
 			RWMutex: new(sync.RWMutex),
 		}
 
-		if err := c.ShouldBind(&user); err != nil {
+		if err := c.ShouldBind(user); err != nil {
 			c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 			return
 		}

@@ -25,3 +25,12 @@ func (database *Database) CreateUser(user *go_saas_model.User) (*go_saas_model.U
 		Create(&user).
 		Error
 }
+
+func (database *Database) UpdateUserPassword(user *go_saas_model.User, password string) error {
+	return database.GetConnection().
+		Model(user).
+		Update(map[string]interface{}{
+			"password": password,
+		}).
+		Error
+}

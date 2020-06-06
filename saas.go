@@ -70,8 +70,10 @@ func (saas *Saas) Init(path string) error {
 	saas.SetRoute("register", saas.register)
 	saas.SetRoute("login", saas.login)
 	saas.SetRoute("logout", saas.logout)
-	saas.SetRoute("refresh-token", saas.refreshToken)
+	saas.SetRoute("refreshToken", saas.refreshToken)
+	saas.SetRoute("events", saas.events)
 	saas.SetRoute("user", saas.user)
+	saas.SetRoute("updateUserPassword", saas.updateUserPassword)
 
 	return nil
 }

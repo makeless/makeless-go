@@ -4,6 +4,10 @@ Extendable SaaS Application Package
 
 [![Build Status](https://ci.loeffel.io/api/badges/go-saas/go-saas/status.svg)](https://ci.loeffel.io/go-saas/go-saas)
 
+## Info
+
+- ShouldBind always without `&`
+
 ## Usage
 
 ```go
