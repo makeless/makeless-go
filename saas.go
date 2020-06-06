@@ -69,6 +69,8 @@ func (saas *Saas) Init(path string) error {
 	saas.SetRoute("ok", saas.ok)
 	saas.SetRoute("register", saas.register)
 	saas.SetRoute("login", saas.login)
+	saas.SetRoute("logout", saas.logout)
+	saas.SetRoute("user", saas.user)
 
 	return nil
 }

@@ -7,7 +7,7 @@ import (
 
 func (database *Database) GetUser(user *go_saas_model.User) (*go_saas_model.User, error) {
 	return user, database.GetConnection().
-		Select("users.id, users.name, users.username, users.email").
+		Select("users.id, users.name, users.email").
 		Preload("Teams").
 		First(&user).
 		Error
