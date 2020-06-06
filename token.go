@@ -33,3 +33,34 @@ func (saas *Saas) tokens(http go_saas_http.Http) error {
 
 	return nil
 }
+
+func (saas *Saas) createToken(http go_saas_http.Http) error {
+	http.GetRouter().POST(
+		"/api/auth/token",
+		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		func(c *gin.Context) {
+			userId := http.GetAuthenticator().GetAuthUserId(c)
+
+			var err error
+			var token = &go_saas_model.Token{
+				UserId:  &userId,
+				TeamId:  nil,
+				RWMutex: new(sync.RWMutex),
+			}
+
+			if err := c.ShouldBind(&token); err != nil {
+				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+				return
+			}
+
+			if token, err = http.GetDatabase().CreateToken(token); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			c.JSON(h.StatusOK, http.Response(nil, token))
+		},
+	)
+
+	return nil
+}
