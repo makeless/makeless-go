@@ -6,7 +6,6 @@ import (
 	"github.com/go-saas/go-saas/database"
 	"github.com/go-saas/go-saas/event"
 	"github.com/go-saas/go-saas/http"
-	"github.com/go-saas/go-saas/jwt"
 	"github.com/go-saas/go-saas/logger"
 	"github.com/go-saas/go-saas/security"
 	"github.com/go-saas/go-saas/tls"
@@ -21,7 +20,6 @@ type Http struct {
 	Authenticator go_saas_authenticator.Authenticator
 	Security      go_saas_security.Security
 	Database      go_saas_database.Database
-	Jwt           go_saas_jwt.Jwt
 	Tls           go_saas_tls.Tls
 	Origins       []string
 	Port          string
@@ -78,13 +76,6 @@ func (http *Http) GetDatabase() go_saas_database.Database {
 	return http.Database
 }
 
-func (http *Http) GetJwt() go_saas_jwt.Jwt {
-	http.RLock()
-	defer http.RUnlock()
-
-	return http.Jwt
-}
-
 func (http *Http) GetTls() go_saas_tls.Tls {
 	http.RLock()
 	defer http.RUnlock()
@@ -120,28 +111,4 @@ func (http *Http) SetHandler(name string, handler func(http go_saas_http.Http) e
 	defer http.Unlock()
 
 	handlers[name] = handler
-}
-
-func (http *Http) Response(error error, data interface{}) gin.H {
-	return gin.H{
-		"error": error,
-		"data":  data,
-	}
-}
-
-func (http *Http) Start() error {
-	router := http.GetRouter()
-	handlers := http.GetHandlers()
-
-	for _, handler := range handlers {
-		if err := handler(http); err != nil {
-			return err
-		}
-	}
-
-	if http.GetTls() != nil {
-		return router.RunTLS(":"+http.GetPort(), http.GetTls().GetCertPath(), http.GetTls().GetKeyPath())
-	}
-
-	return router.Run(":" + http.GetPort())
 }

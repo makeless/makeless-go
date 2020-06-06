@@ -62,8 +62,13 @@ func (saas *Saas) Init(path string) error {
 		return err
 	}
 
+	if err := saas.GetHttp().GetAuthenticator().CreateMiddleware(); err != nil {
+		return err
+	}
+
 	saas.SetRoute("ok", saas.ok)
 	saas.SetRoute("register", saas.register)
+	saas.SetRoute("login", saas.login)
 
 	return nil
 }

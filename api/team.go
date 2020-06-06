@@ -3,7 +3,7 @@ package saas_api
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/model"
-	saas_security "github.com/go-saas/go-saas/security"
+	"github.com/go-saas/go-saas/security"
 	"net/http"
 	"sync"
 )

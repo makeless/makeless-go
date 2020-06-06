@@ -5,7 +5,6 @@ import (
 	"github.com/go-saas/go-saas/authenticator"
 	"github.com/go-saas/go-saas/database"
 	"github.com/go-saas/go-saas/event"
-	"github.com/go-saas/go-saas/jwt"
 	"github.com/go-saas/go-saas/logger"
 	"github.com/go-saas/go-saas/security"
 	"github.com/go-saas/go-saas/tls"
@@ -19,12 +18,12 @@ type Http interface {
 	GetAuthenticator() go_saas_authenticator.Authenticator
 	GetSecurity() go_saas_security.Security
 	GetDatabase() go_saas_database.Database
-	GetJwt() go_saas_jwt.Jwt
 	GetTls() go_saas_tls.Tls
 	GetOrigins() []string
 	GetPort() string
 	GetMode() string
 	SetHandler(name string, handler func(http Http) error)
 	Response(error error, data interface{}) gin.H
+	CorsMiddleware(Origins []string, AllowHeaders []string) gin.HandlerFunc
 	Start() error
 }
