@@ -155,35 +155,35 @@ func (api *Api) Start() error {
 	apiGroup := api.GetEngine().Group("/api")
 	{
 		// basic
-		apiGroup.GET("/ok", api.ok)
+		apiGroup.GET("/ok", api.ok) // DONE
 
 		// auth
-		apiGroup.POST("/login", api.GetAuthMiddleware().LoginHandler)
-		apiGroup.POST("/register", api.register)
+		apiGroup.POST("/login", api.GetAuthMiddleware().LoginHandler) // DONE
+		apiGroup.POST("/register", api.register) // DONE
 
 		authGroup := apiGroup.Group("/auth")
 		authGroup.Use(api.GetAuthMiddleware().MiddlewareFunc())
 		{
 			// basic
-			authGroup.GET("/events", api.events)
+			authGroup.GET("/events", api.events) // DONE
 
 			// auth
-			authGroup.GET("/user", api.user)
-			authGroup.PATCH("/password", api.updatePassword)
-			authGroup.GET("/refresh-token", api.GetAuthMiddleware().RefreshHandler)
-			authGroup.GET("/logout", api.GetAuthMiddleware().LogoutHandler)
+			authGroup.GET("/user", api.user) // DONE
+			authGroup.PATCH("/password", api.updatePassword) // DONE
+			authGroup.GET("/refresh-token", api.GetAuthMiddleware().RefreshHandler) // DONE
+			authGroup.GET("/logout", api.GetAuthMiddleware().LogoutHandler) // DONE
 
 			// settings -> profile
-			authGroup.PATCH("/profile", api.updateProfile)
+			authGroup.PATCH("/profile", api.updateProfile) // DONE
 
 			// settings -> team
 			authGroup.POST("/team", api.createTeam)
 			authGroup.DELETE("/team", api.deleteTeam)
 
 			// settings -> tokens
-			authGroup.GET("/token", api.tokens)
-			authGroup.POST("/token", api.createToken)
-			authGroup.DELETE("/token", api.deleteToken)
+			authGroup.GET("/token", api.tokens) // DONE
+			authGroup.POST("/token", api.createToken) // DONE
+			authGroup.DELETE("/token", api.deleteToken)  // DONE
 
 			// team
 			teamGroup := authGroup.Group("/team")
