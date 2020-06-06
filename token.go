@@ -64,3 +64,33 @@ func (saas *Saas) createToken(http go_saas_http.Http) error {
 
 	return nil
 }
+
+func (saas *Saas) deleteToken(http go_saas_http.Http) error {
+	http.GetRouter().DELETE(
+		"/api/auth/token",
+		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		func(c *gin.Context) {
+			userId := http.GetAuthenticator().GetAuthUserId(c)
+
+			var err error
+			var token = &go_saas_model.Token{
+				UserId:  &userId,
+				RWMutex: new(sync.RWMutex),
+			}
+
+			if err := c.ShouldBind(&token); err != nil {
+				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+				return
+			}
+
+			if err = http.GetDatabase().DeleteToken(token); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			c.JSON(h.StatusOK, http.Response(nil, nil))
+		},
+	)
+
+	return nil
+}
