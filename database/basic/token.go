@@ -15,7 +15,13 @@ func (database *Database) GetToken(token *go_saas_model.Token, value string) (*g
 
 func (database *Database) GetTokens(user *go_saas_model.User, tokens []*go_saas_model.Token) ([]*go_saas_model.Token, error) {
 	return tokens, database.GetConnection().
-		Select([]string{"tokens.id", "tokens.note", "tokens.user_id", "tokens.team_id"}).
+		Select([]string{
+			"tokens.id",
+			"tokens.note",
+			"tokens.user_id",
+			"tokens.team_id",
+			"CONCAT(REPEAT('X', CHAR_LENGTH(tokens.token) - 4),SUBSTRING(tokens.token, -4)) as token",
+		}).
 		Where("tokens.user_id = ? AND tokens.team_id IS NULL", user.GetId()).
 		Order("tokens.id DESC").
 		Find(&tokens).
