@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/model"
+	"github.com/imdario/mergo"
 	h "net/http"
 	"sync"
 )
@@ -17,10 +18,7 @@ func (saas *Saas) updatePassword(http go_saas_http.Http) error {
 			userId := http.GetAuthenticator().GetAuthUserId(c)
 
 			var err error
-			var user = &go_saas_model.User{
-				Model:   go_saas_model.Model{Id: userId},
-				RWMutex: new(sync.RWMutex),
-			}
+			var user = new(go_saas_model.User)
 			var passwordReset = &go_saas_model.PasswordReset{
 				RWMutex: new(sync.RWMutex),
 			}
@@ -35,14 +33,23 @@ func (saas *Saas) updatePassword(http go_saas_http.Http) error {
 				return
 			}
 
-			var bcrypted []byte
+			var bcrypted string
 
 			if bcrypted, err = http.GetSecurity().EncryptPassword(*passwordReset.GetNewPassword()); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
 
-			if err = http.GetDatabase().UpdatePassword(user, string(bcrypted)); err != nil {
+			if err = mergo.Merge(user, &go_saas_model.User{
+				Model:    go_saas_model.Model{Id: userId},
+				Password: &bcrypted,
+				RWMutex:  new(sync.RWMutex),
+			}, mergo.WithOverride); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			if err = http.GetDatabase().UpdatePassword(user); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

@@ -18,16 +18,19 @@ func (saas *Saas) updateProfile(http go_saas_http.Http) error {
 
 			var err error
 			var user = new(go_saas_model.User)
+			var profile = &go_saas_model.Profile{
+				RWMutex: new(sync.RWMutex),
+			}
 
-			if err = c.ShouldBind(user); err != nil {
+			if err = c.ShouldBind(profile); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
 			}
 
-			if err = mergo.Merge(user, &go_saas_model.User{
-				Model:    go_saas_model.Model{Id: userId},
-				Password: nil,
-				RWMutex:  new(sync.RWMutex),
+			if err = mergo.Merge(user, go_saas_model.User{
+				Model:   go_saas_model.Model{Id: userId},
+				Name:    profile.GetName(),
+				RWMutex: new(sync.RWMutex),
 			}, mergo.WithOverride); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
