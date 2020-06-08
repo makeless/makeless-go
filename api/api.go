@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/database/basic"
 	"github.com/go-saas/go-saas/event"
-	"github.com/go-saas/go-saas/jwt"
 	"github.com/go-saas/go-saas/logger"
 	"github.com/go-saas/go-saas/security"
 	"github.com/go-saas/go-saas/tls"
@@ -159,7 +158,7 @@ func (api *Api) Start() error {
 
 		// auth
 		apiGroup.POST("/login", api.GetAuthMiddleware().LoginHandler) // DONE
-		apiGroup.POST("/register", api.register) // DONE
+		apiGroup.POST("/register", api.register)                      // DONE
 
 		authGroup := apiGroup.Group("/auth")
 		authGroup.Use(api.GetAuthMiddleware().MiddlewareFunc())
@@ -168,10 +167,10 @@ func (api *Api) Start() error {
 			authGroup.GET("/events", api.events) // DONE
 
 			// auth
-			authGroup.GET("/user", api.user) // DONE
-			authGroup.PATCH("/password", api.updatePassword) // DONE
+			authGroup.GET("/user", api.user)                                        // DONE
+			authGroup.PATCH("/password", api.updatePassword)                        // DONE
 			authGroup.GET("/refresh-token", api.GetAuthMiddleware().RefreshHandler) // DONE
-			authGroup.GET("/logout", api.GetAuthMiddleware().LogoutHandler) // DONE
+			authGroup.GET("/logout", api.GetAuthMiddleware().LogoutHandler)         // DONE
 
 			// settings -> profile
 			authGroup.PATCH("/profile", api.updateProfile) // DONE
@@ -181,9 +180,9 @@ func (api *Api) Start() error {
 			authGroup.DELETE("/team", api.deleteTeam)
 
 			// settings -> tokens
-			authGroup.GET("/token", api.tokens) // DONE
-			authGroup.POST("/token", api.createToken) // DONE
-			authGroup.DELETE("/token", api.deleteToken)  // DONE
+			authGroup.GET("/token", api.tokens)         // DONE
+			authGroup.POST("/token", api.createToken)   // DONE
+			authGroup.DELETE("/token", api.deleteToken) // DONE
 
 			// team
 			teamGroup := authGroup.Group("/team")
