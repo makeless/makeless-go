@@ -86,6 +86,10 @@ func (saas *Saas) Init(path string) error {
 		saas.SetRoute("createTeam", saas.createTeam)
 		saas.SetRoute("deleteTeam", saas.deleteTeam)
 		saas.SetRoute("updateProfileTeam", saas.updateProfileTeam)
+
+		if saas.GetConfig().GetConfiguration().GetTeams().GetTokens() {
+			saas.SetRoute("tokensTeam", saas.tokensTeam)
+		}
 	}
 
 	return nil

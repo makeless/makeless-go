@@ -10,7 +10,13 @@ func (database *Database) GetTokensTeam(team *go_saas_model.Team, tokens []*go_s
 		Preload("User", func(db *gorm.DB) *gorm.DB {
 			return db.Select("users.id, users.name, users.email")
 		}).
-		Select([]string{"tokens.id", "tokens.note", "tokens.user_id", "tokens.team_id"}).
+		Select([]string{
+			"tokens.id",
+			"tokens.note",
+			"tokens.user_id",
+			"tokens.team_id",
+			"CONCAT(REPEAT('X', CHAR_LENGTH(tokens.token) - 4),SUBSTRING(tokens.token, -4)) as token",
+		}).
 		Joins("JOIN teams ON teams.id = tokens.team_id").
 		Where("tokens.team_id = ? AND teams.user_id = ?", team.GetId(), team.GetUserId()).
 		Order("tokens.id DESC").
