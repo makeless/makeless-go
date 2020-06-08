@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/model"
+	"github.com/imdario/mergo"
 	h "net/http"
 	"sync"
 )
@@ -42,14 +43,21 @@ func (saas *Saas) createToken(http go_saas_http.Http) error {
 			userId := http.GetAuthenticator().GetAuthUserId(c)
 
 			var err error
-			var token = &go_saas_model.Token{
-				UserId:  &userId,
-				TeamId:  nil,
-				RWMutex: new(sync.RWMutex),
-			}
+			var token *go_saas_model.Token
 
 			if err := c.ShouldBind(&token); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+				return
+			}
+
+			if err = mergo.Merge(token, &go_saas_model.Token{
+				UserId:  &userId,
+				User:    nil,
+				TeamId:  nil,
+				Team:    nil,
+				RWMutex: new(sync.RWMutex),
+			}, mergo.WithOverride); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
 
@@ -73,13 +81,19 @@ func (saas *Saas) deleteToken(http go_saas_http.Http) error {
 			userId := http.GetAuthenticator().GetAuthUserId(c)
 
 			var err error
-			var token = &go_saas_model.Token{
-				UserId:  &userId,
-				RWMutex: new(sync.RWMutex),
-			}
+			var token *go_saas_model.Token
 
 			if err := c.ShouldBind(&token); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+				return
+			}
+
+			if err = mergo.Merge(token, &go_saas_model.Token{
+				UserId:  &userId,
+				TeamId:  nil,
+				RWMutex: new(sync.RWMutex),
+			}, mergo.WithOverride); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
 

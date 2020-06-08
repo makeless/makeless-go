@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/model"
+	"github.com/imdario/mergo"
 	h "net/http"
 	"sync"
 )
@@ -11,12 +12,19 @@ import (
 func (saas *Saas) register(http go_saas_http.Http) error {
 	http.GetRouter().POST("/api/register", func(c *gin.Context) {
 		var err error
-		var user = &go_saas_model.User{
-			RWMutex: new(sync.RWMutex),
-		}
+		var user *go_saas_model.User
 
 		if err := c.ShouldBind(user); err != nil {
 			c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+			return
+		}
+
+		if err := mergo.Merge(user, &go_saas_model.User{
+			Teams:   nil,
+			Tokens:  nil,
+			RWMutex: new(sync.RWMutex),
+		}, mergo.WithOverride); err != nil {
+			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 			return
 		}
 

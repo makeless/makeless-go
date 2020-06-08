@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/model"
+	"github.com/imdario/mergo"
 	h "net/http"
 	"sync"
 )
@@ -16,17 +17,24 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 			userId := http.GetAuthenticator().GetAuthUserId(c)
 
 			var err error
+			var team *go_saas_model.Team
 			var user = &go_saas_model.User{
 				Model:   go_saas_model.Model{Id: userId},
-				RWMutex: new(sync.RWMutex),
-			}
-			var team = &go_saas_model.Team{
-				UserId:  &userId,
 				RWMutex: new(sync.RWMutex),
 			}
 
 			if err = c.ShouldBind(&team); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+				return
+			}
+
+			if err = mergo.Merge(team, &go_saas_model.Team{
+				UserId:  &user.Id,
+				User:    nil,
+				Users:   nil,
+				RWMutex: new(sync.RWMutex),
+			}, mergo.WithOverride); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
 

@@ -4,6 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/model"
+	"github.com/imdario/mergo"
+	"log"
 	h "net/http"
 	"sync"
 )
@@ -16,13 +18,19 @@ func (saas *Saas) updateProfile(http go_saas_http.Http) error {
 			userId := http.GetAuthenticator().GetAuthUserId(c)
 
 			var err error
-			var user = &go_saas_model.User{
-				Model:   go_saas_model.Model{Id: userId},
-				RWMutex: new(sync.RWMutex),
-			}
+			var user *go_saas_model.User
 
 			if err = c.ShouldBind(&user); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+				return
+			}
+
+			if err = mergo.Merge(user, &go_saas_model.User{
+				Model:   go_saas_model.Model{Id: userId},
+				RWMutex: new(sync.RWMutex),
+			}, mergo.WithOverride); err != nil {
+				log.Printf("%+v", err)
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
 

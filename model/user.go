@@ -10,8 +10,8 @@ type User struct {
 	Password *string `gorm:"not null" json:"password,omitempty" binding:"required"`
 	Email    *string `gorm:"unique;not null" json:"email" binding:"required"`
 
-	Teams  []*Team  `gorm:"many2many:user_teams;" json:"teams"`
-	Tokens []*Token `json:"tokens"`
+	Teams  []*Team  `gorm:"many2many:user_teams;" json:"teams" binding:"-"`
+	Tokens []*Token `json:"tokens" binding:"-"`
 
 	*sync.RWMutex `json:"-"`
 }
