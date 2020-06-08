@@ -8,7 +8,7 @@ import (
 func (database *Database) GetTokensTeam(team *go_saas_model.Team, tokens []*go_saas_model.Token) ([]*go_saas_model.Token, error) {
 	return tokens, database.GetConnection().
 		Preload("User", func(db *gorm.DB) *gorm.DB {
-			return db.Select("users.id, users.name, users.username, users.email")
+			return db.Select("users.id, users.name, users.email")
 		}).
 		Select([]string{"tokens.id", "tokens.note", "tokens.user_id", "tokens.team_id"}).
 		Joins("JOIN teams ON teams.id = tokens.team_id").

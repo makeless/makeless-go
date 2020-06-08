@@ -22,7 +22,7 @@ func (database *Database) RemoveMemberTeam(user *go_saas_model.User, team *go_sa
 
 func (database *Database) SearchMembersTeam(search string, team *go_saas_model.Team, users []*go_saas_model.User) ([]*go_saas_model.User, error) {
 	return users, database.GetConnection().
-		Select("users.id, users.name, users.username, users.email").
+		Select("users.id, users.name, users.email").
 		Where(
 			"users.name LIKE ? OR users.email LIKE ?",
 			fmt.Sprintf(`%s%s%s`, "%", search, "%"),
