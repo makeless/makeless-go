@@ -43,9 +43,9 @@ func (saas *Saas) createToken(http go_saas_http.Http) error {
 			userId := http.GetAuthenticator().GetAuthUserId(c)
 
 			var err error
-			var token *go_saas_model.Token
+			var token = new(go_saas_model.Token)
 
-			if err := c.ShouldBind(&token); err != nil {
+			if err := c.ShouldBind(token); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
 			}
@@ -81,9 +81,9 @@ func (saas *Saas) deleteToken(http go_saas_http.Http) error {
 			userId := http.GetAuthenticator().GetAuthUserId(c)
 
 			var err error
-			var token *go_saas_model.Token
+			var token = new(go_saas_model.Token)
 
-			if err := c.ShouldBind(&token); err != nil {
+			if err := c.ShouldBind(token); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
 			}

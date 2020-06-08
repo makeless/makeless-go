@@ -30,7 +30,7 @@ func (authenticator *Authenticator) AuthenticatorHandler(c *gin.Context) (interf
 		RWMutex: new(sync.RWMutex),
 	}
 
-	if err := c.ShouldBind(&login); err != nil {
+	if err := c.ShouldBind(login); err != nil {
 		return nil, err
 	}
 

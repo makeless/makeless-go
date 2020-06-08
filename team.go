@@ -17,13 +17,13 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 			userId := http.GetAuthenticator().GetAuthUserId(c)
 
 			var err error
-			var team *go_saas_model.Team
+			var team = new(go_saas_model.Team)
 			var user = &go_saas_model.User{
 				Model:   go_saas_model.Model{Id: userId},
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err = c.ShouldBind(&team); err != nil {
+			if err = c.ShouldBind(team); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
 			}
@@ -59,13 +59,13 @@ func (saas *Saas) deleteTeam(http go_saas_http.Http) error {
 			userId := http.GetAuthenticator().GetAuthUserId(c)
 
 			var err error
-			var team *go_saas_model.Team
+			var team = new(go_saas_model.Team)
 			var user = &go_saas_model.User{
 				Model:   go_saas_model.Model{Id: userId},
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err := c.ShouldBind(&team); err != nil {
+			if err := c.ShouldBind(team); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
 			}

@@ -12,7 +12,7 @@ import (
 func (saas *Saas) register(http go_saas_http.Http) error {
 	http.GetRouter().POST("/api/register", func(c *gin.Context) {
 		var err error
-		var user *go_saas_model.User
+		var user = new(go_saas_model.User)
 
 		if err := c.ShouldBind(user); err != nil {
 			c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))

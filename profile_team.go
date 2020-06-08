@@ -9,36 +9,38 @@ import (
 	"sync"
 )
 
-func (saas *Saas) updateProfile(http go_saas_http.Http) error {
+func (saas *Saas) updateProfileTeam(http go_saas_http.Http) error {
 	http.GetRouter().PATCH(
-		"/api/auth/profile",
+		"/api/auth/team/profile",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		http.TeamMemberMiddleware(),
 		func(c *gin.Context) {
 			userId := http.GetAuthenticator().GetAuthUserId(c)
 
 			var err error
-			var user = new(go_saas_model.User)
+			var team = new(go_saas_model.Team)
 
-			if err = c.ShouldBind(user); err != nil {
+			if err = c.ShouldBind(team); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
 			}
 
-			if err = mergo.Merge(user, &go_saas_model.User{
-				Model:    go_saas_model.Model{Id: userId},
-				Password: nil,
-				RWMutex:  new(sync.RWMutex),
+			if err = mergo.Merge(team, &go_saas_model.Team{
+				UserId:  &userId,
+				User:    nil,
+				Users:   nil,
+				RWMutex: new(sync.RWMutex),
 			}, mergo.WithOverride); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
 
-			if user, err = http.GetDatabase().UpdateProfile(user); err != nil {
+			if team, err = http.GetDatabase().UpdateProfileTeam(team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
 
-			c.JSON(h.StatusOK, http.Response(nil, user))
+			c.JSON(h.StatusOK, http.Response(nil, team))
 		},
 	)
 

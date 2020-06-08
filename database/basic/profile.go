@@ -12,12 +12,3 @@ func (database *Database) UpdateProfile(user *go_saas_model.User) (*go_saas_mode
 		}).
 		Error
 }
-
-func (database *Database) UpdateProfileTeam(team *go_saas_model.Team) (*go_saas_model.Team, error) {
-	return team, database.GetConnection().
-		Model(&team).
-		Update(map[string]interface{}{
-			"name": team.Name,
-		}).
-		Error
-}

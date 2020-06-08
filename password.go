@@ -25,7 +25,7 @@ func (saas *Saas) updatePassword(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err = c.ShouldBind(&passwordReset); err != nil {
+			if err = c.ShouldBind(passwordReset); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
 			}
