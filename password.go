@@ -18,6 +18,7 @@ func (saas *Saas) updatePassword(http go_saas_http.Http) error {
 			userId := http.GetAuthenticator().GetAuthUserId(c)
 
 			var err error
+			var bcrypted string
 			var user = new(go_saas_model.User)
 			var passwordReset = &go_saas_model.PasswordReset{
 				RWMutex: new(sync.RWMutex),
@@ -32,8 +33,6 @@ func (saas *Saas) updatePassword(http go_saas_http.Http) error {
 				c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(err, nil))
 				return
 			}
-
-			var bcrypted string
 
 			if bcrypted, err = http.GetSecurity().EncryptPassword(*passwordReset.GetNewPassword()); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
