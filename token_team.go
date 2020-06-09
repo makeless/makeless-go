@@ -67,6 +67,10 @@ func (saas *Saas) createTokenTeam(http go_saas_http.Http) error {
 				return
 			}
 
+			// mergo workaround
+			token.User = nil
+			token.Team = nil
+
 			if teamMember, err = http.GetSecurity().IsTeamMember(teamId, *token.GetUserId()); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return

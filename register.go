@@ -28,6 +28,10 @@ func (saas *Saas) register(http go_saas_http.Http) error {
 			return
 		}
 
+		// mergo workaround
+		user.Teams = nil
+		user.Tokens = nil
+
 		if user, err = http.GetSecurity().Register(user); err != nil {
 			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 			return

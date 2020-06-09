@@ -61,6 +61,11 @@ func (saas *Saas) createToken(http go_saas_http.Http) error {
 				return
 			}
 
+			// mergo workaround
+			token.User = nil
+			token.TeamId = nil
+			token.Team = nil
+
 			if token, err = http.GetDatabase().CreateToken(token); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
@@ -96,6 +101,9 @@ func (saas *Saas) deleteToken(http go_saas_http.Http) error {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
+
+			// mergo workaround
+			token.TeamId = nil
 
 			if err = http.GetDatabase().DeleteToken(token); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
