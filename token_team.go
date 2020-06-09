@@ -92,3 +92,48 @@ func (saas *Saas) createTokenTeam(http go_saas_http.Http) error {
 
 	return nil
 }
+
+func (saas *Saas) deleteTokenTeam(http go_saas_http.Http) error {
+	http.GetRouter().DELETE(
+		"/api/auth/team/token",
+		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		http.TeamOwnerMiddleware(),
+		func(c *gin.Context) {
+			userId := http.GetAuthenticator().GetAuthUserId(c)
+
+			var err error
+			var tmpTeamId, _ = strconv.Atoi(c.GetHeader("Team"))
+			var teamId = uint(tmpTeamId)
+			var token = new(go_saas_model.Token)
+
+			if err := c.ShouldBind(token); err != nil {
+				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+				return
+			}
+
+			if err = mergo.Merge(token, &go_saas_model.Token{
+				UserId:  &userId,
+				User:    nil,
+				TeamId:  &teamId,
+				Team:    nil,
+				RWMutex: new(sync.RWMutex),
+			}, mergo.WithOverride, mergo.WithTypeCheck); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			// mergo workaround
+			token.User = nil
+			token.Team = nil
+
+			if err = http.GetDatabase().DeleteTokenTeam(token); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			c.JSON(h.StatusOK, http.Response(nil, nil))
+		},
+	)
+
+	return nil
+}

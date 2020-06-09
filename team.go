@@ -55,10 +55,11 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 	return nil
 }
 
-func (saas *Saas) deleteTeam(http go_saas_http.Http) error {
+func (saas *Saas) leaveDeleteTeam(http go_saas_http.Http) error {
 	http.GetRouter().DELETE(
 		"/api/auth/team",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		http.TeamMemberMiddleware(),
 		func(c *gin.Context) {
 			userId := http.GetAuthenticator().GetAuthUserId(c)
 
