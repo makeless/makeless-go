@@ -141,7 +141,7 @@ go-saas.json
 ```json
 {
   "name": "Go SaaS",
-  "logo": "https://images.prismic.io/www-static/49aa0a09-06d2-4bba-ad20-4bcbe56ac507_logo.png?auto=compress,format",
+  "logo": null,
   "locale": "en",
   "host": "http://localhost:3000",
   "tokens": true,
