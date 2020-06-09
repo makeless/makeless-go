@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/model"
+	go_saas_security "github.com/go-saas/go-saas/security"
 	"github.com/imdario/mergo"
 	h "net/http"
 	"sync"
@@ -64,6 +65,7 @@ func (saas *Saas) leaveDeleteTeam(http go_saas_http.Http) error {
 
 			var err error
 			var team = new(go_saas_model.Team)
+			var teamMember bool
 			var user = &go_saas_model.User{
 				Model:   go_saas_model.Model{Id: userId},
 				RWMutex: new(sync.RWMutex),
@@ -87,6 +89,16 @@ func (saas *Saas) leaveDeleteTeam(http go_saas_http.Http) error {
 			// mergo workaround
 			team.User = nil
 			team.Users = nil
+
+			if teamMember, err = http.GetSecurity().IsTeamMember(team.GetId(), user.GetId()); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			if !teamMember {
+				c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(go_saas_security.NoTeamMemberErr, nil))
+				return
+			}
 
 			if err = http.GetDatabase().LeaveTeam(user, team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
