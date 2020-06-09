@@ -1,8 +1,29 @@
 # go-saas
 
-SaaS Golang Framework
+SaaS Go Framework
 
 [![Build Status](https://ci.loeffel.io/api/badges/go-saas/go-saas/status.svg)](https://ci.loeffel.io/go-saas/go-saas)
+
+- Based on Golang ([gin](https://github.com/gin-gonic/gin) & [gorm](https://github.com/go-gorm/gorm))
+- Super clean and small
+- Fully customizable and configurable
+- State of the art Authentication with JWT HttpOnly Cookies
+- User management
+- Team management
+- Token management for users and teams
+- Subscriptions and Per-Seat Payments out of the box (coming soon)
+
+## Preview
+
+<img src="https://raw.githubusercontent.com/go-saas/go-saas-ui/master/preview.png" alt="logo">
+
+## Frontend
+
+- TypeScript & Vue.js: [https://github.com/go-saas/go-saas-ui](https://github.com/go-saas/go-saas-ui)
+
+## Demo
+
+- Go + TypeScript & Vue.js: [https://github.com/go-saas/go-saas-demo](https://github.com/go-saas/go-saas-demo)
 
 ## Usage
 
@@ -110,5 +131,34 @@ func main() {
 	if err := saas.Run(); err != nil {
 		saas.GetLogger().Fatal(err)
 	}
+}
+```
+
+## Config
+
+go-saas.json
+
+```json
+{
+  "name": "Go SaaS",
+  "logo": "https://images.prismic.io/www-static/49aa0a09-06d2-4bba-ad20-4bcbe56ac507_logo.png?auto=compress,format",
+  "locale": "en",
+  "host": "http://localhost:3000",
+  "tokens": true,
+  "teams": {
+    "tokens": false
+  },
+  "navigation": {
+    "left": {
+      "en": [
+        {"label": "Dashboard","to": "dashboard"}
+      ]
+    },
+    "right": {
+      "en": [
+        {"label": "Login","to": "login"}
+      ]
+    }
+  }
 }
 ```
