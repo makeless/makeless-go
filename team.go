@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/model"
-	go_saas_security "github.com/go-saas/go-saas/security"
+	"github.com/go-saas/go-saas/security"
 	"github.com/imdario/mergo"
 	h "net/http"
 	"sync"
