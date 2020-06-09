@@ -59,7 +59,6 @@ func (saas *Saas) leaveDeleteTeam(http go_saas_http.Http) error {
 	http.GetRouter().DELETE(
 		"/api/auth/team",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
-		http.TeamMemberMiddleware(),
 		func(c *gin.Context) {
 			userId := http.GetAuthenticator().GetAuthUserId(c)
 
@@ -77,11 +76,17 @@ func (saas *Saas) leaveDeleteTeam(http go_saas_http.Http) error {
 
 			if err = mergo.Merge(team, &go_saas_model.Team{
 				UserId:  &user.Id,
+				User:    nil,
+				Users:   nil,
 				RWMutex: new(sync.RWMutex),
 			}, mergo.WithOverride, mergo.WithTypeCheck); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
+
+			// mergo workaround
+			team.User = nil
+			team.Users = nil
 
 			if err = http.GetDatabase().LeaveTeam(user, team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
