@@ -7,12 +7,7 @@ import (
 type User struct {
 	Model
 	Name     *string `gorm:"not null" json:"name" binding:"required,min=4"`
-<<<<<<< HEAD
 	Password *string `gorm:"not null" json:"password" binding:"required_without=Id"`
-=======
-	Username *string `json:"username"`
-	Password *string `gorm:"not null" json:"password,omitempty" binding:"required"`
->>>>>>> master
 	Email    *string `gorm:"unique;not null" json:"email" binding:"required"`
 
 	Teams  []*Team  `gorm:"many2many:user_teams;" json:"teams" binding:"-"`
