@@ -1,71 +1,104 @@
 package go_saas
 
 import (
-	"fmt"
 	"sync"
 
-	"github.com/go-saas/go-saas/api"
+	"github.com/go-saas/go-saas/config"
 	"github.com/go-saas/go-saas/database"
+	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/logger"
 )
 
 type Saas struct {
-	License  string
+	Config   go_saas_config.Config
 	Logger   go_saas_logger.Logger
-	Database *saas_database.Database
-	Api      *saas_api.Api
+	Database go_saas_database.Database
+	Http     go_saas_http.Http
 	*sync.RWMutex
 }
 
-func (saas Saas) getLicense() string {
+func (saas *Saas) GetConfig() go_saas_config.Config {
 	saas.RLock()
 	defer saas.RUnlock()
 
-	return saas.License
+	return saas.Config
 }
 
-func (saas Saas) isLicenseValid() bool {
-	saas.getLicense()
-	return true
-}
-
-func (saas Saas) GetLogger() go_saas_logger.Logger {
+func (saas *Saas) GetLogger() go_saas_logger.Logger {
 	saas.RLock()
 	defer saas.RUnlock()
 
 	return saas.Logger
 }
 
-func (saas Saas) GetDatabase() *saas_database.Database {
+func (saas *Saas) GetDatabase() go_saas_database.Database {
 	saas.RLock()
 	defer saas.RUnlock()
 
 	return saas.Database
 }
 
-func (saas Saas) GetApi() *saas_api.Api {
+func (saas *Saas) GetHttp() go_saas_http.Http {
 	saas.RLock()
 	defer saas.RUnlock()
 
-	return saas.Api
+	return saas.Http
 }
 
-func (saas Saas) Run() error {
-	if !saas.isLicenseValid() {
-		return fmt.Errorf("invalid saas license")
+func (saas *Saas) SetRoute(name string, handler func(http go_saas_http.Http) error) {
+	saas.GetHttp().SetHandler(name, handler)
+}
+
+func (saas *Saas) Init(path string) error {
+	if err := saas.GetConfig().Load(path); err != nil {
+		return err
 	}
 
 	if err := saas.GetDatabase().Connect(); err != nil {
 		return err
 	}
 
-	if err := saas.GetDatabase().AutoMigrate(); err != nil {
+	if err := saas.GetDatabase().Migrate(); err != nil {
 		return err
 	}
 
-	if err := saas.GetApi().Start(); err != nil {
+	if err := saas.GetHttp().GetAuthenticator().CreateMiddleware(); err != nil {
 		return err
+	}
+
+	saas.SetRoute("ok", saas.ok)
+	saas.SetRoute("register", saas.register)
+	saas.SetRoute("login", saas.login)
+	saas.SetRoute("logout", saas.logout)
+	saas.SetRoute("refreshToken", saas.refreshToken)
+	saas.SetRoute("events", saas.events)
+	saas.SetRoute("user", saas.user)
+	saas.SetRoute("updatePassword", saas.updatePassword)
+	saas.SetRoute("updateProfile", saas.updateProfile)
+
+	if saas.GetConfig().GetConfiguration().GetTokens() {
+		saas.SetRoute("tokens", saas.tokens)
+		saas.SetRoute("createToken", saas.createToken)
+		saas.SetRoute("deleteToken", saas.deleteToken)
+	}
+
+	if saas.GetConfig().GetConfiguration().GetTeams() != nil {
+		saas.SetRoute("searchMembersTeam", saas.membersTeam)
+		saas.SetRoute("createTeam", saas.createTeam)
+		saas.SetRoute("leaveDeleteTeam", saas.leaveDeleteTeam)
+		saas.SetRoute("updateProfileTeam", saas.updateProfileTeam)
+		saas.SetRoute("removeMemberTeam", saas.removeMemberTeam)
+
+		if saas.GetConfig().GetConfiguration().GetTeams().GetTokens() {
+			saas.SetRoute("tokensTeam", saas.tokensTeam)
+			saas.SetRoute("createTokenTeam", saas.createTokenTeam)
+			saas.SetRoute("deleteTokenTeam", saas.deleteTokenTeam)
+		}
 	}
 
 	return nil
+}
+
+func (saas *Saas) Run() error {
+	return saas.GetHttp().Start()
 }
