@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/go-saas/go-saas/security"
 	h "net/http"
 	"strconv"
 )
@@ -40,7 +41,7 @@ func (http *Http) TeamMemberMiddleware() gin.HandlerFunc {
 		}
 
 		if !teamMember {
-			c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(errors.New("no team member"), nil))
+			c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(go_saas_security.NoTeamMemberErr, nil))
 			return
 		}
 
@@ -71,7 +72,7 @@ func (http *Http) TeamOwnerMiddleware() gin.HandlerFunc {
 		}
 
 		if !teamOwner {
-			c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(errors.New("no team owner"), nil))
+			c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(go_saas_security.NoTeamOwnerError, nil))
 			return
 		}
 

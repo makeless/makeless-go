@@ -9,7 +9,7 @@ type Token struct {
 	Token *string `gorm:"unique;not null" json:"token" binding:"required,len=32"`
 	Note  *string `gorm:"not null" json:"note" binding:"required,min=4,max=50"`
 
-	UserId *uint `gorm:"not null" json:"userId" binding:"-"`
+	UserId *uint `gorm:"not null" json:"userId"`
 	User   *User `json:"user" binding:"-"`
 
 	TeamId *uint `json:"teamId" binding:"-"`

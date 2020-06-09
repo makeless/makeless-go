@@ -89,6 +89,7 @@ func (saas *Saas) Init(path string) error {
 
 		if saas.GetConfig().GetConfiguration().GetTeams().GetTokens() {
 			saas.SetRoute("tokensTeam", saas.tokensTeam)
+			saas.SetRoute("createTokenTeam", saas.createTokenTeam)
 		}
 	}
 
