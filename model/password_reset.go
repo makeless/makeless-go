@@ -3,9 +3,9 @@ package go_saas_model
 import "sync"
 
 type PasswordReset struct {
-	Password                *string `json:"password" binding:"required,min=3"`
-	NewPassword             *string `json:"newPassword" binding:"required,min=3"`
-	NewPasswordConfirmation *string `json:"newPasswordConfirmation" binding:"required,min=3,eqfield=NewPassword"`
+	Password                *string `json:"password" binding:"required,min=6"`
+	NewPassword             *string `json:"newPassword" binding:"required,min=6"`
+	NewPasswordConfirmation *string `json:"newPasswordConfirmation" binding:"required,min=6,eqfield=NewPassword"`
 	*sync.RWMutex
 }
 

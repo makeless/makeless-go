@@ -1,7 +1,6 @@
 package go_saas_basic_security
 
 import (
-	"fmt"
 	"github.com/appleboy/gin-jwt/v2"
 	"github.com/go-saas/go-saas/database"
 	"github.com/go-saas/go-saas/model"
@@ -9,16 +8,24 @@ import (
 )
 
 type Security struct {
-	Database *saas_database.Database
+	Database go_saas_database.Database
 	*sync.RWMutex
 }
 
-func (security *Security) Login(field string, id string, password string) (*go_saas_model.User, error) {
+func (security *Security) GetDatabase() go_saas_database.Database {
+	security.RLock()
+	defer security.RUnlock()
+
+	return security.Database
+}
+
+func (security *Security) Login(field string, value string, password string) (*go_saas_model.User, error) {
+	var err error
 	var user = &go_saas_model.User{
 		RWMutex: new(sync.RWMutex),
 	}
 
-	if err := security.getDatabase().GetConnection().Where(fmt.Sprintf("%s = ?", field), id).Find(&user).Error; err != nil {
+	if user, err = security.GetDatabase().GetUserByField(user, field, value); err != nil {
 		return nil, jwt.ErrFailedAuthentication
 	}
 
@@ -37,8 +44,7 @@ func (security *Security) Register(user *go_saas_model.User) (*go_saas_model.Use
 	}
 
 	user.SetPassword(string(encrypted))
-
-	if err := security.getDatabase().GetConnection().Create(&user).Error; err != nil {
+	if user, err = security.GetDatabase().CreateUser(user); err != nil {
 		return nil, err
 	}
 
