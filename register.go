@@ -23,7 +23,7 @@ func (saas *Saas) register(http go_saas_http.Http) error {
 			Teams:   nil,
 			Tokens:  nil,
 			RWMutex: new(sync.RWMutex),
-		}, mergo.WithOverride); err != nil {
+		}, mergo.WithOverride, mergo.WithTypeCheck); err != nil {
 			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 			return
 		}

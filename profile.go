@@ -31,7 +31,7 @@ func (saas *Saas) updateProfile(http go_saas_http.Http) error {
 				Model:   go_saas_model.Model{Id: userId},
 				Name:    profile.GetName(),
 				RWMutex: new(sync.RWMutex),
-			}, mergo.WithOverride); err != nil {
+			}, mergo.WithOverride, mergo.WithTypeCheck); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

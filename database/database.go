@@ -15,5 +15,4 @@ type Database interface {
 	Member
 	Profile
 	Token
-	TokenTeam
 }

@@ -3,6 +3,7 @@ package go_saas_basic_database
 import (
 	"github.com/go-saas/go-saas/model"
 	"github.com/jinzhu/gorm"
+	"log"
 )
 
 func (database *Database) GetTokensTeam(team *go_saas_model.Team, tokens []*go_saas_model.Token) ([]*go_saas_model.Token, error) {
@@ -24,6 +25,14 @@ func (database *Database) GetTokensTeam(team *go_saas_model.Team, tokens []*go_s
 		Error
 }
 
+func (database *Database) CreateTokenTeam(token *go_saas_model.Token) (*go_saas_model.Token, error) {
+	log.Printf("%+v", token)
+
+	return token, database.GetConnection().
+		Create(&token).
+		Error
+}
+
 func (database *Database) DeleteTokenTeam(token *go_saas_model.Token) error {
 	return database.GetConnection().
 		Unscoped().
@@ -33,11 +42,5 @@ func (database *Database) DeleteTokenTeam(token *go_saas_model.Token) error {
 			token.GetTeamId(),
 			token.GetUserId(),
 		).
-		Error
-}
-
-func (database *Database) CreateTokenTeam(token *go_saas_model.Token) (*go_saas_model.Token, error) {
-	return token, database.GetConnection().
-		Create(&token).
 		Error
 }

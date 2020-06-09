@@ -52,7 +52,7 @@ func (saas *Saas) createTokenTeam(http go_saas_http.Http) error {
 			var teamId = uint(tmpTeamId)
 			var token = new(go_saas_model.Token)
 
-			if err := c.ShouldBind(&token); err != nil {
+			if err := c.ShouldBind(token); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
 			}
@@ -62,7 +62,7 @@ func (saas *Saas) createTokenTeam(http go_saas_http.Http) error {
 				TeamId:  &teamId,
 				Team:    nil,
 				RWMutex: new(sync.RWMutex),
-			}, mergo.WithOverride); err != nil {
+			}, mergo.WithOverride, mergo.WithTypeCheck); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

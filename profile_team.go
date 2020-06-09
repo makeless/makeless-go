@@ -30,7 +30,7 @@ func (saas *Saas) updateProfileTeam(http go_saas_http.Http) error {
 				User:    nil,
 				Users:   nil,
 				RWMutex: new(sync.RWMutex),
-			}, mergo.WithOverride); err != nil {
+			}, mergo.WithOverride, mergo.WithTypeCheck); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

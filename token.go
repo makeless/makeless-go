@@ -56,7 +56,7 @@ func (saas *Saas) createToken(http go_saas_http.Http) error {
 				TeamId:  nil,
 				Team:    nil,
 				RWMutex: new(sync.RWMutex),
-			}, mergo.WithOverride); err != nil {
+			}, mergo.WithOverride, mergo.WithTypeCheck); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -92,7 +92,7 @@ func (saas *Saas) deleteToken(http go_saas_http.Http) error {
 				UserId:  &userId,
 				TeamId:  nil,
 				RWMutex: new(sync.RWMutex),
-			}, mergo.WithOverride); err != nil {
+			}, mergo.WithOverride, mergo.WithTypeCheck); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
