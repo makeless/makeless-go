@@ -19,5 +19,5 @@ func (tls *Tls) GetKeyPath() string {
 	tls.RLock()
 	defer tls.RUnlock()
 
-	return tls.CertPath
+	return tls.KeyPath
 }
