@@ -2,12 +2,15 @@ package go_saas_basic_database
 
 import (
 	"github.com/go-saas/go-saas/model"
+	"github.com/jinzhu/gorm"
 )
 
 func (database *Database) GetToken(token *go_saas_model.Token, value string) (*go_saas_model.Token, error) {
 	return token, database.GetConnection().
 		Preload("Team").
-		Preload("User").
+		Preload("User", func(db *gorm.DB) *gorm.DB {
+			return db.Select("users.id, users.name, users.email")
+		}).
 		Where("tokens.token = ?", value).
 		First(&token).
 		Error
