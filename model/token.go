@@ -6,16 +6,16 @@ import (
 
 type Token struct {
 	Model
-	Token *string `gorm:"unique;not null" json:"token" binding:"required,len=32"`
-	Note  *string `gorm:"not null" json:"note" binding:"required,min=4,max=50"`
+	Token *string `gorm:"unique;not null" json:"token"`
+	Note  *string `gorm:"not null" json:"note"`
 
-	UserId *uint `gorm:"not null" json:"userId" binding:"-"`
-	User   *User `json:"user" binding:"-"`
+	UserId *uint `gorm:"not null" json:"userId"`
+	User   *User `json:"user"`
 
-	TeamId *uint `json:"teamId" binding:"-"`
-	Team   *Team `json:"team" binding:"-"`
+	TeamId *uint `json:"teamId"`
+	Team   *Team `json:"team"`
 
-	*sync.RWMutex `json:"-" binding:"-"`
+	*sync.RWMutex
 }
 
 func (token *Token) GetId() uint {
