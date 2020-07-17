@@ -19,19 +19,21 @@ func (database *Database) CreateTeam(team *go_saas_model.Team) (*go_saas_model.T
 }
 
 // DeleteTeamUsers deletes own teamUser
-// FIXME: Delete all other teamUsers if user is team creator
+// FIXME: Delete all other teamUsers if user is team creator - remove orphans
 func (database *Database) DeleteTeamUsers(user *go_saas_model.User, team *go_saas_model.Team) error {
 	return database.GetConnection().
 		Exec("DELETE FROM team_users WHERE team_users.team_id = ? AND team_users.user_id = ?", team.GetId(), user.GetId()).
 		Error
 }
 
+// DeleteTeam deletes team if user is team creator
 func (database *Database) DeleteTeam(user *go_saas_model.User, team *go_saas_model.Team) error {
 	return database.GetConnection().
 		Exec("DELETE FROM teams WHERE teams.id = ? AND teams.user_id = ?", team.GetId(), user.GetId()).
 		Error
 }
 
+// IsTeamMember checks if user is team member
 func (database *Database) IsTeamMember(team *go_saas_model.Team, user *go_saas_model.User) (bool, error) {
 	var count int
 
@@ -41,6 +43,7 @@ func (database *Database) IsTeamMember(team *go_saas_model.Team, user *go_saas_m
 		Error
 }
 
+// IsTeamMember checks if user is team member and has role owner
 func (database *Database) IsTeamOwner(team *go_saas_model.Team, user *go_saas_model.User) (bool, error) {
 	var count int
 
@@ -50,6 +53,7 @@ func (database *Database) IsTeamOwner(team *go_saas_model.Team, user *go_saas_mo
 		Error
 }
 
+// IsTeamMember checks if user is team creator
 func (database *Database) IsTeamCreator(team *go_saas_model.Team, user *go_saas_model.User) (bool, error) {
 	var count int
 
