@@ -79,3 +79,34 @@ func (http *Http) TeamOwnerMiddleware() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+func (http *Http) TeamCreatorMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+		var teamCreator bool
+		var teamId int
+		var userId = http.GetAuthenticator().GetAuthUserId(c)
+
+		if c.GetHeader("Team") == "" {
+			c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(errors.New("no team header"), nil))
+			return
+		}
+
+		if teamId, err = strconv.Atoi(c.GetHeader("Team")); err != nil {
+			c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+			return
+		}
+
+		if teamCreator, err = http.GetSecurity().IsTeamCreator(uint(teamId), userId); err != nil {
+			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+			return
+		}
+
+		if !teamCreator {
+			c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(go_saas_security.NoTeamOwnerError, nil))
+			return
+		}
+
+		c.Next()
+	}
+}

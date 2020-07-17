@@ -14,4 +14,5 @@ type Security interface {
 	ComparePassword(userPassword string, password string) error
 	IsTeamMember(teamId uint, userId uint) (bool, error)
 	IsTeamOwner(teamId uint, userId uint) (bool, error)
+	IsTeamCreator(teamId uint, userId uint) (bool, error)
 }

@@ -10,7 +10,9 @@ import (
 func (database *Database) GetUser(user *go_saas_model.User) (*go_saas_model.User, error) {
 	return user, database.GetConnection().
 		Select("users.id, users.name, users.email").
-		Preload("TeamUsers").
+		Preload("TeamUsers", func(db *gorm.DB) *gorm.DB {
+			return db.Where("team_users.user_id = ?", user.GetId())
+		}).
 		Preload("TeamUsers.Team").
 		Preload("TeamUsers.User", func(db *gorm.DB) *gorm.DB {
 			return db.Select("users.id, users.name, users.email")

@@ -1,6 +1,8 @@
 package go_saas_model
 
-import "sync"
+import (
+	"sync"
+)
 
 type TeamUser struct {
 	Model
