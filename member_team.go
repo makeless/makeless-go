@@ -28,10 +28,6 @@ func (saas *Saas) membersTeam(http go_saas_http.Http) error {
 				return
 			}
 
-			for _, user := range team.GetUsers() {
-				user.RWMutex = new(sync.RWMutex)
-			}
-
 			c.JSON(h.StatusOK, http.Response(nil, users))
 		},
 	)

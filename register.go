@@ -20,16 +20,16 @@ func (saas *Saas) register(http go_saas_http.Http) error {
 		}
 
 		if err := mergo.Merge(user, &go_saas_model.User{
-			Teams:   nil,
-			Tokens:  nil,
-			RWMutex: new(sync.RWMutex),
+			TeamUsers: nil,
+			Tokens:    nil,
+			RWMutex:   new(sync.RWMutex),
 		}, mergo.WithOverride, mergo.WithTypeCheck); err != nil {
 			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 			return
 		}
 
 		// mergo workaround
-		user.Teams = nil
+		user.TeamUsers = nil
 		user.Tokens = nil
 
 		if user, err = http.GetSecurity().Register(user); err != nil {

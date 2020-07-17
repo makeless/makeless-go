@@ -26,10 +26,10 @@ func (saas *Saas) updateProfileTeam(http go_saas_http.Http) error {
 			}
 
 			if err = mergo.Merge(team, &go_saas_model.Team{
-				UserId:  &userId,
-				User:    nil,
-				Users:   nil,
-				RWMutex: new(sync.RWMutex),
+				UserId:    &userId,
+				User:      nil,
+				TeamUsers: nil,
+				RWMutex:   new(sync.RWMutex),
 			}, mergo.WithOverride, mergo.WithTypeCheck); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
@@ -37,7 +37,7 @@ func (saas *Saas) updateProfileTeam(http go_saas_http.Http) error {
 
 			// mergo workaround
 			team.User = nil
-			team.Users = nil
+			team.TeamUsers = nil
 
 			if team, err = http.GetDatabase().UpdateProfileTeam(team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
