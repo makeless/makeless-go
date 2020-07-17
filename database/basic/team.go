@@ -2,7 +2,7 @@ package go_saas_basic_database
 
 import (
 	"github.com/go-saas/go-saas/model"
-	go_saas_security "github.com/go-saas/go-saas/security"
+	"github.com/go-saas/go-saas/security"
 	"github.com/jinzhu/gorm"
 )
 
