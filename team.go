@@ -5,8 +5,9 @@ import (
 	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/model"
 	"github.com/go-saas/go-saas/security"
-	"github.com/imdario/mergo"
+	"github.com/go-saas/go-saas/struct"
 	h "net/http"
+	"strconv"
 	"sync"
 )
 
@@ -15,35 +16,25 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 		"/api/auth/team",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		func(c *gin.Context) {
-			userId := http.GetAuthenticator().GetAuthUserId(c)
-
 			var err error
-			var team = new(go_saas_model.Team)
-			var user = &go_saas_model.User{
-				Model:   go_saas_model.Model{Id: userId},
+			var userId = http.GetAuthenticator().GetAuthUserId(c)
+			var teamCreate = &_struct.TeamCreate{
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err = c.ShouldBind(team); err != nil {
+			if err = c.ShouldBind(teamCreate); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
 			}
 
-			if err = mergo.Merge(team, &go_saas_model.Team{
-				UserId:  &user.Id,
-				User:    nil,
-				Users:   nil,
-				RWMutex: new(sync.RWMutex),
-			}, mergo.WithOverride, mergo.WithTypeCheck); err != nil {
-				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
-				return
+			var team = &go_saas_model.Team{
+				Name:      teamCreate.GetName(),
+				UserId:    &userId,
+				TeamUsers: []*go_saas_model.TeamUser{{UserId: &userId, Role: &go_saas_security.RoleTeamOwner}},
+				RWMutex:   new(sync.RWMutex),
 			}
 
-			// mergo workaround
-			team.User = nil
-			team.Users = nil
-
-			if team, err = http.GetDatabase().CreateTeam(user, team); err != nil {
+			if team, err = http.GetDatabase().CreateTeam(team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -60,52 +51,27 @@ func (saas *Saas) leaveDeleteTeam(http go_saas_http.Http) error {
 	http.GetRouter().DELETE(
 		"/api/auth/team",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		http.TeamMemberMiddleware(),
 		func(c *gin.Context) {
 			userId := http.GetAuthenticator().GetAuthUserId(c)
 
 			var err error
-			var team = new(go_saas_model.Team)
-			var teamMember bool
+			var teamId, _ = strconv.Atoi(c.GetHeader("Team"))
 			var user = &go_saas_model.User{
 				Model:   go_saas_model.Model{Id: userId},
 				RWMutex: new(sync.RWMutex),
 			}
-
-			if err := c.ShouldBind(team); err != nil {
-				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
-				return
-			}
-
-			if err = mergo.Merge(team, &go_saas_model.Team{
-				UserId:  &user.Id,
-				User:    nil,
-				Users:   nil,
+			var team = &go_saas_model.Team{
+				Model:   go_saas_model.Model{Id: uint(teamId)},
 				RWMutex: new(sync.RWMutex),
-			}, mergo.WithOverride, mergo.WithTypeCheck); err != nil {
+			}
+
+			if err = http.GetDatabase().DeleteTeamUser(user, team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
 
-			// mergo workaround
-			team.User = nil
-			team.Users = nil
-
-			if teamMember, err = http.GetSecurity().IsTeamMember(team.GetId(), user.GetId()); err != nil {
-				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
-				return
-			}
-
-			if !teamMember {
-				c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(go_saas_security.NoTeamMemberErr, nil))
-				return
-			}
-
-			if err = http.GetDatabase().LeaveTeam(user, team); err != nil {
-				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
-				return
-			}
-
-			if err = http.GetDatabase().DeleteTeam(team); err != nil {
+			if err = http.GetDatabase().DeleteTeam(user, team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

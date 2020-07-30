@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/model"
-	"github.com/imdario/mergo"
+	"github.com/go-saas/go-saas/struct"
 	h "net/http"
 	"sync"
 )
@@ -40,31 +40,23 @@ func (saas *Saas) createToken(http go_saas_http.Http) error {
 		"/api/auth/token",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		func(c *gin.Context) {
-			userId := http.GetAuthenticator().GetAuthUserId(c)
-
 			var err error
-			var token = new(go_saas_model.Token)
+			var userId = http.GetAuthenticator().GetAuthUserId(c)
+			var tokenCreate = &_struct.TokenCreate{
+				RWMutex: new(sync.RWMutex),
+			}
 
-			if err := c.ShouldBind(token); err != nil {
+			if err := c.ShouldBind(tokenCreate); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
 			}
 
-			if err = mergo.Merge(token, &go_saas_model.Token{
+			var token = &go_saas_model.Token{
+				Note:    tokenCreate.GetNote(),
+				Token:   tokenCreate.GetToken(),
 				UserId:  &userId,
-				User:    nil,
-				TeamId:  nil,
-				Team:    nil,
 				RWMutex: new(sync.RWMutex),
-			}, mergo.WithOverride, mergo.WithTypeCheck); err != nil {
-				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
-				return
 			}
-
-			// mergo workaround
-			token.User = nil
-			token.TeamId = nil
-			token.Team = nil
 
 			if token, err = http.GetDatabase().CreateToken(token); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
@@ -83,27 +75,22 @@ func (saas *Saas) deleteToken(http go_saas_http.Http) error {
 		"/api/auth/token",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		func(c *gin.Context) {
-			userId := http.GetAuthenticator().GetAuthUserId(c)
-
 			var err error
-			var token = new(go_saas_model.Token)
+			var userId = http.GetAuthenticator().GetAuthUserId(c)
+			var tokenDelete = &_struct.TokenDelete{
+				RWMutex: new(sync.RWMutex),
+			}
 
-			if err := c.ShouldBind(token); err != nil {
+			if err := c.ShouldBind(tokenDelete); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
 			}
 
-			if err = mergo.Merge(token, &go_saas_model.Token{
+			var token = &go_saas_model.Token{
+				Model:   go_saas_model.Model{Id: tokenDelete.GetId()},
 				UserId:  &userId,
-				TeamId:  nil,
 				RWMutex: new(sync.RWMutex),
-			}, mergo.WithOverride, mergo.WithTypeCheck); err != nil {
-				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
-				return
 			}
-
-			// mergo workaround
-			token.TeamId = nil
 
 			if err = http.GetDatabase().DeleteToken(token); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))

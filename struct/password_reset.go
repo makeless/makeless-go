@@ -1,4 +1,4 @@
-package go_saas_model
+package _struct
 
 import "sync"
 

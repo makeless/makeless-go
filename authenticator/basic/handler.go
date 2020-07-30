@@ -4,6 +4,7 @@ import (
 	"github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/model"
+	"github.com/go-saas/go-saas/struct"
 	"sync"
 )
 
@@ -26,7 +27,7 @@ func (authenticator *Authenticator) IdentityHandler(c *gin.Context) interface{} 
 }
 
 func (authenticator *Authenticator) AuthenticatorHandler(c *gin.Context) (interface{}, error) {
-	var login = &go_saas_model.Login{
+	var login = &_struct.Login{
 		RWMutex: new(sync.RWMutex),
 	}
 

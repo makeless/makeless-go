@@ -4,14 +4,14 @@ import "sync"
 
 type Team struct {
 	Model
-	Name *string `gorm:"not null" json:"name" binding:"required,min=4"`
+	Name *string `gorm:"not null" json:"name"`
 
-	UserId *uint `gorm:"not null" json:"userId" binding:"-"`
-	User   *User `json:"-"`
+	UserId *uint `gorm:"not null" json:"userId"`
+	User   *User `json:"user"`
 
-	Users []*User `gorm:"many2many:user_teams;" json:"-"`
+	TeamUsers []*TeamUser `json:"teamUsers"`
 
-	*sync.RWMutex `json:"-"`
+	*sync.RWMutex
 }
 
 func (team *Team) GetId() uint {
@@ -42,9 +42,9 @@ func (team *Team) GetUser() *User {
 	return team.User
 }
 
-func (team *Team) GetUsers() []*User {
+func (team *Team) GetTeamUsers() []*TeamUser {
 	team.RLock()
 	defer team.RUnlock()
 
-	return team.Users
+	return team.TeamUsers
 }

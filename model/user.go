@@ -6,12 +6,12 @@ import (
 
 type User struct {
 	Model
-	Name     *string `gorm:"not null" json:"name" binding:"required,min=4"`
-	Password *string `gorm:"not null" json:"password" binding:"required_without=Id"`
-	Email    *string `gorm:"unique;not null" json:"email" binding:"required"`
+	Name     *string `gorm:"not null" json:"name"`
+	Password *string `gorm:"not null" json:"password"`
+	Email    *string `gorm:"unique;not null" json:"email"`
 
-	Teams  []*Team  `gorm:"many2many:user_teams;" json:"teams" binding:"-"`
-	Tokens []*Token `json:"tokens" binding:"-"`
+	TeamUsers []*TeamUser `json:"teamUsers" binding:"-"`
+	Tokens    []*Token    `json:"tokens" binding:"-"`
 
 	*sync.RWMutex `json:"-"`
 }
@@ -48,11 +48,11 @@ func (user *User) GetEmail() *string {
 	return user.Email
 }
 
-func (user *User) GetTeams() []*Team {
+func (user *User) GetTeamUsers() []*TeamUser {
 	user.RLock()
 	defer user.RUnlock()
 
-	return user.Teams
+	return user.TeamUsers
 }
 
 func (user *User) GetTokens() []*Token {

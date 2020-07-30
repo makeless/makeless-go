@@ -18,7 +18,7 @@ func (database *Database) GetTokensTeam(team *go_saas_model.Team, tokens []*go_s
 			"CONCAT(REPEAT('X', CHAR_LENGTH(tokens.token) - 4),SUBSTRING(tokens.token, -4)) as token",
 		}).
 		Joins("JOIN teams ON teams.id = tokens.team_id").
-		Where("tokens.team_id = ? AND teams.user_id = ?", team.GetId(), team.GetUserId()).
+		Where("tokens.team_id = ?", team.GetId()).
 		Order("tokens.id DESC").
 		Find(&tokens).
 		Error
@@ -26,18 +26,18 @@ func (database *Database) GetTokensTeam(team *go_saas_model.Team, tokens []*go_s
 
 func (database *Database) CreateTokenTeam(token *go_saas_model.Token) (*go_saas_model.Token, error) {
 	return token, database.GetConnection().
-		Create(&token).
+		Create(token).
+		Preload("User", func(db *gorm.DB) *gorm.DB {
+			return db.Select("users.id, users.name, users.email")
+		}).
+		Find(token).
 		Error
 }
 
 func (database *Database) DeleteTokenTeam(token *go_saas_model.Token) error {
 	return database.GetConnection().
 		Unscoped().
-		Exec(
-			"DELETE tokens FROM `tokens` JOIN teams ON teams.id = tokens.team_id WHERE tokens.id = ? AND tokens.team_id = ? AND teams.user_id = ?",
-			token.GetId(),
-			token.GetTeamId(),
-			token.GetUserId(),
-		).
+		Where("tokens.id = ? AND tokens.team_id = ?", token.GetId(), token.GetTeamId()).
+		Delete(&token).
 		Error
 }

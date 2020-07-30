@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/model"
+	"github.com/go-saas/go-saas/struct"
 	h "net/http"
 	"strconv"
 	"sync"
@@ -23,13 +24,9 @@ func (saas *Saas) membersTeam(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if users, err = http.GetDatabase().MembersTeam(c.Query("search"), team, users); err != nil {
+			if users, err = http.GetDatabase().MembersTeam(c.Query("search"), users, team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
-			}
-
-			for _, user := range team.GetUsers() {
-				user.RWMutex = new(sync.RWMutex)
 			}
 
 			c.JSON(h.StatusOK, http.Response(nil, users))
@@ -47,18 +44,25 @@ func (saas *Saas) removeMemberTeam(http go_saas_http.Http) error {
 		func(c *gin.Context) {
 			var err error
 			var teamId, _ = strconv.Atoi(c.GetHeader("Team"))
-			var user = new(go_saas_model.User)
+			var memberTeamRemove = &_struct.MemberTeamRemove{
+				RWMutex: new(sync.RWMutex),
+			}
 			var team = &go_saas_model.Team{
 				Model:   go_saas_model.Model{Id: uint(teamId)},
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err = c.ShouldBind(user); err != nil {
+			if err = c.ShouldBind(memberTeamRemove); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
 			}
 
-			if err = http.GetDatabase().RemoveMemberTeam(user, team); err != nil {
+			var user = &go_saas_model.User{
+				Model:   go_saas_model.Model{Id: memberTeamRemove.GetId()},
+				RWMutex: new(sync.RWMutex),
+			}
+
+			if err = http.GetDatabase().DeleteTeamUser(user, team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
