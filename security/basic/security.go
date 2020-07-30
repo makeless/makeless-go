@@ -43,7 +43,7 @@ func (security *Security) Register(user *go_saas_model.User) (*go_saas_model.Use
 		return nil, err
 	}
 
-	user.SetPassword(string(encrypted))
+	user.SetPassword(encrypted)
 	if user, err = security.GetDatabase().CreateUser(user); err != nil {
 		return nil, err
 	}

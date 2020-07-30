@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/model"
-	"github.com/imdario/mergo"
+	"github.com/go-saas/go-saas/struct"
 	h "net/http"
 	"sync"
 )
@@ -12,25 +12,21 @@ import (
 func (saas *Saas) register(http go_saas_http.Http) error {
 	http.GetRouter().POST("/api/register", func(c *gin.Context) {
 		var err error
-		var user = new(go_saas_model.User)
+		var register = &_struct.Register{
+			RWMutex: new(sync.RWMutex),
+		}
 
-		if err := c.ShouldBind(user); err != nil {
+		if err := c.ShouldBind(register); err != nil {
 			c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 			return
 		}
 
-		if err := mergo.Merge(user, &go_saas_model.User{
-			TeamUsers: nil,
-			Tokens:    nil,
-			RWMutex:   new(sync.RWMutex),
-		}, mergo.WithOverride, mergo.WithTypeCheck); err != nil {
-			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
-			return
+		var user = &go_saas_model.User{
+			Name:     register.GetName(),
+			Password: register.GetPassword(),
+			Email:    register.GetEmail(),
+			RWMutex:  new(sync.RWMutex),
 		}
-
-		// mergo workaround
-		user.TeamUsers = nil
-		user.Tokens = nil
 
 		if user, err = http.GetSecurity().Register(user); err != nil {
 			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
