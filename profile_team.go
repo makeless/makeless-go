@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/model"
-	_struct "github.com/go-saas/go-saas/struct"
+	"github.com/go-saas/go-saas/struct"
 	h "net/http"
 	"strconv"
 	"sync"
