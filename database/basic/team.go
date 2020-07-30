@@ -19,7 +19,6 @@ func (database *Database) CreateTeam(team *go_saas_model.Team) (*go_saas_model.T
 }
 
 // DeleteTeamUsers deletes own teamUser
-// FIXME: Delete all other teamUsers if user is team creator - remove orphans
 func (database *Database) DeleteTeamUsers(user *go_saas_model.User, team *go_saas_model.Team) error {
 	return database.GetConnection().
 		Exec("DELETE FROM team_users WHERE team_users.team_id = ? AND team_users.user_id = ?", team.GetId(), user.GetId()).

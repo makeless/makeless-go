@@ -23,7 +23,7 @@ func (saas *Saas) membersTeam(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if users, err = http.GetDatabase().MembersTeam(c.Query("search"), team, users); err != nil {
+			if users, err = http.GetDatabase().MembersTeam(c.Query("search"), users, team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
