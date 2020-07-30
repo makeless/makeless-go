@@ -22,11 +22,3 @@ func (database *Database) MembersTeam(search string, users []*go_saas_model.User
 		Find(&users).
 		Error
 }
-
-func (database *Database) RemoveMemberTeam(user *go_saas_model.User, team *go_saas_model.Team) error {
-	return database.GetConnection().
-		Model(user).
-		Association("Teams").
-		Delete(team).
-		Error
-}

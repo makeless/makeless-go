@@ -66,7 +66,7 @@ func (saas *Saas) leaveDeleteTeam(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err = http.GetDatabase().DeleteTeamUsers(user, team); err != nil {
+			if err = http.GetDatabase().DeleteTeamUser(user, team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
