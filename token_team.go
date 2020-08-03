@@ -15,7 +15,7 @@ func (saas *Saas) tokensTeam(http go_saas_http.Http) error {
 	http.GetRouter().GET(
 		"/api/auth/team/token",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
-		http.TeamOwnerMiddleware(),
+		http.TeamRoleMiddleware(go_saas_security.RoleTeamOwner),
 		func(c *gin.Context) {
 			var err error
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
@@ -43,7 +43,7 @@ func (saas *Saas) createTokenTeam(http go_saas_http.Http) error {
 	http.GetRouter().POST(
 		"/api/auth/team/token",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
-		http.TeamOwnerMiddleware(),
+		http.TeamRoleMiddleware(go_saas_security.RoleTeamOwner),
 		func(c *gin.Context) {
 			var err error
 			var teamMember bool
@@ -92,7 +92,7 @@ func (saas *Saas) deleteTokenTeam(http go_saas_http.Http) error {
 	http.GetRouter().DELETE(
 		"/api/auth/team/token",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
-		http.TeamOwnerMiddleware(),
+		http.TeamRoleMiddleware(go_saas_security.RoleTeamOwner),
 		func(c *gin.Context) {
 			var err error
 			var tmpTeamId, _ = strconv.Atoi(c.GetHeader("Team"))

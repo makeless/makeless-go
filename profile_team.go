@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/model"
+	"github.com/go-saas/go-saas/security"
 	"github.com/go-saas/go-saas/struct"
 	h "net/http"
 	"strconv"
@@ -14,7 +15,7 @@ func (saas *Saas) updateProfileTeam(http go_saas_http.Http) error {
 	http.GetRouter().PATCH(
 		"/api/auth/team/profile",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
-		http.TeamOwnerMiddleware(),
+		http.TeamRoleMiddleware(go_saas_security.RoleTeamOwner),
 		func(c *gin.Context) {
 			var err error
 			var teamId, _ = strconv.Atoi(c.GetHeader("Team"))

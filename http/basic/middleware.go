@@ -49,7 +49,7 @@ func (http *Http) TeamMemberMiddleware() gin.HandlerFunc {
 	}
 }
 
-func (http *Http) TeamOwnerMiddleware() gin.HandlerFunc {
+func (http *Http) TeamRoleMiddleware(role string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var err error
 		var teamOwner bool
@@ -66,7 +66,7 @@ func (http *Http) TeamOwnerMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		if teamOwner, err = http.GetSecurity().IsTeamOwner(uint(teamId), userId); err != nil {
+		if teamOwner, err = http.GetSecurity().IsTeamRole(role, uint(teamId), userId); err != nil {
 			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 			return
 		}

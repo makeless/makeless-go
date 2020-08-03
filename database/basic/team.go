@@ -2,7 +2,6 @@ package go_saas_basic_database
 
 import (
 	"github.com/go-saas/go-saas/model"
-	"github.com/go-saas/go-saas/security"
 	"github.com/jinzhu/gorm"
 )
 
@@ -42,12 +41,12 @@ func (database *Database) IsTeamMember(team *go_saas_model.Team, user *go_saas_m
 		Error
 }
 
-// IsTeamMember checks if user is team member and has role owner
-func (database *Database) IsTeamOwner(team *go_saas_model.Team, user *go_saas_model.User) (bool, error) {
+// IsTeamMember checks if user is team member and has role
+func (database *Database) IsTeamRole(role string, team *go_saas_model.Team, user *go_saas_model.User) (bool, error) {
 	var count int
 
 	return count == 1, database.GetConnection().
-		Raw("SELECT COUNT(*) FROM team_users WHERE team_users.team_id = ? AND team_users.user_id = ? AND team_users.role = ? LIMIT 1", team.GetId(), user.GetId(), go_saas_security.RoleTeamOwner).
+		Raw("SELECT COUNT(*) FROM team_users WHERE team_users.team_id = ? AND team_users.user_id = ? AND team_users.role = ? LIMIT 1", team.GetId(), user.GetId(), role).
 		Count(&count).
 		Error
 }

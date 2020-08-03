@@ -27,7 +27,7 @@ type Http interface {
 	Response(error error, data interface{}) gin.H
 	CorsMiddleware(Origins []string, AllowHeaders []string) gin.HandlerFunc
 	TeamMemberMiddleware() gin.HandlerFunc
-	TeamOwnerMiddleware() gin.HandlerFunc
+	TeamRoleMiddleware(role string) gin.HandlerFunc
 	TeamCreatorMiddleware() gin.HandlerFunc
 	Start() error
 }
