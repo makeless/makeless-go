@@ -46,7 +46,7 @@ func (saas *Saas) createTokenTeam(http go_saas_http.Http) error {
 		http.TeamRoleMiddleware(go_saas_security.RoleTeamOwner),
 		func(c *gin.Context) {
 			var err error
-			var teamMember bool
+			var teamUser bool
 			var tmpTeamId, _ = strconv.Atoi(c.GetHeader("Team"))
 			var teamId = uint(tmpTeamId)
 			var tokenTeamCreate = &_struct.TokenTeamCreate{
@@ -58,12 +58,12 @@ func (saas *Saas) createTokenTeam(http go_saas_http.Http) error {
 				return
 			}
 
-			if teamMember, err = http.GetSecurity().IsTeamMember(teamId, *tokenTeamCreate.GetUserId()); err != nil {
+			if teamUser, err = http.GetSecurity().IsTeamUser(teamId, *tokenTeamCreate.GetUserId()); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
 
-			if !teamMember {
+			if !teamUser {
 				c.AbortWithStatusJSON(h.StatusForbidden, http.Response(go_saas_security.NoTeamMemberErr, nil))
 				return
 			}

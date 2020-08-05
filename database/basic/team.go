@@ -31,8 +31,8 @@ func (database *Database) DeleteTeam(user *go_saas_model.User, team *go_saas_mod
 		Error
 }
 
-// IsTeamMember checks if user is team member
-func (database *Database) IsTeamMember(team *go_saas_model.Team, user *go_saas_model.User) (bool, error) {
+// IsTeamUser checks if user is part of team
+func (database *Database) IsTeamUser(team *go_saas_model.Team, user *go_saas_model.User) (bool, error) {
 	var count int
 
 	return count == 1, database.GetConnection().
@@ -41,7 +41,7 @@ func (database *Database) IsTeamMember(team *go_saas_model.Team, user *go_saas_m
 		Error
 }
 
-// IsTeamMember checks if user is team member and has role
+// IsTeamRole checks if user is part of team and has given role
 func (database *Database) IsTeamRole(role string, team *go_saas_model.Team, user *go_saas_model.User) (bool, error) {
 	var count int
 
@@ -51,7 +51,7 @@ func (database *Database) IsTeamRole(role string, team *go_saas_model.Team, user
 		Error
 }
 
-// IsTeamMember checks if user is team creator
+// IsTeamCreator checks if user is team creator
 func (database *Database) IsTeamCreator(team *go_saas_model.Team, user *go_saas_model.User) (bool, error) {
 	var count int
 

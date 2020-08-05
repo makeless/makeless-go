@@ -21,7 +21,7 @@ func (http *Http) CorsMiddleware(Origins []string, AllowHeaders []string) gin.Ha
 func (http *Http) TeamMemberMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var err error
-		var teamMember bool
+		var teamUser bool
 		var teamId int
 		var userId = http.GetAuthenticator().GetAuthUserId(c)
 
@@ -35,12 +35,12 @@ func (http *Http) TeamMemberMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		if teamMember, err = http.GetSecurity().IsTeamMember(uint(teamId), userId); err != nil {
+		if teamUser, err = http.GetSecurity().IsTeamUser(uint(teamId), userId); err != nil {
 			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 			return
 		}
 
-		if !teamMember {
+		if !teamUser {
 			c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(go_saas_security.NoTeamMemberErr, nil))
 			return
 		}

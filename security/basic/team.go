@@ -5,7 +5,7 @@ import (
 	"sync"
 )
 
-func (security *Security) IsTeamMember(teamId uint, userId uint) (bool, error) {
+func (security *Security) IsTeamUser(teamId uint, userId uint) (bool, error) {
 	var team = &go_saas_model.Team{
 		Model:   go_saas_model.Model{Id: teamId},
 		RWMutex: new(sync.RWMutex),
@@ -16,7 +16,7 @@ func (security *Security) IsTeamMember(teamId uint, userId uint) (bool, error) {
 		RWMutex: new(sync.RWMutex),
 	}
 
-	return security.GetDatabase().IsTeamMember(team, user)
+	return security.GetDatabase().IsTeamUser(team, user)
 }
 
 func (security *Security) IsTeamRole(role string, teamId uint, userId uint) (bool, error) {

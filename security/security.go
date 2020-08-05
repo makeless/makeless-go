@@ -12,7 +12,7 @@ type Security interface {
 	TokenLogin(value string) (*go_saas_model.User, *go_saas_model.Team, error)
 	EncryptPassword(password string) (string, error)
 	ComparePassword(userPassword string, password string) error
-	IsTeamMember(teamId uint, userId uint) (bool, error)
+	IsTeamUser(teamId uint, userId uint) (bool, error)
 	IsTeamRole(role string, teamId uint, userId uint) (bool, error)
 	IsTeamCreator(teamId uint, userId uint) (bool, error)
 }
