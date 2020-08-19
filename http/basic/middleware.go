@@ -1,4 +1,4 @@
-package go_saas_basic_http
+package go_saas_http_basic
 
 import (
 	"errors"

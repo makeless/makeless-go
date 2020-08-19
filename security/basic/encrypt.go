@@ -1,4 +1,4 @@
-package go_saas_basic_security
+package go_saas_security_basic
 
 import "golang.org/x/crypto/bcrypt"
 

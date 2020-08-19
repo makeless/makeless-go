@@ -1,4 +1,4 @@
-package go_saas_basic_logger
+package go_saas_logger_basic
 
 import "log"
 

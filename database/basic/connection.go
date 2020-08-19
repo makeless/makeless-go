@@ -1,4 +1,4 @@
-package go_saas_basic_database
+package go_saas_database_basic
 
 import (
 	"fmt"

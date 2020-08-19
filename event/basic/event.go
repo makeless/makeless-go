@@ -1,4 +1,4 @@
-package go_saas_basic_event
+package go_saas_event_basic
 
 import (
 	"github.com/gin-contrib/sse"

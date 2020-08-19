@@ -1,4 +1,4 @@
-package go_saas_basic_config
+package go_saas_config_basic
 
 import (
 	"encoding/json"
