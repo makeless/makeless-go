@@ -52,15 +52,15 @@ import (
 
 func main() {
 	// logger
-	logger := new(go_saas_basic_logger.Logger)
+	logger := new(go_saas_logger_basic.Logger)
 
 	// config
-	config := &go_saas_basic_config.Config{
+	config := &go_saas_config_basic.Config{
 		RWMutex: new(sync.RWMutex),
 	}
 
 	// database
-	database := &go_saas_basic_database.Database{
+	database := &go_saas_database_basic.Database{
 		Dialect:  "mysql",
 		Host:     os.Getenv("DB_HOST"),
 		Database: os.Getenv("DB_NAME"),
@@ -71,25 +71,25 @@ func main() {
 	}
 
 	// security
-	security := &go_saas_basic_security.Security{
+	security := &go_saas_security_basic.Security{
 		Database: database,
 		RWMutex:  new(sync.RWMutex),
 	}
 
 	// event hub
-	hub := &go_saas_basic_event.Hub{
+	hub := &go_saas_event_basic.Hub{
 		List:    make(map[uint]map[uint]chan sse.Event),
 		RWMutex: new(sync.RWMutex),
 	}
 
 	// event
-	event := &go_saas_basic_event.Event{
+	event := &go_saas_event_basic.Event{
 		Hub:     hub,
 		RWMutex: new(sync.RWMutex),
 	}
 
 	// jwt authenticator
-	authenticator := &go_saas_basic_authenticator.Authenticator{
+	authenticator := &go_saas_authenticator_basic.Authenticator{
 		Security:    security,
 		Realm:       "auth",
 		Key:         os.Getenv("JWT_KEY"),
@@ -100,7 +100,7 @@ func main() {
 	}
 
 	// http
-	http := &go_saas_basic_http.Http{
+	http := &go_saas_http_basic.Http{
 		Router:        gin.Default(),
 		Handlers:      make(map[string]func(http go_saas_http.Http) error),
 		Logger:        logger,
