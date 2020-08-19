@@ -1,6 +1,6 @@
 # go-saas
 
-SaaS Go Framework
+Go SaaS Framework - Golang Implementation
 
 [![Build Status](https://ci.loeffel.io/api/badges/go-saas/go-saas/status.svg)](https://ci.loeffel.io/go-saas/go-saas)
 
