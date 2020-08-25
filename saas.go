@@ -7,11 +7,13 @@ import (
 	"github.com/go-saas/go-saas/database"
 	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/logger"
+	"github.com/go-saas/go-saas/mailer"
 )
 
 type Saas struct {
 	Config   go_saas_config.Config
 	Logger   go_saas_logger.Logger
+	Mailer   go_saas_mailer.Mailer
 	Database go_saas_database.Database
 	Http     go_saas_http.Http
 	*sync.RWMutex
@@ -29,6 +31,13 @@ func (saas *Saas) GetLogger() go_saas_logger.Logger {
 	defer saas.RUnlock()
 
 	return saas.Logger
+}
+
+func (saas *Saas) GetMailer() go_saas_mailer.Mailer {
+	saas.RLock()
+	defer saas.RUnlock()
+
+	return saas.Mailer
 }
 
 func (saas *Saas) GetDatabase() go_saas_database.Database {
@@ -51,6 +60,10 @@ func (saas *Saas) SetRoute(name string, handler func(http go_saas_http.Http) err
 
 func (saas *Saas) Init(path string) error {
 	if err := saas.GetConfig().Load(path); err != nil {
+		return err
+	}
+
+	if err := saas.GetMailer().Init(); err != nil {
 		return err
 	}
 
