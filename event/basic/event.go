@@ -48,6 +48,10 @@ func (event *Event) Trigger(userId uint, channel string, id string, data interfa
 }
 
 func (event *Event) Broadcast(channel string, id string, data interface{}) {
+	event.GetHub().GetList().Range(func(userId, value interface{}) bool {
+		event.Trigger(userId.(uint), channel, id, data)
+		return true
+	})
 }
 
 func (event *Event) Listen(userId uint, clientId uint) chan sse.Event {
