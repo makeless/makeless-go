@@ -44,8 +44,8 @@ func (hub *Hub) DeleteClient(userId uint, clientId uint) {
 		return
 	}
 
-	hub.RLock()
-	defer hub.RUnlock()
+	hub.Lock()
+	defer hub.Unlock()
 
 	close(hub.List[userId][clientId])
 	delete(hub.List[userId], clientId)
