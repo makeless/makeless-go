@@ -12,10 +12,6 @@ type Event struct {
 	*sync.RWMutex
 }
 
-func (event *Event) NewClientId() uint {
-	return uint(time.Now().Unix())
-}
-
 func (event *Event) GetHub() go_saas_event.Hub {
 	event.RLock()
 	defer event.RUnlock()
@@ -23,16 +19,29 @@ func (event *Event) GetHub() go_saas_event.Hub {
 	return event.Hub
 }
 
+func (event *Event) NewClientId() uint {
+	return uint(time.Now().Unix())
+}
+
 func (event *Event) Subscribe(userId uint, clientId uint) {
-	event.GetHub().NewClient(userId, clientId)
+	event.Lock()
+	defer event.Unlock()
+
+	event.Hub.NewClient(userId, clientId)
 }
 
 func (event *Event) Unsubscribe(userId uint, clientId uint) {
-	event.GetHub().DeleteClient(userId, clientId)
+	event.Lock()
+	defer event.Unlock()
+
+	event.Hub.DeleteClient(userId, clientId)
 }
 
 func (event *Event) Trigger(userId uint, channel string, id string, data interface{}) {
-	for _, client := range event.GetHub().GetUser(userId) {
+	event.Lock()
+	defer event.Unlock()
+
+	for _, client := range event.Hub.GetUser(userId) {
 		client <- sse.Event{
 			Event: channel,
 			Retry: 3,
@@ -51,5 +60,8 @@ func (event *Event) Broadcast(channel string, id string, data interface{}) {
 }
 
 func (event *Event) Listen(userId uint, clientId uint) chan sse.Event {
-	return event.GetHub().GetClient(userId, clientId)
+	event.Lock()
+	defer event.Unlock()
+
+	return event.Hub.GetClient(userId, clientId)
 }

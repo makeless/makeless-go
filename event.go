@@ -23,9 +23,7 @@ func (saas *Saas) events(http go_saas_http.Http) error {
 			clientId := http.GetEvent().NewClientId()
 			http.GetEvent().Subscribe(userId, clientId)
 
-			go func() {
-				http.GetEvent().Trigger(userId, "go-saas", "subscribed", clientId)
-			}()
+			go http.GetEvent().Trigger(userId, "go-saas", "subscribed", clientId)
 
 			for {
 				select {

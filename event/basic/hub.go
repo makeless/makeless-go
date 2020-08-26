@@ -21,8 +21,8 @@ func (hub *Hub) GetUser(userId uint) map[uint]chan sse.Event {
 	hub.RLock()
 	defer hub.RUnlock()
 
-	if user, exists := hub.List[userId]; exists {
-		return user
+	if _, exists := hub.List[userId]; exists {
+		return hub.List[userId]
 	}
 
 	return nil
@@ -44,8 +44,8 @@ func (hub *Hub) DeleteClient(userId uint, clientId uint) {
 		return
 	}
 
-	hub.Lock()
-	defer hub.Unlock()
+	hub.RLock()
+	defer hub.RUnlock()
 
 	close(hub.List[userId][clientId])
 	delete(hub.List[userId], clientId)
