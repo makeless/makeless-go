@@ -6,60 +6,53 @@ import (
 )
 
 type Hub struct {
-	List map[uint]map[uint]chan sse.Event
+	List *sync.Map
 	*sync.RWMutex
 }
 
-func (hub *Hub) GetList() map[uint]map[uint]chan sse.Event {
+func (hub *Hub) GetList() *sync.Map {
 	hub.RLock()
 	defer hub.RUnlock()
 
 	return hub.List
 }
 
-func (hub *Hub) GetUser(userId uint) map[uint]chan sse.Event {
-	hub.RLock()
-	defer hub.RUnlock()
-
-	if _, exists := hub.List[userId]; exists {
-		return hub.List[userId]
+func (hub *Hub) GetUser(userId uint) *sync.Map {
+	if user, exists := hub.GetList().Load(userId); exists {
+		return user.(*sync.Map)
 	}
 
 	return nil
 }
 
 func (hub *Hub) GetClient(userId uint, clientId uint) chan sse.Event {
-	if hub.GetUser(userId) == nil {
+	var user = hub.GetUser(userId)
+	var client interface{}
+
+	if user == nil {
 		return nil
 	}
 
-	hub.RLock()
-	defer hub.RUnlock()
+	if client, _ = user.Load(clientId); client == nil {
+		return nil
+	}
 
-	return hub.List[userId][clientId]
+	return client.(chan sse.Event)
 }
 
 func (hub *Hub) DeleteClient(userId uint, clientId uint) {
-	if hub.GetClient(userId, clientId) == nil {
+	var user = hub.GetUser(userId)
+	var client = hub.GetClient(userId, clientId)
+
+	if user == nil || client == nil {
 		return
 	}
 
-	hub.Lock()
-	defer hub.Unlock()
-
-	close(hub.List[userId][clientId])
-	delete(hub.List[userId], clientId)
+	close(client)
+	user.Delete(clientId)
 }
 
 func (hub *Hub) NewClient(userId uint, clientId uint) {
-	if hub.GetUser(userId) == nil {
-		hub.Lock()
-		hub.List[userId] = make(map[uint]chan sse.Event)
-		hub.Unlock()
-	}
-
-	hub.Lock()
-	defer hub.Unlock()
-
-	hub.List[userId][clientId] = make(chan sse.Event)
+	var user, _ = hub.GetList().LoadOrStore(userId, new(sync.Map))
+	user.(*sync.Map).Store(clientId, make(chan sse.Event))
 }

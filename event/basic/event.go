@@ -24,25 +24,16 @@ func (event *Event) NewClientId() uint {
 }
 
 func (event *Event) Subscribe(userId uint, clientId uint) {
-	event.Lock()
-	defer event.Unlock()
-
-	event.Hub.NewClient(userId, clientId)
+	event.GetHub().NewClient(userId, clientId)
 }
 
 func (event *Event) Unsubscribe(userId uint, clientId uint) {
-	event.Lock()
-	defer event.Unlock()
-
-	event.Hub.DeleteClient(userId, clientId)
+	event.GetHub().DeleteClient(userId, clientId)
 }
 
 func (event *Event) Trigger(userId uint, channel string, id string, data interface{}) {
-	event.Lock()
-	defer event.Unlock()
-
-	for _, client := range event.Hub.GetUser(userId) {
-		client <- sse.Event{
+	event.GetHub().GetUser(userId).Range(func(clientId, client interface{}) bool {
+		client.(chan sse.Event) <- sse.Event{
 			Event: channel,
 			Retry: 3,
 			Data: Data{
@@ -51,18 +42,14 @@ func (event *Event) Trigger(userId uint, channel string, id string, data interfa
 				RWMutex: new(sync.RWMutex),
 			},
 		}
-	}
+
+		return true
+	})
 }
 
 func (event *Event) Broadcast(channel string, id string, data interface{}) {
-	for userId := range event.GetHub().GetList() {
-		event.Trigger(userId, channel, id, data)
-	}
 }
 
 func (event *Event) Listen(userId uint, clientId uint) chan sse.Event {
-	event.Lock()
-	defer event.Unlock()
-
-	return event.Hub.GetClient(userId, clientId)
+	return event.GetHub().GetClient(userId, clientId)
 }
