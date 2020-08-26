@@ -103,9 +103,10 @@ func (mailer *Mailer) Send(mail go_saas_mailer.Mail) error {
 
 	for _, attachment := range mail.GetAttachments() {
 		e.Attachments = append(e.Attachments, &email.Attachment{
-			Filename: attachment.GetFilename(),
-			Header:   attachment.GetHeaders(),
-			Content:  attachment.GetData(),
+			Filename:    attachment.GetFilename(),
+			Header:      attachment.GetHeaders(),
+			Content:     attachment.GetData(),
+			HTMLRelated: true,
 		})
 	}
 
