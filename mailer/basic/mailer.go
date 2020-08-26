@@ -106,7 +106,7 @@ func (mailer *Mailer) Send(mail go_saas_mailer.Mail) error {
 			Filename:    attachment.GetFilename(),
 			Header:      attachment.GetHeaders(),
 			Content:     attachment.GetData(),
-			HTMLRelated: true,
+			HTMLRelated: false,
 		})
 	}
 
