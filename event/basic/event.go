@@ -46,8 +46,9 @@ func (event *Event) Trigger(userId uint, channel string, id string, data interfa
 			Event: channel,
 			Retry: 3,
 			Data: Data{
-				Id:   id,
-				Data: data,
+				Id:      id,
+				Data:    data,
+				RWMutex: new(sync.RWMutex),
 			},
 		}
 	}

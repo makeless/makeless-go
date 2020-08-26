@@ -60,5 +60,6 @@ func (hub *Hub) NewClient(userId uint, clientId uint) {
 
 	hub.Lock()
 	defer hub.Unlock()
+
 	hub.List[userId][clientId] = make(chan sse.Event)
 }
