@@ -1,6 +1,7 @@
 package go_saas_mailer_basic
 
 import (
+	"context"
 	"crypto/tls"
 	"fmt"
 	"net/smtp"
@@ -88,7 +89,7 @@ func (mailer *Mailer) Init() error {
 	return nil
 }
 
-func (mailer *Mailer) Send(mail go_saas_mailer.Mail) error {
+func (mailer *Mailer) Send(ctx context.Context, mail go_saas_mailer.Mail) error {
 	var e = &email.Email{
 		To:          mail.GetTo(),
 		Cc:          mail.GetCc(),
