@@ -36,7 +36,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gin-contrib/sse"
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas"
 	"github.com/go-saas/go-saas/authenticator/basic"
@@ -46,6 +45,7 @@ import (
 	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/http/basic"
 	"github.com/go-saas/go-saas/logger/basic"
+	"github.com/go-saas/go-saas/mailer/basic"
 	"github.com/go-saas/go-saas/security/basic"
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -57,6 +57,16 @@ func main() {
 	// config
 	config := &go_saas_config_basic.Config{
 		RWMutex: new(sync.RWMutex),
+	}
+
+	// mailer
+	mailer := &go_saas_mailer_basic.Mailer{
+		Host:     os.Getenv("MAILER_HOST"),
+		Port:     os.Getenv("MAILER_PORT"),
+		Identity: os.Getenv("MAILER_IDENTITY"),
+		Username: os.Getenv("MAILER_USERNAME"),
+		Password: os.Getenv("MAILER_PASSWORD"),
+		RWMutex:  new(sync.RWMutex),
 	}
 
 	// database
@@ -78,7 +88,7 @@ func main() {
 
 	// event hub
 	hub := &go_saas_event_basic.Hub{
-		List:    make(map[uint]map[uint]chan sse.Event),
+		List:    new(sync.Map),
 		RWMutex: new(sync.RWMutex),
 	}
 
@@ -119,6 +129,7 @@ func main() {
 	saas := &go_saas.Saas{
 		Config:   config,
 		Logger:   logger,
+		Mailer:   mailer,
 		Database: database,
 		Http:     http,
 		RWMutex:  new(sync.RWMutex),
