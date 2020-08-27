@@ -39,7 +39,11 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 				return
 			}
 
-			http.GetEvent().Trigger(userId, "go-saas", "team-created", team)
+			if err = http.GetEvent().Trigger(userId, "go-saas", "team-created", team); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
 			c.JSON(h.StatusOK, http.Response(nil, team))
 		},
 	)
@@ -76,7 +80,11 @@ func (saas *Saas) leaveDeleteTeam(http go_saas_http.Http) error {
 				return
 			}
 
-			http.GetEvent().Trigger(userId, "go-saas", "team-leaved-deleted", nil)
+			if err = http.GetEvent().Trigger(userId, "go-saas", "team-leaved-deleted", nil); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
 			c.JSON(h.StatusOK, http.Response(nil, nil))
 		},
 	)

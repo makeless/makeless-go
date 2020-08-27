@@ -22,18 +22,31 @@ func (saas *Saas) events(http go_saas_http.Http) error {
 
 			clientId := http.GetEvent().NewClientId()
 			http.GetEvent().Subscribe(userId, clientId)
-			go http.GetEvent().Trigger(userId, "go-saas", "subscribed", clientId)
+
+			go func() {
+				if err := http.GetEvent().Trigger(userId, "go-saas", "subscribed", clientId); err != nil {
+					panic(err)
+				}
+			}()
 
 			for {
 				select {
 				case event := <-http.GetEvent().Listen(userId, clientId):
-					if err := sse.Encode(w, event); err != nil {
-						http.GetLogger().Println(err.Error())
+					if err := event.GetError(); err != nil {
+						panic(event.GetError())
 					}
+
+					if err := sse.Encode(w, event.GetEvent()); err != nil {
+						panic(err)
+					}
+
 					w.Flush()
 				case <-w.CloseNotify():
 					http.GetEvent().Unsubscribe(userId, clientId)
-					http.GetEvent().Trigger(userId, "go-saas", "unsubscribed", clientId)
+
+					if err := http.GetEvent().Trigger(userId, "go-saas", "unsubscribed", clientId); err != nil {
+						panic(err)
+					}
 				}
 			}
 		},

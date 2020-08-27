@@ -67,6 +67,10 @@ func (saas *Saas) Init(path string) error {
 		return err
 	}
 
+	if err := saas.GetHttp().GetEvent().Init(); err != nil {
+		return err
+	}
+
 	if err := saas.GetDatabase().Connect(); err != nil {
 		return err
 	}
