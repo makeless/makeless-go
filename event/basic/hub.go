@@ -1,7 +1,7 @@
 package go_saas_event_basic
 
 import (
-	"github.com/go-saas/go-saas/event"
+	"github.com/gin-contrib/sse"
 	"sync"
 )
 
@@ -25,7 +25,7 @@ func (hub *Hub) GetUser(userId uint) *sync.Map {
 	return nil
 }
 
-func (hub *Hub) GetClient(userId uint, clientId uint) chan go_saas_event.Channel {
+func (hub *Hub) GetClient(userId uint, clientId uint) chan sse.Event {
 	var user = hub.GetUser(userId)
 	var client interface{}
 
@@ -37,7 +37,7 @@ func (hub *Hub) GetClient(userId uint, clientId uint) chan go_saas_event.Channel
 		return nil
 	}
 
-	return client.(chan go_saas_event.Channel)
+	return client.(chan sse.Event)
 }
 
 func (hub *Hub) DeleteClient(userId uint, clientId uint) {
@@ -54,5 +54,5 @@ func (hub *Hub) DeleteClient(userId uint, clientId uint) {
 
 func (hub *Hub) NewClient(userId uint, clientId uint) {
 	var user, _ = hub.GetList().LoadOrStore(userId, new(sync.Map))
-	user.(*sync.Map).Store(clientId, make(chan go_saas_event.Channel))
+	user.(*sync.Map).Store(clientId, make(chan sse.Event))
 }

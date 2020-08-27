@@ -8,7 +8,8 @@ import (
 )
 
 type Event struct {
-	Hub go_saas_event.Hub
+	Hub   go_saas_event.Hub
+	Error chan error
 	*sync.RWMutex
 }
 
@@ -21,6 +22,13 @@ func (event *Event) GetHub() go_saas_event.Hub {
 	defer event.RUnlock()
 
 	return event.Hub
+}
+
+func (event *Event) GetError() chan error {
+	event.RLock()
+	defer event.RUnlock()
+
+	return event.Error
 }
 
 func (event *Event) NewClientId() uint {
@@ -37,24 +45,24 @@ func (event *Event) Unsubscribe(userId uint, clientId uint) {
 
 func (event *Event) Trigger(userId uint, channel string, id string, data interface{}) error {
 	event.GetHub().GetUser(userId).Range(func(clientId, client interface{}) bool {
-		client.(chan go_saas_event.Channel) <- &Channel{
-			Event: sse.Event{
-				Event: channel,
-				Retry: 3,
-				Data: &EventData{
-					Id:      id,
-					Data:    data,
-					RWMutex: new(sync.RWMutex),
-				},
+		client.(chan sse.Event) <- sse.Event{
+			Event: channel,
+			Retry: 3,
+			Data: &EventData{
+				Id:      id,
+				Data:    data,
+				RWMutex: new(sync.RWMutex),
 			},
-			Error:   nil,
-			RWMutex: new(sync.RWMutex),
 		}
 
 		return true
 	})
 
 	return nil
+}
+
+func (event *Event) TriggerError(err error) {
+	event.GetError() <- err
 }
 
 func (event *Event) Broadcast(channel string, id string, data interface{}) error {
@@ -71,6 +79,10 @@ func (event *Event) Broadcast(channel string, id string, data interface{}) error
 	return err
 }
 
-func (event *Event) Listen(userId uint, clientId uint) chan go_saas_event.Channel {
+func (event *Event) Listen(userId uint, clientId uint) chan sse.Event {
 	return event.GetHub().GetClient(userId, clientId)
+}
+
+func (event *Event) ListenError() chan error {
+	return event.GetError()
 }
