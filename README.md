@@ -45,6 +45,7 @@ import (
 	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/http/basic"
 	"github.com/go-saas/go-saas/logger/basic"
+	"github.com/go-saas/go-saas/mailer"
 	"github.com/go-saas/go-saas/mailer/basic"
 	"github.com/go-saas/go-saas/security/basic"
 	_ "github.com/go-sql-driver/mysql"
@@ -61,6 +62,7 @@ func main() {
 
 	// mailer
 	mailer := &go_saas_mailer_basic.Mailer{
+		Handlers: make(map[string]func(data map[string]interface{}) (go_saas_mailer.Mail, error)),
 		Host:     os.Getenv("MAILER_HOST"),
 		Port:     os.Getenv("MAILER_PORT"),
 		Identity: os.Getenv("MAILER_IDENTITY"),
@@ -95,6 +97,7 @@ func main() {
 	// event
 	event := &go_saas_event_basic.Event{
 		Hub:     hub,
+		Error:   make(chan error),
 		RWMutex: new(sync.RWMutex),
 	}
 
@@ -118,6 +121,7 @@ func main() {
 		Authenticator: authenticator,
 		Security:      security,
 		Database:      database,
+		Mailer:        mailer,
 		Tls:           nil,
 		Origins:       strings.Split(os.Getenv("ORIGINS"), ","),
 		Headers:       []string{"Team"},
@@ -155,19 +159,31 @@ go-saas.json
   "logo": null,
   "locale": "en",
   "host": "http://localhost:3000",
+  "mail": "info@example.com",
   "tokens": true,
   "teams": {
-    "tokens": false
+    "tokens": true
   },
   "navigation": {
     "left": {
       "en": [
-        {"label": "Dashboard","to": "dashboard"}
+        {
+          "label": "Dashboard",
+          "to": "dashboard"
+        }
       ]
     },
     "right": {
       "en": [
-        {"label": "Login","to": "login"}
+        {
+          "label": "GitHub",
+          "to": "https://github.com/go-saas",
+          "external": true
+        },
+        {
+          "label": "Login",
+          "to": "login"
+        }
       ]
     }
   }
