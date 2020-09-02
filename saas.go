@@ -58,6 +58,10 @@ func (saas *Saas) SetRoute(name string, handler func(http go_saas_http.Http) err
 	saas.GetHttp().SetHandler(name, handler)
 }
 
+func (saas *Saas) SetMail(name string, handler func(data map[string]interface{}) (go_saas_mailer.Mail, error)) {
+	saas.GetMailer().SetHandler(name, handler)
+}
+
 func (saas *Saas) Init(path string) error {
 	if err := saas.GetConfig().Load(path); err != nil {
 		return err
@@ -84,6 +88,7 @@ func (saas *Saas) Init(path string) error {
 	}
 
 	saas.SetRoute("ok", saas.ok)
+	saas.SetRoute("passwordRequest", saas.passwordRequest)
 	saas.SetRoute("register", saas.register)
 	saas.SetRoute("login", saas.login)
 	saas.SetRoute("logout", saas.logout)
@@ -114,6 +119,8 @@ func (saas *Saas) Init(path string) error {
 			saas.SetRoute("deleteTokenTeam", saas.deleteTokenTeam)
 		}
 	}
+
+	saas.SetMail("passwordRequest", saas.mailPasswordRequest)
 
 	return nil
 }

@@ -8,5 +8,6 @@ func (database *Database) Migrate() error {
 		new(go_saas_model.Token),
 		new(go_saas_model.TeamUser),
 		new(go_saas_model.Team),
+		new(go_saas_model.PasswordRequest),
 	).Error
 }
