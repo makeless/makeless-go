@@ -12,6 +12,7 @@ import (
 )
 
 type Mailer struct {
+	Handlers map[string]func(data map[string]interface{}) (go_saas_mailer.Mail, error)
 	Auth     smtp.Auth
 	Tls      *tls.Config
 	Host     string
@@ -20,6 +21,43 @@ type Mailer struct {
 	Username string
 	Password string
 	*sync.RWMutex
+}
+
+func (mailer *Mailer) GetHandlers() map[string]func(data map[string]interface{}) (go_saas_mailer.Mail, error) {
+	mailer.RLock()
+	defer mailer.RUnlock()
+
+	return mailer.Handlers
+}
+
+func (mailer *Mailer) GetHandler(name string) (func(data map[string]interface{}) (go_saas_mailer.Mail, error), error) {
+	mailer.RLock()
+	defer mailer.RUnlock()
+
+	handler, exists := mailer.Handlers[name]
+
+	if !exists {
+		return nil, go_saas_mailer.MailNotExistsErr
+	}
+
+	return handler, nil
+}
+
+func (mailer *Mailer) SetHandler(name string, handler func(data map[string]interface{}) (go_saas_mailer.Mail, error)) {
+	mailer.Lock()
+	defer mailer.Unlock()
+
+	mailer.Handlers[name] = handler
+}
+
+func (mailer *Mailer) GetMail(name string, data map[string]interface{}) (go_saas_mailer.Mail, error) {
+	handler, err := mailer.GetHandler(name)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return handler(data)
 }
 
 func (mailer *Mailer) GetAuth() smtp.Auth {

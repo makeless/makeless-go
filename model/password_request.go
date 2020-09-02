@@ -6,9 +6,11 @@ import (
 )
 
 type PasswordRequest struct {
-	Email  *string   `gorm:"not null" json:"email"`
-	Token  *string   `gorm:"not null" json:"-"`
-	Expire time.Time `gorm:"not null" json:"expire"`
+	Email  *string    `gorm:"not null" json:"email"`
+	Token  *string    `gorm:"not null" json:"-"`
+	Expire *time.Time `gorm:"not null" json:"expire"`
+	Used   *bool      `gorm:"not null" json:"used"`
+
 	*sync.RWMutex
 }
 
@@ -26,7 +28,7 @@ func (passwordRequest PasswordRequest) GetToken() *string {
 	return passwordRequest.Token
 }
 
-func (passwordRequest PasswordRequest) GetExpire() time.Time {
+func (passwordRequest PasswordRequest) GetExpire() *time.Time {
 	passwordRequest.RLock()
 	defer passwordRequest.RUnlock()
 

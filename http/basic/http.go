@@ -7,6 +7,7 @@ import (
 	"github.com/go-saas/go-saas/event"
 	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/logger"
+	go_saas_mailer "github.com/go-saas/go-saas/mailer"
 	"github.com/go-saas/go-saas/security"
 	"github.com/go-saas/go-saas/tls"
 	"sync"
@@ -20,6 +21,7 @@ type Http struct {
 	Authenticator go_saas_authenticator.Authenticator
 	Security      go_saas_security.Security
 	Database      go_saas_database.Database
+	Mailer        go_saas_mailer.Mailer
 	Tls           go_saas_tls.Tls
 	Origins       []string
 	Headers       []string
@@ -75,6 +77,13 @@ func (http *Http) GetDatabase() go_saas_database.Database {
 	defer http.RUnlock()
 
 	return http.Database
+}
+
+func (http *Http) GetMailer() go_saas_mailer.Mailer {
+	http.RLock()
+	defer http.RUnlock()
+
+	return http.Mailer
 }
 
 func (http *Http) GetTls() go_saas_tls.Tls {

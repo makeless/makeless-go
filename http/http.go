@@ -6,6 +6,7 @@ import (
 	"github.com/go-saas/go-saas/database"
 	"github.com/go-saas/go-saas/event"
 	"github.com/go-saas/go-saas/logger"
+	go_saas_mailer "github.com/go-saas/go-saas/mailer"
 	"github.com/go-saas/go-saas/security"
 	"github.com/go-saas/go-saas/tls"
 )
@@ -18,6 +19,7 @@ type Http interface {
 	GetAuthenticator() go_saas_authenticator.Authenticator
 	GetSecurity() go_saas_security.Security
 	GetDatabase() go_saas_database.Database
+	GetMailer() go_saas_mailer.Mailer
 	GetTls() go_saas_tls.Tls
 	GetOrigins() []string
 	GetHeaders() []string

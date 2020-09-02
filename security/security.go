@@ -10,7 +10,6 @@ type Security interface {
 	UserExists(field string, value string) (bool, error)
 	Login(field string, value string, password string) (*go_saas_model.User, error)
 	Register(user *go_saas_model.User) (*go_saas_model.User, error)
-	TokenLogin(value string) (*go_saas_model.User, *go_saas_model.Team, error)
 	EncryptPassword(password string) (string, error)
 	ComparePassword(userPassword string, password string) error
 	IsTeamUser(teamId uint, userId uint) (bool, error)
