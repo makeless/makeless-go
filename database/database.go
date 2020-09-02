@@ -11,6 +11,7 @@ type Database interface {
 
 	User
 	Password
+	PasswordRequest
 	Team
 	Member
 	Profile

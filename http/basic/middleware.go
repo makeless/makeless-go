@@ -52,7 +52,7 @@ func (http *Http) TeamMemberMiddleware() gin.HandlerFunc {
 func (http *Http) TeamRoleMiddleware(role string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var err error
-		var teamOwner bool
+		var teamRole bool
 		var teamId int
 		var userId = http.GetAuthenticator().GetAuthUserId(c)
 
@@ -66,13 +66,13 @@ func (http *Http) TeamRoleMiddleware(role string) gin.HandlerFunc {
 			return
 		}
 
-		if teamOwner, err = http.GetSecurity().IsTeamRole(role, uint(teamId), userId); err != nil {
+		if teamRole, err = http.GetSecurity().IsTeamRole(role, uint(teamId), userId); err != nil {
 			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 			return
 		}
 
-		if !teamOwner {
-			c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(go_saas_security.NoTeamOwnerError, nil))
+		if !teamRole {
+			c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(go_saas_security.NoTeamRoleError, nil))
 			return
 		}
 
@@ -103,7 +103,7 @@ func (http *Http) TeamCreatorMiddleware() gin.HandlerFunc {
 		}
 
 		if !teamCreator {
-			c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(go_saas_security.NoTeamOwnerError, nil))
+			c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(go_saas_security.NoTeamCreatorError, nil))
 			return
 		}
 

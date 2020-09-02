@@ -7,6 +7,7 @@ import (
 
 type Security interface {
 	GetDatabase() go_saas_database.Database
+	UserExists(field string, value string) (bool, error)
 	Login(field string, value string, password string) (*go_saas_model.User, error)
 	Register(user *go_saas_model.User) (*go_saas_model.User, error)
 	TokenLogin(value string) (*go_saas_model.User, *go_saas_model.Team, error)

@@ -4,6 +4,7 @@ import (
 	"github.com/appleboy/gin-jwt/v2"
 	"github.com/go-saas/go-saas/database"
 	"github.com/go-saas/go-saas/model"
+	"github.com/jinzhu/gorm"
 	"sync"
 )
 
@@ -49,4 +50,17 @@ func (security *Security) Register(user *go_saas_model.User) (*go_saas_model.Use
 	}
 
 	return user, nil
+}
+
+func (security *Security) UserExists(field string, value string) (bool, error) {
+	_, err := security.GetDatabase().GetUserByField(new(go_saas_model.User), field, value)
+
+	switch err {
+	case gorm.ErrRecordNotFound:
+		return false, nil
+	case nil:
+		return true, nil
+	default:
+		return false, err
+	}
 }
