@@ -17,7 +17,10 @@ func (saas *Saas) passwordRequest(http go_saas_http.Http) error {
 		func(c *gin.Context) {
 			var err error
 			var userExists bool
+			var token string
 			var mail go_saas_mailer.Mail
+			var tokenExpire = time.Now().Add(time.Hour * 1)
+			var tokenUsed = false
 			var tmpPasswordRequest = &_struct.PasswordRequest{
 				RWMutex: new(sync.RWMutex),
 			}
@@ -37,14 +40,16 @@ func (saas *Saas) passwordRequest(http go_saas_http.Http) error {
 				return
 			}
 
-			var test = "123"
-			var used = false
-			var expire = time.Now().Add(time.Hour * 1)
+			if token, err = http.GetSecurity().GenerateToken(32); err != nil {
+				c.AbortWithStatusJSON(h.StatusOK, http.Response(nil, nil))
+				return
+			}
+
 			var passwordRequest = &go_saas_model.PasswordRequest{
 				Email:   tmpPasswordRequest.GetEmail(),
-				Token:   &test,
-				Expire:  &expire,
-				Used:    &used,
+				Token:   &token,
+				Expire:  &tokenExpire,
+				Used:    &tokenUsed,
 				RWMutex: new(sync.RWMutex),
 			}
 
