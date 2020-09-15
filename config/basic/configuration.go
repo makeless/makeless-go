@@ -10,7 +10,7 @@ type Configuration struct {
 	Logo   string              `json:"logo"`
 	Locale string              `json:"locale"`
 	Host   string              `json:"host"`
-	Mail   string              `json:"mail"`
+	Mail   go_saas_config.Mail `json:"mail"`
 	Tokens bool                `json:"tokens"`
 	Teams  go_saas_config.Team `json:"teams"`
 	*sync.RWMutex
@@ -44,7 +44,7 @@ func (configuration *Configuration) GetHost() string {
 	return configuration.Host
 }
 
-func (configuration *Configuration) GetMail() string {
+func (configuration *Configuration) GetMail() go_saas_config.Mail {
 	configuration.RLock()
 	defer configuration.RUnlock()
 

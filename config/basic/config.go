@@ -21,13 +21,19 @@ func (config *Config) Load(path string) error {
 	var bytes []byte
 	var file *os.File
 
+	var mail = &Mail{
+		Texts:   make(map[string]*MailText),
+		RWMutex: new(sync.RWMutex),
+	}
+
 	var team = &Team{
 		RWMutex: new(sync.RWMutex),
 	}
 
 	var configuration = &Configuration{
-		RWMutex: new(sync.RWMutex),
+		Mail:    mail,
 		Teams:   team,
+		RWMutex: new(sync.RWMutex),
 	}
 
 	if file, err = os.Open(path); err != nil {
@@ -44,6 +50,10 @@ func (config *Config) Load(path string) error {
 
 	if err := json.Unmarshal(bytes, &configuration); err != nil {
 		return err
+	}
+
+	for locale := range mail.Texts {
+		mail.Texts[locale].RWMutex = new(sync.RWMutex)
 	}
 
 	config.Configuration = configuration

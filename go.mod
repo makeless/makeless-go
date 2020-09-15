@@ -25,10 +25,10 @@ require (
 	github.com/mitchellh/copystructure v1.0.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/olekukonko/tablewriter v0.0.4 // indirect
+	github.com/ugorji/go v1.1.8 // indirect
 	github.com/vanng822/css v0.1.0 // indirect
-	github.com/vanng822/go-premailer v1.8.0 // indirect
+	github.com/vanng822/go-premailer v1.9.0 // indirect
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
-	golang.org/x/net v0.0.0-20200822124328-c89045814202 // indirect
-	golang.org/x/sys v0.0.0-20200831180312-196b9ba8737a // indirect
+	golang.org/x/sys v0.0.0-20200915084602-288bc346aa39 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
 )
