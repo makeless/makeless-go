@@ -41,7 +41,8 @@ func (saas *Saas) mailPasswordRequest(data map[string]interface{}) (go_saas_mail
 					Button: hermes.Button{
 						Text: messages[saas.GetConfig().GetConfiguration().GetLocale()]["button"],
 						Link: fmt.Sprintf(
-							"/password-reset?token=%s",
+							"%s/password-reset?token=%s",
+							saas.GetConfig().GetConfiguration().GetMail().GetLink(),
 							*passwordRequest.GetToken(),
 						),
 						Color:     saas.GetConfig().GetConfiguration().GetMail().GetButtonColor(),
