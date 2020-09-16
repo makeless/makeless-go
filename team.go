@@ -67,9 +67,9 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 					return
 				}
 
-				var tmpTeamId = team.GetId()
+				var teamId = team.GetId()
 				tmpInvitations[i] = &go_saas_model.TeamInvitation{
-					TeamId:   &tmpTeamId,
+					TeamId:   &teamId,
 					UserId:   &userId,
 					Email:    invitation.GetEmail(),
 					Token:    &token,
