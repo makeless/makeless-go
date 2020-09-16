@@ -2,10 +2,11 @@ package go_saas_database_basic
 
 import (
 	"github.com/go-saas/go-saas/model"
+	"github.com/jinzhu/gorm"
 )
 
-func (database *Database) GetTokens(user *go_saas_model.User, tokens []*go_saas_model.Token) ([]*go_saas_model.Token, error) {
-	return tokens, database.GetConnection().
+func (database *Database) GetTokens(connection *gorm.DB, user *go_saas_model.User, tokens []*go_saas_model.Token) ([]*go_saas_model.Token, error) {
+	return tokens, connection.
 		Select([]string{
 			"tokens.id",
 			"tokens.note",
@@ -19,14 +20,14 @@ func (database *Database) GetTokens(user *go_saas_model.User, tokens []*go_saas_
 		Error
 }
 
-func (database *Database) CreateToken(token *go_saas_model.Token) (*go_saas_model.Token, error) {
-	return token, database.GetConnection().
+func (database *Database) CreateToken(connection *gorm.DB, token *go_saas_model.Token) (*go_saas_model.Token, error) {
+	return token, connection.
 		Create(&token).
 		Error
 }
 
-func (database *Database) DeleteToken(token *go_saas_model.Token) error {
-	return database.GetConnection().
+func (database *Database) DeleteToken(connection *gorm.DB, token *go_saas_model.Token) error {
+	return connection.
 		Unscoped().
 		Where("tokens.id = ? AND tokens.user_id = ? AND tokens.team_id IS NULL", token.GetId(), token.GetUserId()).
 		Delete(&token).

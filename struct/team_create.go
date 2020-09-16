@@ -3,7 +3,8 @@ package _struct
 import "sync"
 
 type TeamCreate struct {
-	Name *string `json:"name" binding:"required,min=4,max=50"`
+	Name        *string           `json:"name" binding:"required,min=4,max=50"`
+	Invitations []*TeamInvitation `json:"invitations" binding:"dive"`
 	*sync.RWMutex
 }
 
@@ -12,4 +13,11 @@ func (teamCreate *TeamCreate) GetName() *string {
 	defer teamCreate.RUnlock()
 
 	return teamCreate.Name
+}
+
+func (teamCreate *TeamCreate) GetInvitations() []*TeamInvitation {
+	teamCreate.RLock()
+	defer teamCreate.RUnlock()
+
+	return teamCreate.Invitations
 }

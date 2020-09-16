@@ -23,7 +23,7 @@ func (saas *Saas) tokens(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if tokens, err = http.GetDatabase().GetTokens(user, tokens); err != nil {
+			if tokens, err = http.GetDatabase().GetTokens(http.GetDatabase().GetConnection(), user, tokens); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -58,7 +58,7 @@ func (saas *Saas) createToken(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if token, err = http.GetDatabase().CreateToken(token); err != nil {
+			if token, err = http.GetDatabase().CreateToken(http.GetDatabase().GetConnection(), token); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -92,7 +92,7 @@ func (saas *Saas) deleteToken(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err = http.GetDatabase().DeleteToken(token); err != nil {
+			if err = http.GetDatabase().DeleteToken(http.GetDatabase().GetConnection(), token); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

@@ -34,7 +34,7 @@ func (saas *Saas) passwordReset(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if passwordRequest, err = http.GetDatabase().GetPasswordRequest(passwordRequest); err != nil {
+			if passwordRequest, err = http.GetDatabase().GetPasswordRequest(http.GetDatabase().GetConnection(), passwordRequest); err != nil {
 				switch err {
 				case gorm.ErrRecordNotFound:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
@@ -55,12 +55,12 @@ func (saas *Saas) passwordReset(http go_saas_http.Http) error {
 			}
 
 			g.Go(func() error {
-				_, err := http.GetDatabase().UpdatePassword(user, bcrypted)
+				_, err := http.GetDatabase().UpdatePassword(http.GetDatabase().GetConnection(), user, bcrypted)
 				return err
 			})
 
 			g.Go(func() error {
-				_, err := http.GetDatabase().UpdatePasswordRequest(passwordRequest)
+				_, err := http.GetDatabase().UpdatePasswordRequest(http.GetDatabase().GetConnection(), passwordRequest)
 				return err
 			})
 

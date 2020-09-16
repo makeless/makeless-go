@@ -21,7 +21,7 @@ func (saas *Saas) user(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if user, err = http.GetDatabase().GetUser(user); err != nil {
+			if user, err = http.GetDatabase().GetUser(http.GetDatabase().GetConnection(), user); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

@@ -26,7 +26,7 @@ func (security *Security) Login(field string, value string, password string) (*g
 		RWMutex: new(sync.RWMutex),
 	}
 
-	if user, err = security.GetDatabase().GetUserByField(user, field, value); err != nil {
+	if user, err = security.GetDatabase().GetUserByField(security.GetDatabase().GetConnection(), user, field, value); err != nil {
 		return nil, jwt.ErrFailedAuthentication
 	}
 
@@ -45,7 +45,7 @@ func (security *Security) Register(user *go_saas_model.User) (*go_saas_model.Use
 	}
 
 	user.SetPassword(encrypted)
-	if user, err = security.GetDatabase().CreateUser(user); err != nil {
+	if user, err = security.GetDatabase().CreateUser(security.GetDatabase().GetConnection(), user); err != nil {
 		return nil, err
 	}
 
@@ -53,7 +53,7 @@ func (security *Security) Register(user *go_saas_model.User) (*go_saas_model.Use
 }
 
 func (security *Security) UserExists(field string, value string) (bool, error) {
-	_, err := security.GetDatabase().GetUserByField(new(go_saas_model.User), field, value)
+	_, err := security.GetDatabase().GetUserByField(security.GetDatabase().GetConnection(), new(go_saas_model.User), field, value)
 
 	switch err {
 	case gorm.ErrRecordNotFound:
@@ -64,4 +64,3 @@ func (security *Security) UserExists(field string, value string) (bool, error) {
 		return false, err
 	}
 }
-

@@ -16,3 +16,10 @@ type TeamUser struct {
 
 	*sync.RWMutex
 }
+
+func (teamUser *TeamUser) GetUser() *User {
+	teamUser.RLock()
+	defer teamUser.RUnlock()
+
+	return teamUser.User
+}

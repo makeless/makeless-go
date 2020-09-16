@@ -25,7 +25,7 @@ func (saas *Saas) membersTeam(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if users, err = http.GetDatabase().MembersTeam(c.Query("search"), users, team); err != nil {
+			if users, err = http.GetDatabase().MembersTeam(http.GetDatabase().GetConnection(), c.Query("search"), users, team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -63,7 +63,7 @@ func (saas *Saas) removeMemberTeam(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err = http.GetDatabase().DeleteTeamUser(user, team); err != nil {
+			if err = http.GetDatabase().DeleteTeamUser(http.GetDatabase().GetConnection(), user, team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
