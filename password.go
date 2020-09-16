@@ -41,7 +41,7 @@ func (saas *Saas) updatePassword(http go_saas_http.Http) error {
 				return
 			}
 
-			if err = http.GetDatabase().UpdatePassword(user, bcrypted); err != nil {
+			if _, err = http.GetDatabase().UpdatePassword(user, bcrypted); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

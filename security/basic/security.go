@@ -64,3 +64,4 @@ func (security *Security) UserExists(field string, value string) (bool, error) {
 		return false, err
 	}
 }
+

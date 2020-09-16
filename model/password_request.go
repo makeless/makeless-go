@@ -6,8 +6,9 @@ import (
 )
 
 type PasswordRequest struct {
+	Model
 	Email  *string    `gorm:"not null" json:"email"`
-	Token  *string    `gorm:"not null" json:"-"`
+	Token  *string    `gorm:"unique;not null" json:"-"`
 	Expire *time.Time `gorm:"not null" json:"expire"`
 	Used   *bool      `gorm:"not null" json:"used"`
 

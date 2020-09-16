@@ -89,6 +89,7 @@ func (saas *Saas) Init(path string) error {
 
 	saas.SetRoute("ok", saas.ok)
 	saas.SetRoute("passwordRequest", saas.passwordRequest)
+	saas.SetRoute("passwordReset", saas.passwordReset)
 	saas.SetRoute("register", saas.register)
 	saas.SetRoute("login", saas.login)
 	saas.SetRoute("logout", saas.logout)
