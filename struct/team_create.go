@@ -4,7 +4,7 @@ import "sync"
 
 type TeamCreate struct {
 	Name        *string           `json:"name" binding:"required,min=4,max=50"`
-	Invitations []*TeamInvitation `json:"invitations" binding:"dive"`
+	Invitations []*TeamInvitation `json:"invitations" binding:"max=5,dive"`
 	*sync.RWMutex
 }
 

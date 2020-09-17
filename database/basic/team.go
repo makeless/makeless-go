@@ -5,10 +5,16 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// CreateTeam creates team and retrieves the new team with all their users
+// CreateTeam creates team
 func (database *Database) CreateTeam(connection *gorm.DB, team *go_saas_model.Team) (*go_saas_model.Team, error) {
 	return team, connection.
 		Create(team).
+		Error
+}
+
+// CreateTeam retrieves team
+func (database *Database) GetTeam(connection *gorm.DB, team *go_saas_model.Team) (*go_saas_model.Team, error) {
+	return team, connection.
 		Preload("TeamUsers.Team").
 		Preload("TeamUsers.User", func(db *gorm.DB) *gorm.DB {
 			return db.Select("users.id, users.name, users.email")

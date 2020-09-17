@@ -1,6 +1,7 @@
 package go_saas
 
 import (
+	"database/sql"
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/model"
@@ -18,6 +19,7 @@ func (saas *Saas) passwordReset(http go_saas_http.Http) error {
 			var err error
 			var bcrypted string
 			var user *go_saas_model.User
+			var tx = http.GetDatabase().GetConnection().BeginTx(c, new(sql.TxOptions))
 			var g = new(errgroup.Group)
 			var token = c.Query("token")
 			var passwordReset = &_struct.PasswordReset{
@@ -55,16 +57,21 @@ func (saas *Saas) passwordReset(http go_saas_http.Http) error {
 			}
 
 			g.Go(func() error {
-				_, err := http.GetDatabase().UpdatePassword(http.GetDatabase().GetConnection(), user, bcrypted)
+				_, err := http.GetDatabase().UpdatePassword(tx, user, bcrypted)
 				return err
 			})
 
 			g.Go(func() error {
-				_, err := http.GetDatabase().UpdatePasswordRequest(http.GetDatabase().GetConnection(), passwordRequest)
+				_, err := http.GetDatabase().UpdatePasswordRequest(tx, passwordRequest)
 				return err
 			})
 
 			if err := g.Wait(); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			if err := tx.Commit().Error; err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

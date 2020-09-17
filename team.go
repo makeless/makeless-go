@@ -46,6 +46,12 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 				return
 			}
 
+			if team, err = http.GetDatabase().GetTeam(tx, team); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			var teamId = team.GetId()
 			var tmpInvitations = make([]*go_saas_model.TeamInvitation, len(teamCreate.GetInvitations()))
 			var index = make(map[string]bool, len(team.GetTeamUsers()))
 			for _, teamUser := range team.GetTeamUsers() {
@@ -67,7 +73,6 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 					return
 				}
 
-				var teamId = team.GetId()
 				tmpInvitations[i] = &go_saas_model.TeamInvitation{
 					TeamId:   &teamId,
 					UserId:   &userId,
@@ -108,6 +113,7 @@ func (saas *Saas) leaveDeleteTeam(http go_saas_http.Http) error {
 		http.TeamMemberMiddleware(),
 		func(c *gin.Context) {
 			var err error
+			var tx = http.GetDatabase().GetConnection().BeginTx(c, new(sql.TxOptions))
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
 			var teamId, _ = strconv.Atoi(c.GetHeader("Team"))
 			var user = &go_saas_model.User{
@@ -119,12 +125,17 @@ func (saas *Saas) leaveDeleteTeam(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err = http.GetDatabase().DeleteTeamUser(http.GetDatabase().GetConnection(), user, team); err != nil {
+			if err = http.GetDatabase().DeleteTeamUser(tx, user, team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
 
-			if err = http.GetDatabase().DeleteTeam(http.GetDatabase().GetConnection(), user, team); err != nil {
+			if err = http.GetDatabase().DeleteTeam(tx, user, team); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			if err = tx.Commit().Error; err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
