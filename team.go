@@ -1,16 +1,20 @@
 package go_saas
 
 import (
-	"database/sql"
-	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas/http"
-	"github.com/go-saas/go-saas/model"
-	"github.com/go-saas/go-saas/security"
-	"github.com/go-saas/go-saas/struct"
+	"fmt"
+	"github.com/jinzhu/gorm"
 	h "net/http"
 	"strconv"
 	"sync"
 	"time"
+
+	"database/sql"
+	"github.com/gin-gonic/gin"
+	"github.com/go-saas/go-saas/http"
+	"github.com/go-saas/go-saas/mailer"
+	"github.com/go-saas/go-saas/model"
+	"github.com/go-saas/go-saas/security"
+	"github.com/go-saas/go-saas/struct"
 )
 
 func (saas *Saas) createTeam(http go_saas_http.Http) error {
@@ -23,6 +27,10 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 			var tx = http.GetDatabase().GetConnection().BeginTx(c, new(sql.TxOptions))
 			var teamInvitationExpire = time.Now().Add(time.Hour * 24 * 7)
 			var teamInvitationAccepted = false
+			var user = &go_saas_model.User{
+				Model:   go_saas_model.Model{Id: userId},
+				RWMutex: new(sync.RWMutex),
+			}
 			var teamCreate = &_struct.TeamCreate{
 				RWMutex: new(sync.RWMutex),
 			}
@@ -32,38 +40,25 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 				return
 			}
 
-			var team = &go_saas_model.Team{
-				Name:   teamCreate.GetName(),
-				UserId: &userId,
-				TeamUsers: []*go_saas_model.TeamUser{
-					{UserId: &userId, Role: &go_saas_security.RoleTeamOwner, RWMutex: new(sync.RWMutex)},
-				},
-				RWMutex: new(sync.RWMutex),
-			}
-
-			if team, err = http.GetDatabase().CreateTeam(tx, team); err != nil {
+			if user, err = http.GetDatabase().GetUserByField(tx, user, "id", fmt.Sprintf("%d", user.GetId())); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
 
-			if team, err = http.GetDatabase().GetTeam(tx, team); err != nil {
-				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
-				return
+			var teamInvitations = make([]*go_saas_model.TeamInvitation, len(teamCreate.GetInvitations()))
+			var index = map[string]bool{
+				*user.GetEmail(): true,
 			}
 
-			var teamId = team.GetId()
-			var tmpInvitations = make([]*go_saas_model.TeamInvitation, len(teamCreate.GetInvitations()))
-			var index = make(map[string]bool, len(team.GetTeamUsers()))
-			for _, teamUser := range team.GetTeamUsers() {
-				teamUser.RWMutex, teamUser.User.RWMutex = new(sync.RWMutex), new(sync.RWMutex)
-				index[*teamUser.GetUser().GetEmail()] = true
-			}
-
-			for i, invitation := range teamCreate.GetInvitations() {
+			for i, teamInvitation := range teamCreate.GetInvitations() {
+				var mail go_saas_mailer.Mail
 				var token string
-				invitation.RWMutex = new(sync.RWMutex)
+				var userInvited = &go_saas_model.User{
+					RWMutex: new(sync.RWMutex),
+				}
+				teamInvitation.RWMutex = new(sync.RWMutex)
 
-				if _, exists := index[*invitation.GetEmail()]; exists {
+				if _, exists := index[*teamInvitation.GetEmail()]; exists {
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(nil, nil))
 					return
 				}
@@ -73,18 +68,52 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 					return
 				}
 
-				tmpInvitations[i] = &go_saas_model.TeamInvitation{
-					TeamId:   &teamId,
+				teamInvitations[i] = &go_saas_model.TeamInvitation{
 					UserId:   &userId,
-					Email:    invitation.GetEmail(),
+					Email:    teamInvitation.GetEmail(),
 					Token:    &token,
 					Expire:   &teamInvitationExpire,
 					Accepted: &teamInvitationAccepted,
 					RWMutex:  new(sync.RWMutex),
 				}
+
+				if userInvited, err = http.GetDatabase().GetUserByField(tx, userInvited, "email", *teamInvitations[i].GetEmail()); err != nil && err != gorm.ErrRecordNotFound {
+					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+					return
+				}
+
+				if mail, err = http.GetMailer().GetMail("teamInvitation", map[string]interface{}{
+					"user":           user,
+					"userInvited":    userInvited,
+					"teamName":       *teamCreate.GetName(),
+					"teamInvitation": teamInvitations[i],
+				}); err != nil {
+					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+					return
+				}
+
+				if err = http.GetMailer().Send(c, mail); err != nil {
+					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+					return
+				}
 			}
 
-			if team, err = http.GetDatabase().AddTeamInvitations(tx, team, tmpInvitations); err != nil {
+			var team = &go_saas_model.Team{
+				Name:   teamCreate.GetName(),
+				UserId: &userId,
+				TeamUsers: []*go_saas_model.TeamUser{
+					{UserId: &userId, Role: &go_saas_security.RoleTeamOwner, RWMutex: new(sync.RWMutex)},
+				},
+				TeamInvitations: teamInvitations,
+				RWMutex:         new(sync.RWMutex),
+			}
+
+			if team, err = http.GetDatabase().CreateTeam(tx, team); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			if team, err = http.GetDatabase().GetTeam(tx, team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

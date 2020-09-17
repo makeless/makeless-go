@@ -122,6 +122,7 @@ func (saas *Saas) Init(path string) error {
 	}
 
 	saas.SetMail("passwordRequest", saas.mailPasswordRequest)
+	saas.SetMail("teamInvitation", saas.mailTeamInvitation)
 
 	return nil
 }

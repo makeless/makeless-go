@@ -20,3 +20,31 @@ type TeamInvitation struct {
 
 	*sync.RWMutex
 }
+
+func (teamInvitation *TeamInvitation) GetTeam() *Team {
+	teamInvitation.RLock()
+	defer teamInvitation.RUnlock()
+
+	return teamInvitation.Team
+}
+
+func (teamInvitation *TeamInvitation) GetUser() *User {
+	teamInvitation.RLock()
+	defer teamInvitation.RUnlock()
+
+	return teamInvitation.User
+}
+
+func (teamInvitation *TeamInvitation) GetEmail() *string {
+	teamInvitation.RLock()
+	defer teamInvitation.RUnlock()
+
+	return teamInvitation.Email
+}
+
+func (teamInvitation *TeamInvitation) GetToken() *string {
+	teamInvitation.RLock()
+	defer teamInvitation.RUnlock()
+
+	return teamInvitation.Token
+}
