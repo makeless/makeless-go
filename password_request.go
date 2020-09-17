@@ -53,7 +53,7 @@ func (saas *Saas) passwordRequest(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err = http.GetDatabase().CreatePasswordRequest(passwordRequest); err != nil {
+			if err = http.GetDatabase().CreatePasswordRequest(http.GetDatabase().GetConnection(), passwordRequest); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

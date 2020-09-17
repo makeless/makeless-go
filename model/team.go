@@ -9,7 +9,8 @@ type Team struct {
 	UserId *uint `gorm:"not null" json:"userId"`
 	User   *User `json:"user"`
 
-	TeamUsers []*TeamUser `json:"teamUsers"`
+	TeamUsers       []*TeamUser       `json:"teamUsers"`
+	TeamInvitations []*TeamInvitation `json:"teamInvitations"`
 
 	*sync.RWMutex
 }
@@ -47,4 +48,11 @@ func (team *Team) GetTeamUsers() []*TeamUser {
 	defer team.RUnlock()
 
 	return team.TeamUsers
+}
+
+func (team *Team) GetTeamInvitations() []*TeamInvitation {
+	team.RLock()
+	defer team.RUnlock()
+
+	return team.TeamInvitations
 }

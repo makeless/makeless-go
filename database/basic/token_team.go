@@ -5,8 +5,8 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-func (database *Database) GetTokensTeam(team *go_saas_model.Team, tokens []*go_saas_model.Token) ([]*go_saas_model.Token, error) {
-	return tokens, database.GetConnection().
+func (database *Database) GetTokensTeam(connection *gorm.DB, team *go_saas_model.Team, tokens []*go_saas_model.Token) ([]*go_saas_model.Token, error) {
+	return tokens, connection.
 		Preload("User", func(db *gorm.DB) *gorm.DB {
 			return db.Select("users.id, users.name, users.email")
 		}).
@@ -24,8 +24,8 @@ func (database *Database) GetTokensTeam(team *go_saas_model.Team, tokens []*go_s
 		Error
 }
 
-func (database *Database) CreateTokenTeam(token *go_saas_model.Token) (*go_saas_model.Token, error) {
-	return token, database.GetConnection().
+func (database *Database) CreateTokenTeam(connection *gorm.DB, token *go_saas_model.Token) (*go_saas_model.Token, error) {
+	return token, connection.
 		Create(token).
 		Preload("User", func(db *gorm.DB) *gorm.DB {
 			return db.Select("users.id, users.name, users.email")
@@ -34,8 +34,8 @@ func (database *Database) CreateTokenTeam(token *go_saas_model.Token) (*go_saas_
 		Error
 }
 
-func (database *Database) DeleteTokenTeam(token *go_saas_model.Token) error {
-	return database.GetConnection().
+func (database *Database) DeleteTokenTeam(connection *gorm.DB, token *go_saas_model.Token) error {
+	return connection.
 		Unscoped().
 		Where("tokens.id = ? AND tokens.team_id = ?", token.GetId(), token.GetTeamId()).
 		Delete(&token).

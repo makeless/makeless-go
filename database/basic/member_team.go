@@ -3,10 +3,11 @@ package go_saas_database_basic
 import (
 	"fmt"
 	"github.com/go-saas/go-saas/model"
+	"github.com/jinzhu/gorm"
 )
 
-func (database *Database) MembersTeam(search string, users []*go_saas_model.User, team *go_saas_model.Team) ([]*go_saas_model.User, error) {
-	var query = database.GetConnection()
+func (database *Database) MembersTeam(connection *gorm.DB, search string, users []*go_saas_model.User, team *go_saas_model.Team) ([]*go_saas_model.User, error) {
+	var query = connection
 
 	if search != "" {
 		query = query.Where(

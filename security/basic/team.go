@@ -16,7 +16,7 @@ func (security *Security) IsTeamUser(teamId uint, userId uint) (bool, error) {
 		RWMutex: new(sync.RWMutex),
 	}
 
-	return security.GetDatabase().IsTeamUser(team, user)
+	return security.GetDatabase().IsTeamUser(security.GetDatabase().GetConnection(), team, user)
 }
 
 func (security *Security) IsTeamRole(role string, teamId uint, userId uint) (bool, error) {
@@ -30,7 +30,7 @@ func (security *Security) IsTeamRole(role string, teamId uint, userId uint) (boo
 		RWMutex: new(sync.RWMutex),
 	}
 
-	return security.GetDatabase().IsTeamRole(role, team, user)
+	return security.GetDatabase().IsTeamRole(security.GetDatabase().GetConnection(), role, team, user)
 }
 
 func (security *Security) IsTeamCreator(teamId uint, userId uint) (bool, error) {
@@ -44,5 +44,5 @@ func (security *Security) IsTeamCreator(teamId uint, userId uint) (bool, error) 
 		RWMutex: new(sync.RWMutex),
 	}
 
-	return security.GetDatabase().IsTeamCreator(team, user)
+	return security.GetDatabase().IsTeamCreator(security.GetDatabase().GetConnection(), team, user)
 }
