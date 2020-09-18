@@ -64,7 +64,7 @@ func (saas *Saas) createTokenTeam(http go_saas_http.Http) error {
 			}
 
 			if !teamUser {
-				c.AbortWithStatusJSON(h.StatusForbidden, http.Response(go_saas_security.NoTeamMemberErr, nil))
+				c.AbortWithStatusJSON(h.StatusForbidden, http.Response(go_saas_security.NoTeamUserErr, nil))
 				return
 			}
 

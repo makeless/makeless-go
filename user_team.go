@@ -11,11 +11,11 @@ import (
 	"sync"
 )
 
-func (saas *Saas) membersTeam(http go_saas_http.Http) error {
+func (saas *Saas) usersTeam(http go_saas_http.Http) error {
 	http.GetRouter().GET(
-		"/api/auth/team/member",
+		"/api/auth/team/user",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
-		http.TeamMemberMiddleware(),
+		http.TeamUserMiddleware(),
 		func(c *gin.Context) {
 			var err error
 			var teamId, _ = strconv.Atoi(c.GetHeader("Team"))
@@ -25,7 +25,7 @@ func (saas *Saas) membersTeam(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if users, err = http.GetDatabase().MembersTeam(http.GetDatabase().GetConnection(), c.Query("search"), users, team); err != nil {
+			if users, err = http.GetDatabase().UsersTeam(http.GetDatabase().GetConnection(), c.Query("search"), users, team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -37,15 +37,15 @@ func (saas *Saas) membersTeam(http go_saas_http.Http) error {
 	return nil
 }
 
-func (saas *Saas) removeMemberTeam(http go_saas_http.Http) error {
+func (saas *Saas) removeUserTeam(http go_saas_http.Http) error {
 	http.GetRouter().DELETE(
-		"/api/auth/team/member",
+		"/api/auth/team/user",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.TeamRoleMiddleware(go_saas_security.RoleTeamOwner),
 		func(c *gin.Context) {
 			var err error
 			var teamId, _ = strconv.Atoi(c.GetHeader("Team"))
-			var memberTeamRemove = &_struct.MemberTeamRemove{
+			var userTeamRemove = &_struct.UserTeamRemove{
 				RWMutex: new(sync.RWMutex),
 			}
 			var team = &go_saas_model.Team{
@@ -53,13 +53,13 @@ func (saas *Saas) removeMemberTeam(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err = c.ShouldBind(memberTeamRemove); err != nil {
+			if err = c.ShouldBind(userTeamRemove); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
 			}
 
 			var user = &go_saas_model.User{
-				Model:   go_saas_model.Model{Id: memberTeamRemove.GetId()},
+				Model:   go_saas_model.Model{Id: userTeamRemove.GetId()},
 				RWMutex: new(sync.RWMutex),
 			}
 

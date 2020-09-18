@@ -13,7 +13,7 @@ type Database interface {
 	Password
 	PasswordRequest
 	Team
-	Member
 	Profile
 	Token
+	TeamInvitation
 }
