@@ -51,7 +51,7 @@ func (saas *Saas) passwordReset(http go_saas_http.Http) error {
 				return
 			}
 
-			if bcrypted, err = http.GetSecurity().EncryptPassword(*passwordReset.GetNewPassword()); err != nil {
+			if bcrypted, err = http.GetSecurity().EncryptPassword(*passwordReset.GetPassword()); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

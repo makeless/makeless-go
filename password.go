@@ -22,21 +22,21 @@ func (saas *Saas) updatePassword(http go_saas_http.Http) error {
 				Model:   go_saas_model.Model{Id: userId},
 				RWMutex: new(sync.RWMutex),
 			}
-			var passwordReset = &_struct.PasswordReset{
+			var passwordUpdate = &_struct.PasswordUpdate{
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err = c.ShouldBind(passwordReset); err != nil {
+			if err = c.ShouldBind(passwordUpdate); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
 			}
 
-			if _, err = http.GetSecurity().Login("id", fmt.Sprintf("%d", userId), *passwordReset.GetPassword()); err != nil {
+			if _, err = http.GetSecurity().Login("id", fmt.Sprintf("%d", userId), *passwordUpdate.GetPassword()); err != nil {
 				c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(err, nil))
 				return
 			}
 
-			if bcrypted, err = http.GetSecurity().EncryptPassword(*passwordReset.GetNewPassword()); err != nil {
+			if bcrypted, err = http.GetSecurity().EncryptPassword(*passwordUpdate.GetNewPassword()); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
