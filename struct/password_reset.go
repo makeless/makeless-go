@@ -4,7 +4,7 @@ import "sync"
 
 type PasswordReset struct {
 	Password             *string `json:"password" binding:"required,min=6"`
-	PasswordConfirmation *string `json:"passwordConfirmation" binding:"required,min=6,eqfield=NewPassword"`
+	PasswordConfirmation *string `json:"passwordConfirmation" binding:"required,min=6,eqfield=Password"`
 	*sync.RWMutex
 }
 

@@ -7,7 +7,6 @@ import (
 	"github.com/go-saas/go-saas/model"
 	"github.com/go-saas/go-saas/struct"
 	"github.com/jinzhu/gorm"
-	"golang.org/x/sync/errgroup"
 	h "net/http"
 	"sync"
 )
@@ -18,10 +17,11 @@ func (saas *Saas) passwordReset(http go_saas_http.Http) error {
 		func(c *gin.Context) {
 			var err error
 			var bcrypted string
-			var user *go_saas_model.User
 			var tx = http.GetDatabase().GetConnection().BeginTx(c, new(sql.TxOptions))
-			var g = new(errgroup.Group)
 			var token = c.Query("token")
+			var user = &go_saas_model.User{
+				RWMutex: new(sync.RWMutex),
+			}
 			var passwordReset = &_struct.PasswordReset{
 				RWMutex: new(sync.RWMutex),
 			}
@@ -46,8 +46,13 @@ func (saas *Saas) passwordReset(http go_saas_http.Http) error {
 				return
 			}
 
-			if user, err = http.GetSecurity().Login("email", *passwordRequest.GetEmail(), *passwordReset.GetPassword()); err != nil {
-				c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(err, nil))
+			if user, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection(), user, "email", *passwordRequest.GetEmail()); err != nil {
+				switch err {
+				case gorm.ErrRecordNotFound:
+					c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(err, nil))
+				default:
+					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				}
 				return
 			}
 
@@ -56,17 +61,12 @@ func (saas *Saas) passwordReset(http go_saas_http.Http) error {
 				return
 			}
 
-			g.Go(func() error {
-				_, err := http.GetDatabase().UpdatePassword(tx, user, bcrypted)
-				return err
-			})
+			if _, err = http.GetDatabase().UpdatePassword(tx, user, bcrypted); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
 
-			g.Go(func() error {
-				_, err := http.GetDatabase().UpdatePasswordRequest(tx, passwordRequest)
-				return err
-			})
-
-			if err := g.Wait(); err != nil {
+			if _, err = http.GetDatabase().UpdatePasswordRequest(tx, passwordRequest); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
