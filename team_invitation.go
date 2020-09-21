@@ -115,20 +115,19 @@ func (saas *Saas) deleteTeamInvitation(http go_saas_http.Http) error {
 			var err error
 			var isTeamInvitation bool
 			var userEmail = http.GetAuthenticator().GetAuthEmail(c)
-			var tx = http.GetDatabase().GetConnection().BeginTx(c, new(sql.TxOptions))
-			var teamInvitationDecline = &_struct.TeamInvitationDecline{
+			var teamInvitationDelete = &_struct.TeamInvitationDelete{
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err := c.ShouldBind(teamInvitationDecline); err != nil {
+			if err := c.ShouldBind(teamInvitationDelete); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
 			}
 
 			var teamInvitation = &go_saas_model.TeamInvitation{
-				Model:   go_saas_model.Model{Id: *teamInvitationDecline.GetId()},
-				TeamId:  teamInvitationDecline.GetTeamId(),
-				Token:   teamInvitationDecline.GetToken(),
+				Model:   go_saas_model.Model{Id: *teamInvitationDelete.GetId()},
+				TeamId:  teamInvitationDelete.GetTeamId(),
+				Token:   teamInvitationDelete.GetToken(),
 				Email:   &userEmail,
 				RWMutex: new(sync.RWMutex),
 			}
@@ -143,12 +142,7 @@ func (saas *Saas) deleteTeamInvitation(http go_saas_http.Http) error {
 				return
 			}
 
-			if teamInvitation, err = http.GetDatabase().DeclineTeamInvitation(tx, teamInvitation); err != nil {
-				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
-				return
-			}
-
-			if err = tx.Commit().Error; err != nil {
+			if _, err = http.GetDatabase().DeleteTeamInvitation(http.GetDatabase().GetConnection(), teamInvitation); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
