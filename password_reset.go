@@ -62,11 +62,13 @@ func (saas *Saas) passwordReset(http go_saas_http.Http) error {
 			}
 
 			if _, err = http.GetDatabase().UpdatePassword(tx, user, bcrypted); err != nil {
+				tx.Rollback()
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
 
 			if _, err = http.GetDatabase().UpdatePasswordRequest(tx, passwordRequest); err != nil {
+				tx.Rollback()
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

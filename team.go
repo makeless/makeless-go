@@ -40,7 +40,7 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 				return
 			}
 
-			if user, err = http.GetDatabase().GetUserByField(tx, user, "id", fmt.Sprintf("%d", user.GetId())); err != nil {
+			if user, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection(), user, "id", fmt.Sprintf("%d", user.GetId())); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -77,7 +77,7 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 					RWMutex:  new(sync.RWMutex),
 				}
 
-				if userInvited, err = http.GetDatabase().GetUserByField(tx, userInvited, "email", *teamInvitations[i].GetEmail()); err != nil && err != gorm.ErrRecordNotFound {
+				if userInvited, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection(), userInvited, "email", *teamInvitations[i].GetEmail()); err != nil && err != gorm.ErrRecordNotFound {
 					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 					return
 				}
@@ -109,11 +109,13 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 			}
 
 			if team, err = http.GetDatabase().CreateTeam(tx, team); err != nil {
+				tx.Rollback()
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
 
 			if team, err = http.GetDatabase().GetTeam(tx, team); err != nil {
+				tx.Rollback()
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -155,11 +157,13 @@ func (saas *Saas) leaveDeleteTeam(http go_saas_http.Http) error {
 			}
 
 			if err = http.GetDatabase().DeleteTeamUser(tx, user, team); err != nil {
+				tx.Rollback()
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
 
 			if err = http.GetDatabase().DeleteTeam(tx, user, team); err != nil {
+				tx.Rollback()
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

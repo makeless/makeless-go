@@ -7,7 +7,7 @@ import (
 type User struct {
 	Model
 	Name     *string `gorm:"not null" json:"name"`
-	Password *string `gorm:"not null" json:"password"`
+	Password *string `gorm:"not null" json:"-"`
 	Email    *string `gorm:"unique;not null" json:"email"`
 
 	TeamUsers       []*TeamUser       `json:"teamUsers" binding:"-"`

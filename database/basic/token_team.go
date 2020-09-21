@@ -7,9 +7,7 @@ import (
 
 func (database *Database) GetTokensTeam(connection *gorm.DB, team *go_saas_model.Team, tokens []*go_saas_model.Token) ([]*go_saas_model.Token, error) {
 	return tokens, connection.
-		Preload("User", func(db *gorm.DB) *gorm.DB {
-			return db.Select("users.id, users.name, users.email")
-		}).
+		Preload("User").
 		Select([]string{
 			"tokens.id",
 			"tokens.note",
@@ -27,9 +25,7 @@ func (database *Database) GetTokensTeam(connection *gorm.DB, team *go_saas_model
 func (database *Database) CreateTokenTeam(connection *gorm.DB, token *go_saas_model.Token) (*go_saas_model.Token, error) {
 	return token, connection.
 		Create(token).
-		Preload("User", func(db *gorm.DB) *gorm.DB {
-			return db.Select("users.id, users.name, users.email")
-		}).
+		Preload("User").
 		Find(token).
 		Error
 }

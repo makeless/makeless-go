@@ -16,9 +16,7 @@ func (database *Database) CreateTeam(connection *gorm.DB, team *go_saas_model.Te
 func (database *Database) GetTeam(connection *gorm.DB, team *go_saas_model.Team) (*go_saas_model.Team, error) {
 	return team, connection.
 		Preload("TeamUsers.Team").
-		Preload("TeamUsers.User", func(db *gorm.DB) *gorm.DB {
-			return db.Select("users.id, users.name, users.email")
-		}).
+		Preload("TeamUsers.User").
 		Preload("TeamInvitations").
 		Find(team).
 		Error
@@ -30,17 +28,6 @@ func (database *Database) AddTeamInvitations(connection *gorm.DB, team *go_saas_
 		Model(team).
 		Association("TeamInvitations").
 		Append(teamInvitations).
-		Error
-}
-
-// GetTeamInvitation retrieves team invitation
-func (database *Database) GetTeamInvitation(connection *gorm.DB, teamInvitation *go_saas_model.TeamInvitation) (*go_saas_model.TeamInvitation, error) {
-	return teamInvitation, connection.
-		Preload("Team").
-		Preload("User", func(db *gorm.DB) *gorm.DB {
-			return db.Select("users.id, users.name, users.email")
-		}).
-		Find(teamInvitation).
 		Error
 }
 

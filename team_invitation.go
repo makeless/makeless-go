@@ -7,6 +7,7 @@ import (
 	"github.com/go-saas/go-saas/model"
 	"github.com/go-saas/go-saas/security"
 	"github.com/go-saas/go-saas/struct"
+	"github.com/jinzhu/gorm"
 	h "net/http"
 	"sync"
 )
@@ -42,7 +43,6 @@ func (saas *Saas) updateTeamInvitation(http go_saas_http.Http) error {
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		func(c *gin.Context) {
 			var err error
-			var isTeamInvitation bool
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
 			var userEmail = http.GetAuthenticator().GetAuthEmail(c)
 			var tx = http.GetDatabase().GetConnection().BeginTx(c, new(sql.TxOptions))
@@ -57,23 +57,22 @@ func (saas *Saas) updateTeamInvitation(http go_saas_http.Http) error {
 
 			var teamInvitation = &go_saas_model.TeamInvitation{
 				Model:   go_saas_model.Model{Id: *teamInvitationAccept.GetId()},
-				TeamId:  teamInvitationAccept.GetTeamId(),
-				Token:   teamInvitationAccept.GetToken(),
 				Email:   &userEmail,
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if isTeamInvitation, err = http.GetSecurity().IsTeamInvitation(teamInvitation); err != nil {
-				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
-				return
-			}
-
-			if !isTeamInvitation {
-				c.AbortWithStatusJSON(h.StatusNotFound, http.Response(nil, nil))
+			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByEmail(http.GetDatabase().GetConnection(), teamInvitation); err != nil {
+				switch err {
+				case gorm.ErrRecordNotFound:
+					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+				default:
+					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				}
 				return
 			}
 
 			if teamInvitation, err = http.GetDatabase().AcceptTeamInvitation(tx, teamInvitation); err != nil {
+				tx.Rollback()
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -91,6 +90,7 @@ func (saas *Saas) updateTeamInvitation(http go_saas_http.Http) error {
 			}
 
 			if err = http.GetDatabase().AddTeamUsers(tx, []*go_saas_model.TeamUser{teamUser}, team); err != nil {
+				tx.Rollback()
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -113,7 +113,6 @@ func (saas *Saas) deleteTeamInvitation(http go_saas_http.Http) error {
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		func(c *gin.Context) {
 			var err error
-			var isTeamInvitation bool
 			var userEmail = http.GetAuthenticator().GetAuthEmail(c)
 			var teamInvitationDelete = &_struct.TeamInvitationDelete{
 				RWMutex: new(sync.RWMutex),
@@ -126,19 +125,17 @@ func (saas *Saas) deleteTeamInvitation(http go_saas_http.Http) error {
 
 			var teamInvitation = &go_saas_model.TeamInvitation{
 				Model:   go_saas_model.Model{Id: *teamInvitationDelete.GetId()},
-				TeamId:  teamInvitationDelete.GetTeamId(),
-				Token:   teamInvitationDelete.GetToken(),
 				Email:   &userEmail,
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if isTeamInvitation, err = http.GetSecurity().IsTeamInvitation(teamInvitation); err != nil {
-				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
-				return
-			}
-
-			if !isTeamInvitation {
-				c.AbortWithStatusJSON(h.StatusNotFound, http.Response(nil, nil))
+			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByEmail(http.GetDatabase().GetConnection(), teamInvitation); err != nil {
+				switch err {
+				case gorm.ErrRecordNotFound:
+					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+				default:
+					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				}
 				return
 			}
 
