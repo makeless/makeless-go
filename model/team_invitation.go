@@ -28,6 +28,13 @@ func (teamInvitation *TeamInvitation) GetTeam() *Team {
 	return teamInvitation.Team
 }
 
+func (teamInvitation *TeamInvitation) GetTeamId() *uint {
+	teamInvitation.RLock()
+	defer teamInvitation.RUnlock()
+
+	return teamInvitation.TeamId
+}
+
 func (teamInvitation *TeamInvitation) GetUser() *User {
 	teamInvitation.RLock()
 	defer teamInvitation.RUnlock()

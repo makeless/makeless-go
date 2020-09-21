@@ -16,4 +16,6 @@ type Security interface {
 	IsTeamUser(teamId uint, userId uint) (bool, error)
 	IsTeamRole(role string, teamId uint, userId uint) (bool, error)
 	IsTeamCreator(teamId uint, userId uint) (bool, error)
+	IsModelUser(userId uint, model interface{}) (bool, error)
+	IsTeamInvitation(teamInvitation *go_saas_model.TeamInvitation) (bool, error)
 }

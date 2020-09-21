@@ -55,3 +55,14 @@ func (database *Database) UsersTeam(connection *gorm.DB, search string, users []
 		Find(&users).
 		Error
 }
+
+func (database *Database) IsModelUser(connection *gorm.DB, user *go_saas_model.User, model interface{}) (bool, error) {
+	var count int
+
+	return count == 1, connection.
+		Model(model).
+		Select("COUNT(*)").
+		Where("user_id = ?", user.GetId()).
+		Count(&count).
+		Error
+}

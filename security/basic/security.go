@@ -64,3 +64,12 @@ func (security *Security) UserExists(field string, value string) (bool, error) {
 		return false, err
 	}
 }
+
+func (security *Security) IsModelUser(userId uint, model interface{}) (bool, error) {
+	var user = &go_saas_model.User{
+		Model:   go_saas_model.Model{Id: userId},
+		RWMutex: new(sync.RWMutex),
+	}
+
+	return security.GetDatabase().IsModelUser(security.GetDatabase().GetConnection(), user, model)
+}

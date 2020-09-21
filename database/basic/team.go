@@ -44,7 +44,16 @@ func (database *Database) GetTeamInvitation(connection *gorm.DB, teamInvitation 
 		Error
 }
 
-// DeleteTeamUsers deletes own teamUser
+// AddTeamUser adds teamUsers to team
+func (database *Database) AddTeamUsers(connection *gorm.DB, teamUsers []*go_saas_model.TeamUser, team *go_saas_model.Team) error {
+	return connection.
+		Model(team).
+		Association("TeamUsers").
+		Append(teamUsers).
+		Error
+}
+
+// DeleteTeamUser deletes own teamUser
 func (database *Database) DeleteTeamUser(connection *gorm.DB, user *go_saas_model.User, team *go_saas_model.Team) error {
 	return connection.
 		Exec("DELETE FROM team_users WHERE team_users.team_id = ? AND team_users.user_id = ?", team.GetId(), user.GetId()).

@@ -11,7 +11,8 @@ import (
 func (authenticator *Authenticator) PayloadHandler(data interface{}) jwt.MapClaims {
 	if user, ok := data.(*go_saas_model.User); ok {
 		return jwt.MapClaims{
-			authenticator.GetIdentityKey(): user.Id,
+			authenticator.GetIdentityKey(): user.GetId(),
+			"email":                        user.GetEmail(),
 		}
 	}
 
@@ -19,10 +20,13 @@ func (authenticator *Authenticator) PayloadHandler(data interface{}) jwt.MapClai
 }
 
 func (authenticator *Authenticator) IdentityHandler(c *gin.Context) interface{} {
+	var id = authenticator.GetAuthUserId(c)
+	var email = authenticator.GetAuthEmail(c)
+
 	return &go_saas_model.User{
-		Model: go_saas_model.Model{
-			Id: authenticator.GetAuthUserId(c),
-		},
+		Model:   go_saas_model.Model{Id: id},
+		Email:   &email,
+		RWMutex: new(sync.RWMutex),
 	}
 }
 

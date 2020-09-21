@@ -10,6 +10,7 @@ type Team interface {
 	GetTeam(connection *gorm.DB, team *go_saas_model.Team) (*go_saas_model.Team, error)
 	AddTeamInvitations(connection *gorm.DB, team *go_saas_model.Team, teamInvitations []*go_saas_model.TeamInvitation) (*go_saas_model.Team, error)
 	GetTeamInvitation(connection *gorm.DB, teamInvitation *go_saas_model.TeamInvitation) (*go_saas_model.TeamInvitation, error)
+	AddTeamUsers(connection *gorm.DB, teamUsers []*go_saas_model.TeamUser, team *go_saas_model.Team) error
 	DeleteTeamUser(connection *gorm.DB, user *go_saas_model.User, team *go_saas_model.Team) error
 	DeleteTeam(connection *gorm.DB, user *go_saas_model.User, team *go_saas_model.Team) error
 	IsTeamUser(connection *gorm.DB, team *go_saas_model.Team, user *go_saas_model.User) (bool, error)
