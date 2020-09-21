@@ -37,9 +37,9 @@ func (saas *Saas) teamInvitations(http go_saas_http.Http) error {
 	return nil
 }
 
-func (saas *Saas) updateTeamInvitation(http go_saas_http.Http) error {
+func (saas *Saas) acceptTeamInvitation(http go_saas_http.Http) error {
 	http.GetRouter().PATCH(
-		"/api/auth/team-invitation",
+		"/api/auth/team-invitation/accept",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		func(c *gin.Context) {
 			var err error
