@@ -58,3 +58,9 @@ func (database *Database) AcceptTeamInvitation(connection *gorm.DB, teamInvitati
 		}).
 		Error
 }
+
+func (database *Database) DeclineTeamInvitation(connection *gorm.DB, teamInvitation *go_saas_model.TeamInvitation) (*go_saas_model.TeamInvitation, error) {
+	return teamInvitation, connection.
+		Delete(teamInvitation).
+		Error
+}
