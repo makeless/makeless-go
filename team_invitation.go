@@ -102,7 +102,7 @@ func (saas *Saas) acceptTeamInvitation(http go_saas_http.Http) error {
 				return
 			}
 
-			c.JSON(h.StatusOK, http.Response(nil, teamUser))
+			c.JSON(h.StatusOK, http.Response(nil, team))
 		},
 	)
 
