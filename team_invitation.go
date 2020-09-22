@@ -85,6 +85,8 @@ func (saas *Saas) acceptTeamInvitation(http go_saas_http.Http) error {
 			var teamUser = &go_saas_model.TeamUser{
 				UserId:  &userId,
 				TeamId:  teamInvitation.GetTeamId(),
+				Team:    teamInvitation.GetTeam(),
+				User:    teamInvitation.GetUser(),
 				Role:    &go_saas_security.RoleTeamUser,
 				RWMutex: new(sync.RWMutex),
 			}
@@ -100,7 +102,7 @@ func (saas *Saas) acceptTeamInvitation(http go_saas_http.Http) error {
 				return
 			}
 
-			c.JSON(h.StatusOK, http.Response(nil, teamInvitation))
+			c.JSON(h.StatusOK, http.Response(nil, teamUser))
 		},
 	)
 
