@@ -3,6 +3,7 @@
 Go SaaS Framework - Golang Implementation
 
 [![Build Status](https://ci.loeffel.io/api/badges/go-saas/go-saas/status.svg)](https://ci.loeffel.io/go-saas/go-saas)
+[![Go Report Card](https://goreportcard.com/badge/github.com/go-saas/go-saas)](https://goreportcard.com/report/github.com/go-saas/go-saas)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fgo-saas%2Fgo-saas.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fgo-saas%2Fgo-saas?ref=badge_shield)
 
 - Based on Golang ([gin](https://github.com/gin-gonic/gin) & [gorm](https://github.com/go-gorm/gorm))
