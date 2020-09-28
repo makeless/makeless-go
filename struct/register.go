@@ -4,9 +4,10 @@ import "sync"
 
 type Register struct {
 	Name                 *string `json:"name" binding:"required,min=4,max=50"`
-	Password             *string `gorm:"not null" json:"password" binding:"required,min=6"`
-	PasswordConfirmation *string `gorm:"not null" json:"passwordConfirmation" binding:"required,min=6,eqfield=Password"`
-	Email                *string `gorm:"unique;not null" json:"email" binding:"required,email"`
+	Email                *string `json:"email" binding:"required,email"`
+	Password             *string `json:"password" binding:"required,min=6"`
+	PasswordConfirmation *string `json:"passwordConfirmation" binding:"required,min=6,eqfield=Password"`
+	LegalConfirmation    *bool   `json:"legalConfirmation" binding:"required"`
 	*sync.RWMutex
 }
 
@@ -17,11 +18,11 @@ func (register *Register) GetName() *string {
 	return register.Name
 }
 
-func (register *Register) GetPasswordConfirmation() *string {
+func (register *Register) GetEmail() *string {
 	register.RLock()
 	defer register.RUnlock()
 
-	return register.PasswordConfirmation
+	return register.Email
 }
 
 func (register *Register) GetPassword() *string {
@@ -31,9 +32,16 @@ func (register *Register) GetPassword() *string {
 	return register.Password
 }
 
-func (register *Register) GetEmail() *string {
+func (register *Register) GetPasswordConfirmation() *string {
 	register.RLock()
 	defer register.RUnlock()
 
-	return register.Email
+	return register.PasswordConfirmation
+}
+
+func (register *Register) GetLegalConfirmation() *bool {
+	register.RLock()
+	defer register.RUnlock()
+
+	return register.LegalConfirmation
 }
