@@ -42,7 +42,7 @@ func (saas *Saas) mailTeamInvitation(data map[string]interface{}) (go_saas_maile
 		link = fmt.Sprintf("%s/invitation?token=%s", saas.GetConfig().GetConfiguration().GetMail().GetLink(), *teamInvitation.GetToken())
 	default:
 		name = *userInvited.GetName()
-		link = fmt.Sprintf("%s/settings/invitation", saas.GetConfig().GetConfiguration().GetMail().GetLink())
+		link = fmt.Sprintf("%s/settings/team-invitation", saas.GetConfig().GetConfiguration().GetMail().GetLink())
 	}
 
 	config := hermes.Hermes{
