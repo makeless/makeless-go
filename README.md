@@ -161,7 +161,21 @@ go-saas.json
   "logo": null,
   "locale": "en",
   "host": "http://localhost:3000",
-  "mail": "info@example.com",
+  "mail": {
+    "name": "Go SaaS",
+    "logo": null,
+    "from": "Go SaaS <info@go-saas.io>",
+    "link": "https://localhost",
+    "buttonColor": "#4586ab",
+    "buttonTextColor": "#FFFFFF",
+    "texts": {
+      "en": {
+        "greeting": "Hello",
+        "signature": "Best Regards",
+        "copyright": "Copyright © 2020 Go SaaS. All rights reserved."
+      }
+    }
+  },
   "tokens": true,
   "teams": {
     "tokens": true
