@@ -113,6 +113,7 @@ func (saas *Saas) Init(path string) error {
 
 		saas.SetRoute("usersTeam", saas.usersTeam)
 		saas.SetRoute("deleteUserTeam", saas.deleteUserTeam)
+		saas.SetRoute("inviteUsersTeam", saas.inviteUsersTeam)
 
 		saas.SetRoute("teamInvitation", saas.teamInvitation)
 		saas.SetRoute("teamInvitations", saas.teamInvitations)
