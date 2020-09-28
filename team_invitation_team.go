@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/http"
+	"github.com/go-saas/go-saas/mailer"
 	"github.com/go-saas/go-saas/model"
 	"github.com/go-saas/go-saas/security"
 	"github.com/go-saas/go-saas/struct"
@@ -35,6 +36,72 @@ func (saas *Saas) teamInvitationsTeam(http go_saas_http.Http) error {
 			}
 
 			c.JSON(h.StatusOK, http.Response(nil, teamInvitations))
+		},
+	)
+
+	return nil
+}
+
+func (saas *Saas) resendTeamInvitationTeam(http go_saas_http.Http) error {
+	http.GetRouter().POST(
+		"/api/auth/team/team-invitation/resend",
+		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		http.TeamRoleMiddleware(go_saas_security.RoleTeamOwner),
+		func(c *gin.Context) {
+			var err error
+			var mail go_saas_mailer.Mail
+			var teamId, _ = strconv.Atoi(c.GetHeader("Team"))
+			var teamInvitationTeamResend = &_struct.TeamInvitationTeamResend{
+				RWMutex: new(sync.RWMutex),
+			}
+			var user = &go_saas_model.User{
+				RWMutex: new(sync.RWMutex),
+			}
+
+			if err := c.ShouldBind(teamInvitationTeamResend); err != nil {
+				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+				return
+			}
+
+			var tmpTeamId = uint(teamId)
+			var teamInvitation = &go_saas_model.TeamInvitation{
+				Model:   go_saas_model.Model{Id: *teamInvitationTeamResend.GetId()},
+				TeamId:  &tmpTeamId,
+				RWMutex: new(sync.RWMutex),
+			}
+
+			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByField(http.GetDatabase().GetConnection(), teamInvitation, "team_id", fmt.Sprintf("%d", *teamInvitation.GetTeamId())); err != nil {
+				switch err {
+				case gorm.ErrRecordNotFound:
+					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+				default:
+					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				}
+				return
+			}
+
+			if user, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection(), user, "email", *teamInvitation.GetEmail()); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			teamInvitation.GetUser().RWMutex, teamInvitation.GetTeam().RWMutex = new(sync.RWMutex), new(sync.RWMutex)
+			if mail, err = http.GetMailer().GetMail("teamInvitation", map[string]interface{}{
+				"user":           user,
+				"userInvited":    teamInvitation.GetUser(),
+				"teamName":       *teamInvitation.GetTeam().GetName(),
+				"teamInvitation": teamInvitation,
+			}); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			if err = http.GetMailer().Send(c, mail); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			c.JSON(h.StatusOK, http.Response(nil, teamInvitation))
 		},
 	)
 
