@@ -37,7 +37,7 @@ func (saas *Saas) usersTeam(http go_saas_http.Http) error {
 	return nil
 }
 
-func (saas *Saas) removeUserTeam(http go_saas_http.Http) error {
+func (saas *Saas) deleteUserTeam(http go_saas_http.Http) error {
 	http.GetRouter().DELETE(
 		"/api/auth/team/user",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
@@ -45,7 +45,7 @@ func (saas *Saas) removeUserTeam(http go_saas_http.Http) error {
 		func(c *gin.Context) {
 			var err error
 			var teamId, _ = strconv.Atoi(c.GetHeader("Team"))
-			var userTeamRemove = &_struct.UserTeamRemove{
+			var userTeamDelete = &_struct.UserTeamDelete{
 				RWMutex: new(sync.RWMutex),
 			}
 			var team = &go_saas_model.Team{
@@ -53,13 +53,13 @@ func (saas *Saas) removeUserTeam(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err = c.ShouldBind(userTeamRemove); err != nil {
+			if err = c.ShouldBind(userTeamDelete); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
 			}
 
 			var user = &go_saas_model.User{
-				Model:   go_saas_model.Model{Id: userTeamRemove.GetId()},
+				Model:   go_saas_model.Model{Id: userTeamDelete.GetId()},
 				RWMutex: new(sync.RWMutex),
 			}
 

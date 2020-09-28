@@ -2,14 +2,14 @@ package _struct
 
 import "sync"
 
-type UserTeamRemove struct {
+type UserTeamDelete struct {
 	Id uint `json:"id" binding:"required"`
 	*sync.RWMutex
 }
 
-func (userTeamRemove *UserTeamRemove) GetId() uint {
-	userTeamRemove.RLock()
-	defer userTeamRemove.RUnlock()
+func (userTeamDelete *UserTeamDelete) GetId() uint {
+	userTeamDelete.RLock()
+	defer userTeamDelete.RUnlock()
 
-	return userTeamRemove.Id
+	return userTeamDelete.Id
 }
