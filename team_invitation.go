@@ -120,7 +120,7 @@ func (saas *Saas) registerTeamInvitation(http go_saas_http.Http) error {
 				return
 			}
 
-			if teamInvitation, err = http.GetDatabase().AcceptTeamInvitation(tx, teamInvitation); err != nil {
+			if _, err = http.GetDatabase().AcceptTeamInvitation(tx, teamInvitation); err != nil {
 				tx.Rollback()
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
