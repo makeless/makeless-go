@@ -1,32 +1,19 @@
 package go_saas_database_basic
 
 import (
+	"fmt"
 	"github.com/go-saas/go-saas/model"
 	"github.com/jinzhu/gorm"
 	"time"
 )
 
-func (database *Database) GetTeamInvitationByEmail(connection *gorm.DB, teamInvitation *go_saas_model.TeamInvitation) (*go_saas_model.TeamInvitation, error) {
+func (database *Database) GetTeamInvitationByField(connection *gorm.DB, teamInvitation *go_saas_model.TeamInvitation, field string, value string) (*go_saas_model.TeamInvitation, error) {
 	return teamInvitation, connection.
 		Preload("Team").
 		Preload("User").
 		Where(
-			"team_invitations.email = ? AND team_invitations.accepted = ? AND team_invitations.expire >= ?",
-			teamInvitation.GetEmail(),
-			false,
-			time.Now(),
-		).
-		Find(teamInvitation).
-		Error
-}
-
-func (database *Database) GetTeamInvitationByTeamId(connection *gorm.DB, teamInvitation *go_saas_model.TeamInvitation) (*go_saas_model.TeamInvitation, error) {
-	return teamInvitation, connection.
-		Preload("Team").
-		Preload("User").
-		Where(
-			"team_invitations.team_id = ? AND team_invitations.accepted = ? AND team_invitations.expire >= ?",
-			teamInvitation.GetTeamId(),
+			fmt.Sprintf("team_invitations.%s = ? AND team_invitations.accepted = ? AND team_invitations.expire >= ?", field),
+			value,
 			false,
 			time.Now(),
 		).

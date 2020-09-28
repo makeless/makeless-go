@@ -1,6 +1,7 @@
 package go_saas
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/http"
 	"github.com/go-saas/go-saas/model"
@@ -64,7 +65,7 @@ func (saas *Saas) deleteTeamInvitationTeam(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByTeamId(http.GetDatabase().GetConnection(), teamInvitation); err != nil {
+			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByField(http.GetDatabase().GetConnection(), teamInvitation, "team_id", fmt.Sprintf("%d", *teamInvitation.GetTeamId())); err != nil {
 				switch err {
 				case gorm.ErrRecordNotFound:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))

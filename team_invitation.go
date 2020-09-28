@@ -12,6 +12,33 @@ import (
 	"sync"
 )
 
+func (saas *Saas) teamInvitation(http go_saas_http.Http) error {
+	http.GetRouter().GET(
+		"/api/team-invitation",
+		func(c *gin.Context) {
+			var err error
+			var token = c.Query("token")
+			var teamInvitation = &go_saas_model.TeamInvitation{
+				RWMutex: new(sync.RWMutex),
+			}
+
+			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByField(http.GetDatabase().GetConnection(), teamInvitation, "token", token); err != nil {
+				switch err {
+				case gorm.ErrRecordNotFound:
+					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+				default:
+					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				}
+				return
+			}
+
+			c.JSON(h.StatusOK, http.Response(nil, teamInvitation))
+		},
+	)
+
+	return nil
+}
+
 func (saas *Saas) teamInvitations(http go_saas_http.Http) error {
 	http.GetRouter().GET(
 		"/api/auth/team-invitation",
@@ -61,7 +88,7 @@ func (saas *Saas) acceptTeamInvitation(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByEmail(http.GetDatabase().GetConnection(), teamInvitation); err != nil {
+			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByField(http.GetDatabase().GetConnection(), teamInvitation, "email", *teamInvitation.GetEmail()); err != nil {
 				switch err {
 				case gorm.ErrRecordNotFound:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
@@ -131,7 +158,7 @@ func (saas *Saas) deleteTeamInvitation(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByEmail(http.GetDatabase().GetConnection(), teamInvitation); err != nil {
+			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByField(http.GetDatabase().GetConnection(), teamInvitation, "email", *teamInvitation.GetEmail()); err != nil {
 				switch err {
 				case gorm.ErrRecordNotFound:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
