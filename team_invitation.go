@@ -64,6 +64,74 @@ func (saas *Saas) teamInvitations(http go_saas_http.Http) error {
 	return nil
 }
 
+func (saas *Saas) registerTeamInvitation(http go_saas_http.Http) error {
+	http.GetRouter().POST(
+		"/api/team-invitation/register",
+		func(c *gin.Context) {
+			var err error
+			var token = c.Query("token")
+			var tx = http.GetDatabase().GetConnection().BeginTx(c, new(sql.TxOptions))
+			var register = &_struct.Register{
+				RWMutex: new(sync.RWMutex),
+			}
+			var teamInvitation = &go_saas_model.TeamInvitation{
+				RWMutex: new(sync.RWMutex),
+			}
+
+			if err := c.ShouldBind(register); err != nil {
+				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+				return
+			}
+
+			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByField(http.GetDatabase().GetConnection(), teamInvitation, "token", token); err != nil {
+				switch err {
+				case gorm.ErrRecordNotFound:
+					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+				default:
+					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				}
+				return
+			}
+
+			var user = &go_saas_model.User{
+				Name:     register.GetName(),
+				Password: register.GetPassword(),
+				Email:    register.GetEmail(),
+				RWMutex:  new(sync.RWMutex),
+			}
+
+			if user, err = http.GetSecurity().Register(tx, user); err != nil {
+				tx.Rollback()
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			var tmpUserId = user.GetId()
+			var teamUser = &go_saas_model.TeamUser{
+				UserId:  &tmpUserId,
+				TeamId:  teamInvitation.GetTeamId(),
+				Role:    &go_saas_security.RoleTeamUser,
+				RWMutex: new(sync.RWMutex),
+			}
+
+			if err = http.GetDatabase().AddTeamUsers(tx, []*go_saas_model.TeamUser{teamUser}, teamInvitation.GetTeam()); err != nil {
+				tx.Rollback()
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			if err = tx.Commit().Error; err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			c.JSON(h.StatusOK, http.Response(nil, user))
+		},
+	)
+
+	return nil
+}
+
 func (saas *Saas) acceptTeamInvitation(http go_saas_http.Http) error {
 	http.GetRouter().PATCH(
 		"/api/auth/team-invitation/accept",

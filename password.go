@@ -31,7 +31,7 @@ func (saas *Saas) updatePassword(http go_saas_http.Http) error {
 				return
 			}
 
-			if _, err = http.GetSecurity().Login("id", fmt.Sprintf("%d", userId), *passwordUpdate.GetPassword()); err != nil {
+			if _, err = http.GetSecurity().Login(http.GetSecurity().GetDatabase().GetConnection(), "id", fmt.Sprintf("%d", userId), *passwordUpdate.GetPassword()); err != nil {
 				c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(err, nil))
 				return
 			}

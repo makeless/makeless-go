@@ -28,7 +28,7 @@ func (saas *Saas) register(http go_saas_http.Http) error {
 			RWMutex:  new(sync.RWMutex),
 		}
 
-		if user, err = http.GetSecurity().Register(user); err != nil {
+		if user, err = http.GetSecurity().Register(http.GetSecurity().GetDatabase().GetConnection(), user); err != nil {
 			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 			return
 		}

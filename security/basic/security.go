@@ -20,13 +20,13 @@ func (security *Security) GetDatabase() go_saas_database.Database {
 	return security.Database
 }
 
-func (security *Security) Login(field string, value string, password string) (*go_saas_model.User, error) {
+func (security *Security) Login(connection *gorm.DB, field string, value string, password string) (*go_saas_model.User, error) {
 	var err error
 	var user = &go_saas_model.User{
 		RWMutex: new(sync.RWMutex),
 	}
 
-	if user, err = security.GetDatabase().GetUserByField(security.GetDatabase().GetConnection(), user, field, value); err != nil {
+	if user, err = security.GetDatabase().GetUserByField(connection, user, field, value); err != nil {
 		return nil, jwt.ErrFailedAuthentication
 	}
 
@@ -37,7 +37,7 @@ func (security *Security) Login(field string, value string, password string) (*g
 	return user, nil
 }
 
-func (security *Security) Register(user *go_saas_model.User) (*go_saas_model.User, error) {
+func (security *Security) Register(connection *gorm.DB, user *go_saas_model.User) (*go_saas_model.User, error) {
 	encrypted, err := security.EncryptPassword(*user.GetPassword())
 
 	if err != nil {
@@ -45,15 +45,15 @@ func (security *Security) Register(user *go_saas_model.User) (*go_saas_model.Use
 	}
 
 	user.SetPassword(encrypted)
-	if user, err = security.GetDatabase().CreateUser(security.GetDatabase().GetConnection(), user); err != nil {
+	if user, err = security.GetDatabase().CreateUser(connection, user); err != nil {
 		return nil, err
 	}
 
 	return user, nil
 }
 
-func (security *Security) UserExists(field string, value string) (bool, error) {
-	_, err := security.GetDatabase().GetUserByField(security.GetDatabase().GetConnection(), new(go_saas_model.User), field, value)
+func (security *Security) UserExists(connection *gorm.DB, field string, value string) (bool, error) {
+	_, err := security.GetDatabase().GetUserByField(connection, new(go_saas_model.User), field, value)
 
 	switch err {
 	case gorm.ErrRecordNotFound:
@@ -65,11 +65,11 @@ func (security *Security) UserExists(field string, value string) (bool, error) {
 	}
 }
 
-func (security *Security) IsModelUser(userId uint, model interface{}) (bool, error) {
+func (security *Security) IsModelUser(connection *gorm.DB, userId uint, model interface{}) (bool, error) {
 	var user = &go_saas_model.User{
 		Model:   go_saas_model.Model{Id: userId},
 		RWMutex: new(sync.RWMutex),
 	}
 
-	return security.GetDatabase().IsModelUser(security.GetDatabase().GetConnection(), user, model)
+	return security.GetDatabase().IsModelUser(connection, user, model)
 }

@@ -39,7 +39,7 @@ func (authenticator *Authenticator) AuthenticatorHandler(c *gin.Context) (interf
 		return nil, err
 	}
 
-	return authenticator.GetSecurity().Login("email", *login.GetEmail(), *login.GetPassword())
+	return authenticator.GetSecurity().Login(authenticator.GetSecurity().GetDatabase().GetConnection(), "email", *login.GetEmail(), *login.GetPassword())
 }
 
 func (authenticator *Authenticator) AuthorizatorHandler(data interface{}, c *gin.Context) bool {

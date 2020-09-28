@@ -58,7 +58,7 @@ func (saas *Saas) createTokenTeam(http go_saas_http.Http) error {
 				return
 			}
 
-			if teamUser, err = http.GetSecurity().IsTeamUser(teamId, *tokenTeamCreate.GetUserId()); err != nil {
+			if teamUser, err = http.GetSecurity().IsTeamUser(http.GetSecurity().GetDatabase().GetConnection(), teamId, *tokenTeamCreate.GetUserId()); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

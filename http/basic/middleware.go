@@ -35,7 +35,7 @@ func (http *Http) TeamUserMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		if teamUser, err = http.GetSecurity().IsTeamUser(uint(teamId), userId); err != nil {
+		if teamUser, err = http.GetSecurity().IsTeamUser(http.GetSecurity().GetDatabase().GetConnection(), uint(teamId), userId); err != nil {
 			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 			return
 		}
@@ -66,7 +66,7 @@ func (http *Http) TeamRoleMiddleware(role string) gin.HandlerFunc {
 			return
 		}
 
-		if teamRole, err = http.GetSecurity().IsTeamRole(role, uint(teamId), userId); err != nil {
+		if teamRole, err = http.GetSecurity().IsTeamRole(http.GetSecurity().GetDatabase().GetConnection(), role, uint(teamId), userId); err != nil {
 			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 			return
 		}
@@ -97,7 +97,7 @@ func (http *Http) TeamCreatorMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		if teamCreator, err = http.GetSecurity().IsTeamCreator(uint(teamId), userId); err != nil {
+		if teamCreator, err = http.GetSecurity().IsTeamCreator(http.GetSecurity().GetDatabase().GetConnection(), uint(teamId), userId); err != nil {
 			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 			return
 		}

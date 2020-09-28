@@ -30,7 +30,7 @@ func (saas *Saas) passwordRequest(http go_saas_http.Http) error {
 				return
 			}
 
-			if userExists, err = http.GetSecurity().UserExists("email", *tmpPasswordRequest.GetEmail()); err != nil {
+			if userExists, err = http.GetSecurity().UserExists(http.GetSecurity().GetDatabase().GetConnection(), "email", *tmpPasswordRequest.GetEmail()); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
