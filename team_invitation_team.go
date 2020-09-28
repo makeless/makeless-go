@@ -54,7 +54,7 @@ func (saas *Saas) resendTeamInvitationTeam(http go_saas_http.Http) error {
 			var teamInvitationTeamResend = &_struct.TeamInvitationTeamResend{
 				RWMutex: new(sync.RWMutex),
 			}
-			var user = &go_saas_model.User{
+			var userInvited = &go_saas_model.User{
 				RWMutex: new(sync.RWMutex),
 			}
 
@@ -80,15 +80,15 @@ func (saas *Saas) resendTeamInvitationTeam(http go_saas_http.Http) error {
 				return
 			}
 
-			if user, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection(), user, "email", *teamInvitation.GetEmail()); err != nil {
+			if userInvited, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection(), userInvited, "email", *teamInvitation.GetEmail()); err != nil && err != gorm.ErrRecordNotFound {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
 
 			teamInvitation.GetUser().RWMutex, teamInvitation.GetTeam().RWMutex = new(sync.RWMutex), new(sync.RWMutex)
 			if mail, err = http.GetMailer().GetMail("teamInvitation", map[string]interface{}{
-				"user":           user,
-				"userInvited":    teamInvitation.GetUser(),
+				"user":           teamInvitation.GetUser(),
+				"userInvited":    userInvited,
 				"teamName":       *teamInvitation.GetTeam().GetName(),
 				"teamInvitation": teamInvitation,
 			}); err != nil {
