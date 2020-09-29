@@ -10,6 +10,7 @@ type Database interface {
 	Migrate() error
 
 	User
+	EmailVerification
 	Password
 	PasswordRequest
 	Team

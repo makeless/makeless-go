@@ -12,6 +12,8 @@ import (
 func (saas *Saas) register(http go_saas_http.Http) error {
 	http.GetRouter().POST("/api/register", func(c *gin.Context) {
 		var err error
+		var token string
+		var verified = false
 		var register = &_struct.Register{
 			RWMutex: new(sync.RWMutex),
 		}
@@ -21,11 +23,21 @@ func (saas *Saas) register(http go_saas_http.Http) error {
 			return
 		}
 
+		if token, err = http.GetSecurity().GenerateToken(32); err != nil {
+			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+			return
+		}
+
 		var user = &go_saas_model.User{
 			Name:     register.GetName(),
 			Password: register.GetPassword(),
 			Email:    register.GetEmail(),
-			RWMutex:  new(sync.RWMutex),
+			EmailVerification: &go_saas_model.EmailVerification{
+				Token:    &token,
+				Verified: &verified,
+				RWMutex:  new(sync.RWMutex),
+			},
+			RWMutex: new(sync.RWMutex),
 		}
 
 		if user, err = http.GetSecurity().Register(http.GetSecurity().GetDatabase().GetConnection(), user); err != nil {
