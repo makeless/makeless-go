@@ -95,6 +95,7 @@ func (saas *Saas) Init(path string) error {
 	saas.SetRoute("logout", saas.logout)
 	saas.SetRoute("refreshToken", saas.refreshToken)
 	saas.SetRoute("verifyEmailVerification", saas.verifyEmailVerification)
+	saas.SetRoute("resendEmailVerification", saas.resendEmailVerification)
 	saas.SetRoute("events", saas.events)
 	saas.SetRoute("user", saas.user)
 	saas.SetRoute("updatePassword", saas.updatePassword)
