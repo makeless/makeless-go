@@ -199,7 +199,11 @@ go-saas.json
         {
           "label": "Login",
           "to": "login"
-        }
+        },
+	{
+	  "label": "Register",
+	  "to": "registration"
+	}
       ]
     }
   }
