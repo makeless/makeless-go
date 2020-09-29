@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"github.com/gin-gonic/gin"
 	"github.com/go-saas/go-saas/http"
+	"github.com/go-saas/go-saas/mailer"
 	"github.com/go-saas/go-saas/model"
 	"github.com/go-saas/go-saas/security"
 	"github.com/go-saas/go-saas/struct"
@@ -70,7 +71,9 @@ func (saas *Saas) registerTeamInvitation(http go_saas_http.Http) error {
 		"/api/team-invitation/register",
 		func(c *gin.Context) {
 			var err error
+			var mail go_saas_mailer.Mail
 			var token = c.Query("token")
+			var verified = false
 			var tx = http.GetDatabase().GetConnection().BeginTx(c, new(sql.TxOptions))
 			var register = &_struct.Register{
 				RWMutex: new(sync.RWMutex),
@@ -94,17 +97,31 @@ func (saas *Saas) registerTeamInvitation(http go_saas_http.Http) error {
 				return
 			}
 
+			if token, err = http.GetSecurity().GenerateToken(32); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
 			var user = &go_saas_model.User{
 				Name:     register.GetName(),
 				Password: register.GetPassword(),
 				Email:    register.GetEmail(),
-				RWMutex:  new(sync.RWMutex),
+				EmailVerification: &go_saas_model.EmailVerification{
+					Token:    &token,
+					Verified: &verified,
+					RWMutex:  new(sync.RWMutex),
+				},
+				RWMutex: new(sync.RWMutex),
 			}
 
 			if user, err = http.GetSecurity().Register(tx, user); err != nil {
 				tx.Rollback()
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
+			}
+
+			if user.GetEmailVerification().RWMutex == nil {
+				user.GetEmailVerification().RWMutex = new(sync.RWMutex)
 			}
 
 			var tmpUserId = user.GetId()
@@ -123,6 +140,18 @@ func (saas *Saas) registerTeamInvitation(http go_saas_http.Http) error {
 
 			if _, err = http.GetDatabase().AcceptTeamInvitation(tx, teamInvitation); err != nil {
 				tx.Rollback()
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			if mail, err = http.GetMailer().GetMail("emailVerification", map[string]interface{}{
+				"user": user,
+			}); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			if err = http.GetMailer().Send(c, mail); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
