@@ -133,6 +133,7 @@ func (saas *Saas) Init(path string) error {
 		}
 	}
 
+	saas.SetMail("emailVerification", saas.mailEmailVerification)
 	saas.SetMail("passwordRequest", saas.mailPasswordRequest)
 	saas.SetMail("teamInvitation", saas.mailTeamInvitation)
 
