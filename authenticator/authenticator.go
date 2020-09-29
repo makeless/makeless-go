@@ -24,4 +24,5 @@ type Authenticator interface {
 	UnauthorizedHandler(c *gin.Context, code int, message string)
 	GetAuthUserId(c *gin.Context) uint
 	GetAuthEmail(c *gin.Context) string
+	GetAuthEmailVerification(c *gin.Context) bool
 }

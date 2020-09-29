@@ -14,3 +14,8 @@ func (authenticator *Authenticator) GetAuthEmail(c *gin.Context) string {
 	claims := jwt.ExtractClaims(c)
 	return claims["email"].(string)
 }
+
+func (authenticator *Authenticator) GetAuthEmailVerification(c *gin.Context) bool {
+	claims := jwt.ExtractClaims(c)
+	return claims["emailVerification"].(bool)
+}

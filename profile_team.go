@@ -15,6 +15,7 @@ func (saas *Saas) updateProfileTeam(http go_saas_http.Http) error {
 	http.GetRouter().PATCH(
 		"/api/auth/team/profile",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
 		http.TeamRoleMiddleware(go_saas_security.RoleTeamOwner),
 		func(c *gin.Context) {
 			var err error

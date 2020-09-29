@@ -2,11 +2,15 @@ package go_saas_http_basic
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/go-saas/go-saas/model"
 	"github.com/go-saas/go-saas/security"
+	"github.com/jinzhu/gorm"
 	h "net/http"
 	"strconv"
+	"sync"
 )
 
 func (http *Http) CorsMiddleware(Origins []string, AllowHeaders []string) gin.HandlerFunc {
@@ -16,6 +20,43 @@ func (http *Http) CorsMiddleware(Origins []string, AllowHeaders []string) gin.Ha
 	config.AddAllowHeaders(AllowHeaders...)
 
 	return cors.New(config)
+}
+
+func (http *Http) EmailVerificationMiddleware(enabled bool) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+		var userId = http.GetAuthenticator().GetAuthUserId(c)
+		var emailVerification = http.GetAuthenticator().GetAuthEmailVerification(c)
+		var user = &go_saas_model.User{
+			RWMutex: new(sync.RWMutex),
+		}
+
+		if !enabled || emailVerification {
+			c.Next()
+			return
+		}
+
+		if user, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection(), user, "id", fmt.Sprintf("%d", userId)); err != nil {
+			switch err {
+			case gorm.ErrRecordNotFound:
+				c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(err, nil))
+			default:
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+			}
+			return
+		}
+
+		if user.GetEmailVerification() != nil {
+			user.GetEmailVerification().RWMutex = new(sync.RWMutex)
+		}
+
+		if user.GetEmailVerification() != nil && *user.GetEmailVerification().GetVerified() {
+			c.Next()
+			return
+		}
+
+		c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(go_saas_security.NoEmailVerification, nil))
+	}
 }
 
 func (http *Http) TeamUserMiddleware() gin.HandlerFunc {

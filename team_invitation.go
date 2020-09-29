@@ -43,6 +43,7 @@ func (saas *Saas) teamInvitations(http go_saas_http.Http) error {
 	http.GetRouter().GET(
 		"/api/auth/team-invitation",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
 		func(c *gin.Context) {
 			var err error
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
@@ -142,6 +143,7 @@ func (saas *Saas) acceptTeamInvitation(http go_saas_http.Http) error {
 	http.GetRouter().PATCH(
 		"/api/auth/team-invitation/accept",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
 		func(c *gin.Context) {
 			var err error
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
@@ -214,6 +216,7 @@ func (saas *Saas) deleteTeamInvitation(http go_saas_http.Http) error {
 	http.GetRouter().DELETE(
 		"/api/auth/team-invitation",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
 		func(c *gin.Context) {
 			var err error
 			var userEmail = http.GetAuthenticator().GetAuthEmail(c)

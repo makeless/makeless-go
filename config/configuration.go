@@ -5,7 +5,8 @@ type Configuration interface {
 	GetLogo() string
 	GetLocale() string
 	GetHost() string
-	GetMail() Mail
+	GetEmailVerification() bool
 	GetTokens() bool
 	GetTeams() Team
+	GetMail() Mail
 }

@@ -34,6 +34,10 @@ func (security *Security) Login(connection *gorm.DB, field string, value string,
 		return nil, jwt.ErrFailedAuthentication
 	}
 
+	if user.GetEmailVerification() != nil {
+		user.GetEmailVerification().RWMutex = new(sync.RWMutex)
+	}
+
 	return user, nil
 }
 

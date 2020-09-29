@@ -9,6 +9,7 @@ import (
 // GetUser retrieves user and all there team informations
 func (database *Database) GetUser(connection *gorm.DB, user *go_saas_model.User) (*go_saas_model.User, error) {
 	return user, connection.
+		Preload("EmailVerification").
 		Preload("TeamUsers", func(db *gorm.DB) *gorm.DB {
 			return db.Where("team_users.user_id = ?", user.GetId())
 		}).
@@ -23,6 +24,7 @@ func (database *Database) GetUser(connection *gorm.DB, user *go_saas_model.User)
 // Do not use this for outputs
 func (database *Database) GetUserByField(connection *gorm.DB, user *go_saas_model.User, field string, value string) (*go_saas_model.User, error) {
 	return user, connection.
+		Preload("EmailVerification").
 		Where(fmt.Sprintf("%s = ?", field), value).
 		Find(&user).
 		Error

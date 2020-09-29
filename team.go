@@ -21,6 +21,7 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 	http.GetRouter().POST(
 		"/api/auth/team",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
 		func(c *gin.Context) {
 			var err error
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
@@ -141,6 +142,7 @@ func (saas *Saas) leaveDeleteTeam(http go_saas_http.Http) error {
 	http.GetRouter().DELETE(
 		"/api/auth/team",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
 		http.TeamUserMiddleware(),
 		func(c *gin.Context) {
 			var err error

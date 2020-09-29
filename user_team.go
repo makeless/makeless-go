@@ -18,6 +18,7 @@ func (saas *Saas) usersTeam(http go_saas_http.Http) error {
 	http.GetRouter().GET(
 		"/api/auth/team/user",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
 		http.TeamUserMiddleware(),
 		func(c *gin.Context) {
 			var err error
@@ -44,6 +45,7 @@ func (saas *Saas) inviteUsersTeam(http go_saas_http.Http) error {
 	http.GetRouter().PATCH(
 		"/api/auth/team/user/invite",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
 		http.TeamRoleMiddleware(go_saas_security.RoleTeamOwner),
 		func(c *gin.Context) {
 			var err error
@@ -150,6 +152,7 @@ func (saas *Saas) deleteUserTeam(http go_saas_http.Http) error {
 	http.GetRouter().DELETE(
 		"/api/auth/team/user",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
 		http.TeamRoleMiddleware(go_saas_security.RoleTeamOwner),
 		func(c *gin.Context) {
 			var err error

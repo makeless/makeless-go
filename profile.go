@@ -13,6 +13,7 @@ func (saas *Saas) updateProfile(http go_saas_http.Http) error {
 	http.GetRouter().PATCH(
 		"/api/auth/profile",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
 		func(c *gin.Context) {
 			var err error
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
