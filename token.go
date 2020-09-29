@@ -13,6 +13,7 @@ func (saas *Saas) tokens(http go_saas_http.Http) error {
 	http.GetRouter().GET(
 		"/api/auth/token",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
 		func(c *gin.Context) {
 			userId := http.GetAuthenticator().GetAuthUserId(c)
 
@@ -39,6 +40,7 @@ func (saas *Saas) createToken(http go_saas_http.Http) error {
 	http.GetRouter().POST(
 		"/api/auth/token",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
 		func(c *gin.Context) {
 			var err error
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
@@ -74,6 +76,7 @@ func (saas *Saas) deleteToken(http go_saas_http.Http) error {
 	http.GetRouter().DELETE(
 		"/api/auth/token",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
 		func(c *gin.Context) {
 			var err error
 			var userId = http.GetAuthenticator().GetAuthUserId(c)

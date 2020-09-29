@@ -6,9 +6,10 @@ import (
 
 type User struct {
 	Model
-	Name     *string `gorm:"not null" json:"name"`
-	Password *string `gorm:"not null" json:"-"`
-	Email    *string `gorm:"unique;not null" json:"email"`
+	Name              *string            `gorm:"not null" json:"name"`
+	Password          *string            `gorm:"not null" json:"-"`
+	Email             *string            `gorm:"unique;not null" json:"email"`
+	EmailVerification *EmailVerification `gorm:"" json:"emailVerification"`
 
 	TeamUsers       []*TeamUser       `json:"teamUsers" binding:"-"`
 	TeamInvitations []*TeamInvitation `json:"teamInvitations" binding:"-"`
@@ -47,6 +48,13 @@ func (user *User) GetEmail() *string {
 	defer user.RUnlock()
 
 	return user.Email
+}
+
+func (user *User) GetEmailVerification() *EmailVerification {
+	user.RLock()
+	defer user.RUnlock()
+
+	return user.EmailVerification
 }
 
 func (user *User) GetTeamUsers() []*TeamUser {

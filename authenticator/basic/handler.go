@@ -13,6 +13,7 @@ func (authenticator *Authenticator) PayloadHandler(data interface{}) jwt.MapClai
 		return jwt.MapClaims{
 			authenticator.GetIdentityKey(): user.GetId(),
 			"email":                        user.GetEmail(),
+			"emailVerification":            user.GetEmailVerification() != nil && *user.GetEmailVerification().GetVerified(),
 		}
 	}
 
@@ -20,12 +21,16 @@ func (authenticator *Authenticator) PayloadHandler(data interface{}) jwt.MapClai
 }
 
 func (authenticator *Authenticator) IdentityHandler(c *gin.Context) interface{} {
-	var id = authenticator.GetAuthUserId(c)
 	var email = authenticator.GetAuthEmail(c)
+	var emailVerification = authenticator.GetAuthEmailVerification(c)
 
 	return &go_saas_model.User{
-		Model:   go_saas_model.Model{Id: id},
-		Email:   &email,
+		Model: go_saas_model.Model{Id: authenticator.GetAuthUserId(c)},
+		Email: &email,
+		EmailVerification: &go_saas_model.EmailVerification{
+			Verified: &emailVerification,
+			RWMutex:  new(sync.RWMutex),
+		},
 		RWMutex: new(sync.RWMutex),
 	}
 }
