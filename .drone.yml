@@ -11,7 +11,7 @@ steps:
   - name: codeql
     image: mcr.microsoft.com/cstsectools/codeql-container
     commands:
-      - database create go --language=go
+      - scripts/unix/analyze_security.sh . results go
 
   - name: linter
     image: golangci/golangci-lint:v1.23
