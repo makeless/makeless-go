@@ -70,8 +70,7 @@ func (database *Database) DeleteTeamUser(connection *gorm.DB, user *go_saas_mode
 // DeleteTeam deletes team and all their teamUsers
 func (database *Database) DeleteTeam(connection *gorm.DB, team *go_saas_model.Team) error {
 	return connection.
-		Select("TeamUsers").
-		Select("TeamInvitations").
+		Select("TeamUsers", "TeamInvitations").
 		Delete(team).
 		Error
 }
