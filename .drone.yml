@@ -11,7 +11,7 @@ steps:
   - name: codeql
     image: mcr.microsoft.com/cstsectools/codeql-container
     commands:
-      - apt-get install golang
+      - apt-get install golang-1.15 -y
       - mkdir -p /opt/results
       - codeql database create --language=go /opt/results/source_db -s .
       - codeql database upgrade /opt/results/source_db
