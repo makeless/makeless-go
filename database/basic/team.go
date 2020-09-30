@@ -1,6 +1,7 @@
 package go_saas_database_basic
 
 import (
+	"fmt"
 	"github.com/go-saas/go-saas/model"
 	"github.com/jinzhu/gorm"
 )
@@ -31,6 +32,27 @@ func (database *Database) AddTeamInvitations(connection *gorm.DB, team *go_saas_
 		Error
 }
 
+// GetTeamUsers retrieves team users by search
+func (database *Database) GetTeamUsers(connection *gorm.DB, search string, teamUsers []*go_saas_model.TeamUser, team *go_saas_model.Team) ([]*go_saas_model.TeamUser, error) {
+	var query = connection
+
+	if search != "" {
+		query = query.Where(
+			"users.name LIKE ? OR users.email LIKE ?",
+			fmt.Sprintf(`%s%s%s`, "%", search, "%"),
+			fmt.Sprintf(`%s%s%s`, "%", search, "%"),
+		)
+	}
+
+	return teamUsers, query.
+		Preload("Team").
+		Preload("User").
+		Joins("JOIN users ON team_users.user_id = users.id").
+		Where("team_users.team_id = ?", team.GetId()).
+		Find(&teamUsers).
+		Error
+}
+
 // AddTeamUser adds teamUsers to team
 func (database *Database) AddTeamUsers(connection *gorm.DB, teamUsers []*go_saas_model.TeamUser, team *go_saas_model.Team) error {
 	return connection.
@@ -40,17 +62,18 @@ func (database *Database) AddTeamUsers(connection *gorm.DB, teamUsers []*go_saas
 		Error
 }
 
-// DeleteTeamUser deletes own teamUser
+// DeleteTeamUser deletes teamUser
 func (database *Database) DeleteTeamUser(connection *gorm.DB, user *go_saas_model.User, team *go_saas_model.Team) error {
 	return connection.
 		Exec("DELETE FROM team_users WHERE team_users.team_id = ? AND team_users.user_id = ?", team.GetId(), user.GetId()).
 		Error
 }
 
-// DeleteTeam deletes team if user is team creator
-func (database *Database) DeleteTeam(connection *gorm.DB, user *go_saas_model.User, team *go_saas_model.Team) error {
+// DeleteTeam deletes team and all their teamUsers
+func (database *Database) DeleteTeam(connection *gorm.DB, team *go_saas_model.Team) error {
 	return connection.
-		Exec("DELETE FROM teams WHERE teams.id = ? AND teams.user_id = ?", team.GetId(), user.GetId()).
+		Select("TeamUsers", "TeamInvitations").
+		Delete(team).
 		Error
 }
 
@@ -79,6 +102,16 @@ func (database *Database) IsTeamCreator(connection *gorm.DB, team *go_saas_model
 	var count int
 
 	return count == 1, connection.
+		Raw("SELECT COUNT(*) FROM teams WHERE teams.id = ? AND teams.user_id = ? LIMIT 1", team.GetId(), user.GetId()).
+		Count(&count).
+		Error
+}
+
+// IsNotTeamCreator checks if user is not team creator
+func (database *Database) IsNotTeamCreator(connection *gorm.DB, team *go_saas_model.Team, user *go_saas_model.User) (bool, error) {
+	var count int
+
+	return count == 0, connection.
 		Raw("SELECT COUNT(*) FROM teams WHERE teams.id = ? AND teams.user_id = ? LIMIT 1", team.GetId(), user.GetId()).
 		Count(&count).
 		Error

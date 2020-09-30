@@ -47,3 +47,17 @@ func (security *Security) IsTeamCreator(connection *gorm.DB, teamId uint, userId
 
 	return security.GetDatabase().IsTeamCreator(connection, team, user)
 }
+
+func (security *Security) IsNotTeamCreator(connection *gorm.DB, teamId uint, userId uint) (bool, error) {
+	var team = &go_saas_model.Team{
+		Model:   go_saas_model.Model{Id: teamId},
+		RWMutex: new(sync.RWMutex),
+	}
+
+	var user = &go_saas_model.User{
+		Model:   go_saas_model.Model{Id: userId},
+		RWMutex: new(sync.RWMutex),
+	}
+
+	return security.GetDatabase().IsNotTeamCreator(connection, team, user)
+}

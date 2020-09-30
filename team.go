@@ -126,7 +126,7 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 				return
 			}
 
-			if err = http.GetEvent().Trigger(userId, "go-saas", "team:created", team); err != nil {
+			if err = http.GetEvent().Trigger(userId, "go-saas", "team:create", team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -138,44 +138,27 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 	return nil
 }
 
-func (saas *Saas) leaveDeleteTeam(http go_saas_http.Http) error {
+func (saas *Saas) deleteTeam(http go_saas_http.Http) error {
 	http.GetRouter().DELETE(
 		"/api/auth/team",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
-		http.TeamUserMiddleware(),
+		http.TeamCreatorMiddleware(),
 		func(c *gin.Context) {
 			var err error
-			var tx = http.GetDatabase().GetConnection().BeginTx(c, new(sql.TxOptions))
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
 			var teamId, _ = strconv.Atoi(c.GetHeader("Team"))
-			var user = &go_saas_model.User{
-				Model:   go_saas_model.Model{Id: userId},
-				RWMutex: new(sync.RWMutex),
-			}
 			var team = &go_saas_model.Team{
 				Model:   go_saas_model.Model{Id: uint(teamId)},
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err = http.GetDatabase().DeleteTeamUser(tx, user, team); err != nil {
-				tx.Rollback()
+			if err = http.GetDatabase().DeleteTeam(http.GetDatabase().GetConnection(), team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
 
-			if err = http.GetDatabase().DeleteTeam(tx, user, team); err != nil {
-				tx.Rollback()
-				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
-				return
-			}
-
-			if err = tx.Commit().Error; err != nil {
-				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
-				return
-			}
-
-			if err = http.GetEvent().Trigger(userId, "go-saas", "team:leaved-deleted", nil); err != nil {
+			if err = http.GetEvent().Trigger(userId, "go-saas", "team:delete", nil); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

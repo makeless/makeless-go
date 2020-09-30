@@ -12,6 +12,7 @@ import (
 	h "net/http"
 	"strconv"
 	"sync"
+	"time"
 )
 
 func (saas *Saas) teamInvitationsTeam(http go_saas_http.Http) error {
@@ -37,6 +38,113 @@ func (saas *Saas) teamInvitationsTeam(http go_saas_http.Http) error {
 			}
 
 			c.JSON(h.StatusOK, http.Response(nil, teamInvitations))
+		},
+	)
+
+	return nil
+}
+
+func (saas *Saas) createTeamInvitationsTeam(http go_saas_http.Http) error {
+	http.GetRouter().POST(
+		"/api/auth/team/team-invitation",
+		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
+		http.TeamRoleMiddleware(go_saas_security.RoleTeamOwner),
+		func(c *gin.Context) {
+			var err error
+			var user *go_saas_model.User
+			var userId = http.GetAuthenticator().GetAuthUserId(c)
+			var teamId, _ = strconv.Atoi(c.GetHeader("Team"))
+			var teamInvitationExpire = time.Now().Add(time.Hour * 24 * 7)
+			var teamInvitationAccepted = false
+			var userTeamInvite = &_struct.TeamInvitationTeamCreate{
+				RWMutex: new(sync.RWMutex),
+			}
+			var team = &go_saas_model.Team{
+				Model:   go_saas_model.Model{Id: uint(teamId)},
+				RWMutex: new(sync.RWMutex),
+			}
+
+			if err = c.ShouldBind(userTeamInvite); err != nil {
+				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+				return
+			}
+
+			if team, err = http.GetDatabase().GetTeam(http.GetDatabase().GetConnection(), team); err != nil {
+				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+				return
+			}
+
+			for _, teamUser := range team.GetTeamUsers() {
+				teamUser.RWMutex = new(sync.RWMutex)
+				teamUser.GetUser().RWMutex = new(sync.RWMutex)
+
+				if userId == teamUser.GetUser().GetId() {
+					user = teamUser.GetUser()
+				}
+			}
+
+			var teamInvitations = make([]*go_saas_model.TeamInvitation, len(userTeamInvite.GetInvitations()))
+			var index = make(map[string]bool)
+			for _, teamInvitation := range team.GetTeamInvitations() {
+				teamInvitation.RWMutex = new(sync.RWMutex)
+				index[*teamInvitation.GetEmail()] = true
+			}
+
+			for i, teamInvitation := range userTeamInvite.GetInvitations() {
+				var mail go_saas_mailer.Mail
+				var token string
+				var userInvited = &go_saas_model.User{
+					RWMutex: new(sync.RWMutex),
+				}
+				teamInvitation.RWMutex = new(sync.RWMutex)
+
+				if _, exists := index[*teamInvitation.GetEmail()]; exists {
+					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(nil, nil))
+					return
+				}
+
+				if token, err = http.GetSecurity().GenerateToken(32); err != nil {
+					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+					return
+				}
+
+				teamInvitations[i] = &go_saas_model.TeamInvitation{
+					UserId:   &userId,
+					Email:    teamInvitation.GetEmail(),
+					Token:    &token,
+					Expire:   &teamInvitationExpire,
+					Accepted: &teamInvitationAccepted,
+					RWMutex:  new(sync.RWMutex),
+				}
+
+				if userInvited, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection(), userInvited, "email", *teamInvitations[i].GetEmail()); err != nil && err != gorm.ErrRecordNotFound {
+					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+					return
+				}
+
+				if mail, err = http.GetMailer().GetMail("teamInvitation", map[string]interface{}{
+					"user":           user,
+					"userInvited":    userInvited,
+					"teamName":       *team.GetName(),
+					"teamInvitation": teamInvitations[i],
+				}); err != nil {
+					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+					return
+				}
+
+				if err = http.GetMailer().Send(c, mail); err != nil {
+					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+					return
+				}
+			}
+
+			if team, err = http.GetDatabase().AddTeamInvitations(http.GetDatabase().GetConnection(), team, teamInvitations); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			c.JSON(h.StatusOK, http.Response(nil, team))
 		},
 	)
 

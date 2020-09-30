@@ -109,13 +109,12 @@ func (saas *Saas) Init(path string) error {
 
 	if saas.GetConfig().GetConfiguration().GetTeams() != nil {
 		saas.SetRoute("createTeam", saas.createTeam)
-		saas.SetRoute("leaveDeleteTeam", saas.leaveDeleteTeam)
+		saas.SetRoute("deleteTeam", saas.deleteTeam)
+		saas.SetRoute("teamUsersTeam", saas.teamUsersTeam)
+		saas.SetRoute("deleteTeamUser", saas.deleteTeamUser)
+		saas.SetRoute("deleteTeamUserTeam", saas.deleteTeamUserTeam)
 
 		saas.SetRoute("updateProfileTeam", saas.updateProfileTeam)
-
-		saas.SetRoute("usersTeam", saas.usersTeam)
-		saas.SetRoute("deleteUserTeam", saas.deleteUserTeam)
-		saas.SetRoute("inviteUsersTeam", saas.inviteUsersTeam)
 
 		saas.SetRoute("teamInvitation", saas.teamInvitation)
 		saas.SetRoute("teamInvitations", saas.teamInvitations)
@@ -124,8 +123,9 @@ func (saas *Saas) Init(path string) error {
 		saas.SetRoute("deleteTeamInvitation", saas.deleteTeamInvitation)
 
 		saas.SetRoute("teamInvitationsTeam", saas.teamInvitationsTeam)
-		saas.SetRoute("resendTeamInvitationsTeam", saas.resendTeamInvitationTeam)
-		saas.SetRoute("deleteTeamInvitationsTeam", saas.deleteTeamInvitationTeam)
+		saas.SetRoute("createTeamInvitationsTeam", saas.createTeamInvitationsTeam)
+		saas.SetRoute("resendTeamInvitationTeam", saas.resendTeamInvitationTeam)
+		saas.SetRoute("deleteTeamInvitationTeam", saas.deleteTeamInvitationTeam)
 
 		if saas.GetConfig().GetConfiguration().GetTeams().GetTokens() {
 			saas.SetRoute("tokensTeam", saas.tokensTeam)
