@@ -32,5 +32,6 @@ type Http interface {
 	TeamUserMiddleware() gin.HandlerFunc
 	TeamRoleMiddleware(role string) gin.HandlerFunc
 	TeamCreatorMiddleware() gin.HandlerFunc
+	NotTeamCreatorMiddleware() gin.HandlerFunc
 	Start() error
 }

@@ -151,3 +151,34 @@ func (http *Http) TeamCreatorMiddleware() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+func (http *Http) NotTeamCreatorMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var err error
+		var notTeamCreator bool
+		var teamId int
+		var userId = http.GetAuthenticator().GetAuthUserId(c)
+
+		if c.GetHeader("Team") == "" {
+			c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(errors.New("no team header"), nil))
+			return
+		}
+
+		if teamId, err = strconv.Atoi(c.GetHeader("Team")); err != nil {
+			c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+			return
+		}
+
+		if notTeamCreator, err = http.GetSecurity().IsNotTeamCreator(http.GetSecurity().GetDatabase().GetConnection(), uint(teamId), userId); err != nil {
+			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+			return
+		}
+
+		if !notTeamCreator {
+			c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(go_saas_security.NoTeamCreatorError, nil))
+			return
+		}
+
+		c.Next()
+	}
+}

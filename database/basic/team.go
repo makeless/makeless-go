@@ -83,3 +83,13 @@ func (database *Database) IsTeamCreator(connection *gorm.DB, team *go_saas_model
 		Count(&count).
 		Error
 }
+
+// IsNotTeamCreator checks if user is not team creator
+func (database *Database) IsNotTeamCreator(connection *gorm.DB, team *go_saas_model.Team, user *go_saas_model.User) (bool, error) {
+	var count int
+
+	return count == 0, connection.
+		Raw("SELECT COUNT(*) FROM teams WHERE teams.id = ? AND teams.user_id = ? LIMIT 1", team.GetId(), user.GetId()).
+		Count(&count).
+		Error
+}

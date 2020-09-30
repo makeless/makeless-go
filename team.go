@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	h "net/http"
-	"strconv"
 	"sync"
 	"time"
 
@@ -132,55 +131,6 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 			}
 
 			c.JSON(h.StatusOK, http.Response(nil, team))
-		},
-	)
-
-	return nil
-}
-
-func (saas *Saas) leaveDeleteTeam(http go_saas_http.Http) error {
-	http.GetRouter().DELETE(
-		"/api/auth/team",
-		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
-		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
-		http.TeamUserMiddleware(),
-		func(c *gin.Context) {
-			var err error
-			var tx = http.GetDatabase().GetConnection().BeginTx(c, new(sql.TxOptions))
-			var userId = http.GetAuthenticator().GetAuthUserId(c)
-			var teamId, _ = strconv.Atoi(c.GetHeader("Team"))
-			var user = &go_saas_model.User{
-				Model:   go_saas_model.Model{Id: userId},
-				RWMutex: new(sync.RWMutex),
-			}
-			var team = &go_saas_model.Team{
-				Model:   go_saas_model.Model{Id: uint(teamId)},
-				RWMutex: new(sync.RWMutex),
-			}
-
-			if err = http.GetDatabase().DeleteTeamUser(tx, user, team); err != nil {
-				tx.Rollback()
-				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
-				return
-			}
-
-			if err = http.GetDatabase().DeleteTeam(tx, user, team); err != nil {
-				tx.Rollback()
-				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
-				return
-			}
-
-			if err = tx.Commit().Error; err != nil {
-				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
-				return
-			}
-
-			if err = http.GetEvent().Trigger(userId, "go-saas", "team:leaved-deleted", nil); err != nil {
-				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
-				return
-			}
-
-			c.JSON(h.StatusOK, http.Response(nil, nil))
 		},
 	)
 
