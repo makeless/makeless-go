@@ -8,15 +8,15 @@ steps:
     commands:
       - make install
 
-  - name: linter
-    image: golangci/golangci-lint:v1.31
-    commands:
-      - make linter
-
   - name: ls-lint
     image: byrnedo/alpine-curl
     commands:
       - curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.9.2/ls-lint-linux && chmod +x ls-lint && ./ls-lint
+
+  - name: linter
+    image: golangci/golangci-lint:v1.31
+    commands:
+      - make linter
 
   - name: codeql
     image: mcr.microsoft.com/cstsectools/codeql-container
