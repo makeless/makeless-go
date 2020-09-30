@@ -11,11 +11,14 @@ steps:
   - name: codeql
     image: mcr.microsoft.com/cstsectools/codeql-container
     commands:
-      - apt-get install golang-1.15 -y
+      - wget https://dl.google.com/go/go1.15.2.linux-amd64.tar.gz
+      - tar -xvf go1.15.2.linux-amd64.tar.gz
+      - sudo mv go /usr/local
+      - export GOROOT=/usr/local/go
       - mkdir -p /opt/results
       - codeql database create --language=go /opt/results/source_db -s .
       - codeql database upgrade /opt/results/source_db
-      - codeql database analyze /opt/results/source_db --format=sarif-latest --output=/opt/results/issues.sarif go-security-and-quality.qls
+      - codeql database analyze /opt/results/source_db --format=sarif-latest --output=/opt/results/issues.sarif go-queries-builtin.qls
 
   - name: linter
     image: golangci/golangci-lint:v1.23
