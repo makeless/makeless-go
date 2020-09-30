@@ -8,6 +8,11 @@ steps:
     commands:
       - make install
 
+  - name: codeql
+    image: mcr.microsoft.com/codeql/codeql-container
+    commands:
+      - database init
+
   - name: linter
     image: golangci/golangci-lint:v1.23
     commands:
@@ -17,11 +22,6 @@ steps:
     image: byrnedo/alpine-curl
     commands:
       - curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.8.1/ls-lint-linux && chmod +x ls-lint && ./ls-lint
-
-  - name: codeql
-    image: mcr.microsoft.com/codeql/codeql-container
-    commands:
-      - database init
 
   - name: test
     image: golang
