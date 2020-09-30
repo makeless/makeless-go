@@ -9,7 +9,7 @@ steps:
       - make install
 
   - name: codeql
-    image: mcr.microsoft.com/codeql/codeql-container
+    image: mcr.microsoft.com/cstsectools/codeql-container
     commands:
       - database init
 
