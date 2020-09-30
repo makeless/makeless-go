@@ -11,7 +11,7 @@ steps:
   - name: codeql
     image: mcr.microsoft.com/cstsectools/codeql-container
     commands:
-      - database init --language=go
+      - database create go --language=go
 
   - name: linter
     image: golangci/golangci-lint:v1.23
