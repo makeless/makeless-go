@@ -40,17 +40,18 @@ func (database *Database) AddTeamUsers(connection *gorm.DB, teamUsers []*go_saas
 		Error
 }
 
-// DeleteTeamUser deletes own teamUser
+// DeleteTeamUser deletes teamUser
 func (database *Database) DeleteTeamUser(connection *gorm.DB, user *go_saas_model.User, team *go_saas_model.Team) error {
 	return connection.
 		Exec("DELETE FROM team_users WHERE team_users.team_id = ? AND team_users.user_id = ?", team.GetId(), user.GetId()).
 		Error
 }
 
-// DeleteTeam deletes team if user is team creator
-func (database *Database) DeleteTeam(connection *gorm.DB, user *go_saas_model.User, team *go_saas_model.Team) error {
+// DeleteTeam deletes team and all their teamUsers
+func (database *Database) DeleteTeam(connection *gorm.DB, team *go_saas_model.Team) error {
 	return connection.
-		Exec("DELETE FROM teams WHERE teams.id = ? AND teams.user_id = ?", team.GetId(), user.GetId()).
+		Select("TeamUsers").
+		Delete(team).
 		Error
 }
 

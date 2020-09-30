@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	h "net/http"
+	"strconv"
 	"sync"
 	"time"
 
@@ -125,12 +126,44 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 				return
 			}
 
-			if err = http.GetEvent().Trigger(userId, "go-saas", "team:created", team); err != nil {
+			if err = http.GetEvent().Trigger(userId, "go-saas", "team:create", team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
 
 			c.JSON(h.StatusOK, http.Response(nil, team))
+		},
+	)
+
+	return nil
+}
+
+func (saas *Saas) deleteTeam(http go_saas_http.Http) error {
+	http.GetRouter().DELETE(
+		"/api/auth/team",
+		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
+		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
+		http.TeamCreatorMiddleware(),
+		func(c *gin.Context) {
+			var err error
+			var userId = http.GetAuthenticator().GetAuthUserId(c)
+			var teamId, _ = strconv.Atoi(c.GetHeader("Team"))
+			var team = &go_saas_model.Team{
+				Model:   go_saas_model.Model{Id: uint(teamId)},
+				RWMutex: new(sync.RWMutex),
+			}
+
+			if err = http.GetDatabase().DeleteTeam(http.GetDatabase().GetConnection(), team); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			if err = http.GetEvent().Trigger(userId, "go-saas", "team:delete", nil); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			c.JSON(h.StatusOK, http.Response(nil, nil))
 		},
 	)
 
