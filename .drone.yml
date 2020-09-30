@@ -11,7 +11,10 @@ steps:
   - name: codeql
     image: mcr.microsoft.com/cstsectools/codeql-container
     commands:
+      - mkdir -p /opt/results
       - codeql database create --language=go /opt/results/source_db -s .
+      - codeql database upgrade /opt/results/source_db
+      - codeql database analyze /opt/results/source_db --format=sarifv2 --output=/opt/results/issues.sarif go-security-and-quality.qls
 
   - name: linter
     image: golangci/golangci-lint:v1.23
