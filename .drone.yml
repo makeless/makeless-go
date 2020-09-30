@@ -11,10 +11,7 @@ steps:
   - name: codeql
     image: mcr.microsoft.com/cstsectools/codeql-container
     commands:
-      - wget https://dl.google.com/go/go1.15.2.linux-amd64.tar.gz
-      - tar -xvf go1.15.2.linux-amd64.tar.gz
-      - mv go /usr/local
-      - export GOROOT=/usr/local/go
+      - apt-get install golang -y
       - mkdir -p /opt/results
       - codeql database create --language=go /opt/results/source_db -s .
       - codeql database upgrade /opt/results/source_db
