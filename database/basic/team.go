@@ -1,6 +1,7 @@
 package go_saas_database_basic
 
 import (
+	"fmt"
 	"github.com/go-saas/go-saas/model"
 	"github.com/jinzhu/gorm"
 )
@@ -31,6 +32,25 @@ func (database *Database) AddTeamInvitations(connection *gorm.DB, team *go_saas_
 		Error
 }
 
+// GetTeamUsers retrieves team users by search
+func (database *Database) GetTeamUsers(connection *gorm.DB, search string, teamUsers []*go_saas_model.TeamUser, team *go_saas_model.Team) ([]*go_saas_model.TeamUser, error) {
+	var query = connection
+
+	if search != "" {
+		query = query.Where(
+			"users.name LIKE ? OR users.email LIKE ?",
+			fmt.Sprintf(`%s%s%s`, "%", search, "%"),
+			fmt.Sprintf(`%s%s%s`, "%", search, "%"),
+		)
+	}
+
+	return teamUsers, query.
+		Joins("JOIN users ON team_users.user_id = users.id").
+		Where("team_users.team_id = ", team.GetId()).
+		Find(&teamUsers).
+		Error
+}
+
 // AddTeamUser adds teamUsers to team
 func (database *Database) AddTeamUsers(connection *gorm.DB, teamUsers []*go_saas_model.TeamUser, team *go_saas_model.Team) error {
 	return connection.
@@ -51,6 +71,7 @@ func (database *Database) DeleteTeamUser(connection *gorm.DB, user *go_saas_mode
 func (database *Database) DeleteTeam(connection *gorm.DB, team *go_saas_model.Team) error {
 	return connection.
 		Select("TeamUsers").
+		Select("TeamInvitations").
 		Delete(team).
 		Error
 }
