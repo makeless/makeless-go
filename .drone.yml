@@ -18,6 +18,11 @@ steps:
     commands:
       - make linter
 
+  - name: test
+    image: golang
+    commands:
+      - make test-coverage
+
   - name: codeql
     image: mcr.microsoft.com/cstsectools/codeql-container
     commands:
@@ -26,8 +31,6 @@ steps:
       - codeql database create --language=go /opt/results/source_db -s .
       - codeql database upgrade /opt/results/source_db
       - codeql database analyze /opt/results/source_db --format=sarif-latest --output=/opt/results/issues.sarif go-security-and-quality.qls
-
-  - name: test
-    image: golang
-    commands:
-      - make test-coverage
+    when:
+      branch: master
+      event: push
