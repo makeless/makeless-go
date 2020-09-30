@@ -45,8 +45,10 @@ func (database *Database) GetTeamUsers(connection *gorm.DB, search string, teamU
 	}
 
 	return teamUsers, query.
+		Preload("Team").
+		Preload("User").
 		Joins("JOIN users ON team_users.user_id = users.id").
-		Where("team_users.team_id = ", team.GetId()).
+		Where("team_users.team_id = ?", team.GetId()).
 		Find(&teamUsers).
 		Error
 }
