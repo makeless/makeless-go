@@ -13,7 +13,7 @@ steps:
     commands:
       - wget https://dl.google.com/go/go1.15.2.linux-amd64.tar.gz
       - tar -xvf go1.15.2.linux-amd64.tar.gz
-      - sudo mv go /usr/local
+      - mv go /usr/local
       - export GOROOT=/usr/local/go
       - mkdir -p /opt/results
       - codeql database create --language=go /opt/results/source_db -s .
