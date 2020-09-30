@@ -8,15 +8,6 @@ steps:
     commands:
       - make install
 
-  - name: codeql
-    image: mcr.microsoft.com/cstsectools/codeql-container
-    commands:
-      - apt-get install golang -y
-      - mkdir -p /opt/results
-      - codeql database create --language=go /opt/results/source_db -s .
-      - codeql database upgrade /opt/results/source_db
-      - codeql database analyze /opt/results/source_db --format=sarif-latest --no-sarif-add-snippets --output=/opt/results/issues.sarif go-security-and-quality.qls
-
   - name: linter
     image: golangci/golangci-lint:v1.31
     commands:
@@ -26,6 +17,15 @@ steps:
     image: byrnedo/alpine-curl
     commands:
       - curl -sL -o ls-lint https://github.com/loeffel-io/ls-lint/releases/download/v1.9.2/ls-lint-linux && chmod +x ls-lint && ./ls-lint
+
+  - name: codeql
+    image: mcr.microsoft.com/cstsectools/codeql-container
+    commands:
+      - apt-get install golang -y
+      - mkdir -p /opt/results
+      - codeql database create --language=go /opt/results/source_db -s .
+      - codeql database upgrade /opt/results/source_db
+      - codeql database analyze /opt/results/source_db --format=sarif-latest --no-sarif-add-snippets --output=/opt/results/issues.sarif go-security-and-quality.qls
 
   - name: test
     image: golang
