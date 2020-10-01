@@ -77,11 +77,11 @@ func (database *Database) AddTeamUsers(connection *gorm.DB, teamUsers []*go_saas
 		Error
 }
 
-func (database *Database) UpdateRoleTeamUser(connection *gorm.DB, teamUser *go_saas_model.TeamUser) (*go_saas_model.TeamUser, error) {
+func (database *Database) UpdateRoleTeamUser(connection *gorm.DB, teamUser *go_saas_model.TeamUser, role string) (*go_saas_model.TeamUser, error) {
 	return teamUser, connection.
 		Model(teamUser).
 		Update(map[string]interface{}{
-			"role": teamUser.GetRole(),
+			"role": role,
 		}).
 		Error
 }

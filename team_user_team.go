@@ -85,7 +85,11 @@ func (saas *Saas) updateRoleTeamUserTeam(http go_saas_http.Http) error {
 				return
 			}
 
-			if teamUser, err = http.GetDatabase().UpdateRoleTeamUser(http.GetDatabase().GetConnection(), teamUser); err != nil {
+			if exists := saas.GetConfig().GetConfiguration().GetTeams().HasRole(*teamUserTeamUpdateRole.GetRole()); !exists {
+				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+			}
+
+			if teamUser, err = http.GetDatabase().UpdateRoleTeamUser(http.GetDatabase().GetConnection(), teamUser, *teamUserTeamUpdateRole.GetRole()); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

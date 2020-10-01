@@ -13,7 +13,7 @@ type Team interface {
 	GetTeamUserByFields(connection *gorm.DB, teamUser *go_saas_model.TeamUser, fields map[string]interface{}) (*go_saas_model.TeamUser, error)
 	GetTeamUsers(connection *gorm.DB, search string, teamUsers []*go_saas_model.TeamUser, team *go_saas_model.Team) ([]*go_saas_model.TeamUser, error)
 	AddTeamUsers(connection *gorm.DB, teamUsers []*go_saas_model.TeamUser, team *go_saas_model.Team) error
-	UpdateRoleTeamUser(connection *gorm.DB, teamUser *go_saas_model.TeamUser) (*go_saas_model.TeamUser, error)
+	UpdateRoleTeamUser(connection *gorm.DB, teamUser *go_saas_model.TeamUser, role string) (*go_saas_model.TeamUser, error)
 	DeleteTeamUser(connection *gorm.DB, teamUser *go_saas_model.TeamUser) error
 	IsTeamUser(connection *gorm.DB, team *go_saas_model.Team, user *go_saas_model.User) (bool, error)
 	IsTeamRole(connection *gorm.DB, role string, team *go_saas_model.Team, user *go_saas_model.User) (bool, error)
