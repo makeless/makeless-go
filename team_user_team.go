@@ -52,13 +52,15 @@ func (saas *Saas) updateRoleTeamUserTeam(http go_saas_http.Http) error {
 			var teamUserTeamUpdateRole = &_struct.TeamUserTeamUpdateRole{
 				RWMutex: new(sync.RWMutex),
 			}
-			var teamUser = &go_saas_model.TeamUser{
-				RWMutex: new(sync.RWMutex),
-			}
 
 			if err = c.ShouldBind(teamUserTeamUpdateRole); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
+			}
+
+			var teamUser = &go_saas_model.TeamUser{
+				Model:   go_saas_model.Model{Id: *teamUserTeamUpdateRole.GetId()},
+				RWMutex: new(sync.RWMutex),
 			}
 
 			if teamUser, err = http.GetDatabase().GetTeamUserByFields(http.GetDatabase().GetConnection(), teamUser, map[string]interface{}{
@@ -108,14 +110,15 @@ func (saas *Saas) deleteTeamUserTeam(http go_saas_http.Http) error {
 			var teamUserTeamDelete = &_struct.TeamUserTeamDelete{
 				RWMutex: new(sync.RWMutex),
 			}
-			var teamUser = &go_saas_model.TeamUser{
-				Model:   go_saas_model.Model{Id: *teamUserTeamDelete.GetId()},
-				RWMutex: new(sync.RWMutex),
-			}
 
 			if err = c.ShouldBind(teamUserTeamDelete); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
+			}
+
+			var teamUser = &go_saas_model.TeamUser{
+				Model:   go_saas_model.Model{Id: *teamUserTeamDelete.GetId()},
+				RWMutex: new(sync.RWMutex),
 			}
 
 			if teamUser, err = http.GetDatabase().GetTeamUserByFields(http.GetDatabase().GetConnection(), teamUser, map[string]interface{}{
