@@ -178,6 +178,10 @@ func (saas *Saas) acceptTeamInvitation(http go_saas_http.Http) error {
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
 			var userEmail = http.GetAuthenticator().GetAuthEmail(c)
 			var tx = http.GetDatabase().GetConnection().BeginTx(c, new(sql.TxOptions))
+			var user = &go_saas_model.User{
+				Model:   go_saas_model.Model{Id: userId},
+				RWMutex: new(sync.RWMutex),
+			}
 			var teamInvitationAccept = &_struct.TeamInvitationAccept{
 				RWMutex: new(sync.RWMutex),
 			}
@@ -203,6 +207,11 @@ func (saas *Saas) acceptTeamInvitation(http go_saas_http.Http) error {
 				return
 			}
 
+			if user, err = http.GetDatabase().GetUser(http.GetDatabase().GetConnection(), user); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
 			if teamInvitation, err = http.GetDatabase().AcceptTeamInvitation(tx, teamInvitation); err != nil {
 				tx.Rollback()
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
@@ -215,13 +224,10 @@ func (saas *Saas) acceptTeamInvitation(http go_saas_http.Http) error {
 			}
 
 			var teamUser = &go_saas_model.TeamUser{
-				UserId: &userId,
-				TeamId: teamInvitation.GetTeamId(),
-				Team:   teamInvitation.GetTeam(),
-				User: &go_saas_model.User{
-					Model:   go_saas_model.Model{Id: userId},
-					RWMutex: new(sync.RWMutex),
-				},
+				UserId:  &userId,
+				TeamId:  teamInvitation.GetTeamId(),
+				Team:    teamInvitation.GetTeam(),
+				User:    user,
 				Role:    &go_saas_security.RoleTeamUser,
 				RWMutex: new(sync.RWMutex),
 			}
