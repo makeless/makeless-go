@@ -90,7 +90,7 @@ func (saas *Saas) deleteToken(http go_saas_http.Http) error {
 			}
 
 			var token = &go_saas_model.Token{
-				Model:   go_saas_model.Model{Id: tokenDelete.GetId()},
+				Model:   go_saas_model.Model{Id: *tokenDelete.GetId()},
 				UserId:  &userId,
 				RWMutex: new(sync.RWMutex),
 			}

@@ -32,6 +32,21 @@ func (database *Database) AddTeamInvitations(connection *gorm.DB, team *go_saas_
 		Error
 }
 
+// GetTeamUserByFields retrieves teamUser by fields
+func (database *Database) GetTeamUserByFields(connection *gorm.DB, teamUser *go_saas_model.TeamUser, fields map[string]interface{}) (*go_saas_model.TeamUser, error) {
+	var query = connection
+
+	for field, value := range fields {
+		query = query.Where(fmt.Sprintf("team_users.%s = ?", field), value)
+	}
+
+	return teamUser, query.
+		Preload("Team").
+		Preload("User").
+		Find(&teamUser).
+		Error
+}
+
 // GetTeamUsers retrieves team users by search
 func (database *Database) GetTeamUsers(connection *gorm.DB, search string, teamUsers []*go_saas_model.TeamUser, team *go_saas_model.Team) ([]*go_saas_model.TeamUser, error) {
 	var query = connection
@@ -62,10 +77,20 @@ func (database *Database) AddTeamUsers(connection *gorm.DB, teamUsers []*go_saas
 		Error
 }
 
+func (database *Database) UpdateRoleTeamUser(connection *gorm.DB, teamUser *go_saas_model.TeamUser) (*go_saas_model.TeamUser, error) {
+	return teamUser, connection.
+		Model(teamUser).
+		Update(map[string]interface{}{
+			"role": teamUser.GetRole(),
+		}).
+		Error
+}
+
 // DeleteTeamUser deletes teamUser
-func (database *Database) DeleteTeamUser(connection *gorm.DB, user *go_saas_model.User, team *go_saas_model.Team) error {
+func (database *Database) DeleteTeamUser(connection *gorm.DB, teamUser *go_saas_model.TeamUser) error {
 	return connection.
-		Exec("DELETE FROM team_users WHERE team_users.team_id = ? AND team_users.user_id = ?", team.GetId(), user.GetId()).
+		Unscoped().
+		Delete(teamUser).
 		Error
 }
 
@@ -114,6 +139,17 @@ func (database *Database) IsNotTeamCreator(connection *gorm.DB, team *go_saas_mo
 
 	return count == 0, connection.
 		Raw("SELECT COUNT(*) FROM teams WHERE teams.id = ? AND teams.user_id = ? LIMIT 1", team.GetId(), user.GetId()).
+		Count(&count).
+		Error
+}
+
+func (database *Database) IsModelTeam(connection *gorm.DB, team *go_saas_model.Team, model interface{}) (bool, error) {
+	var count int
+
+	return count == 1, connection.
+		Model(model).
+		Select("COUNT(*)").
+		Where("team_id = ?", team.GetId()).
 		Count(&count).
 		Error
 }

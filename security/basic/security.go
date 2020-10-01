@@ -77,3 +77,12 @@ func (security *Security) IsModelUser(connection *gorm.DB, userId uint, model in
 
 	return security.GetDatabase().IsModelUser(connection, user, model)
 }
+
+func (security *Security) IsModelTeam(connection *gorm.DB, teamId uint, model interface{}) (bool, error) {
+	var team = &go_saas_model.Team{
+		Model:   go_saas_model.Model{Id: teamId},
+		RWMutex: new(sync.RWMutex),
+	}
+
+	return security.GetDatabase().IsModelTeam(connection, team, model)
+}

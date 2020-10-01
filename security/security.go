@@ -19,4 +19,5 @@ type Security interface {
 	IsTeamCreator(connection *gorm.DB, teamId uint, userId uint) (bool, error)
 	IsNotTeamCreator(connection *gorm.DB, teamId uint, userId uint) (bool, error)
 	IsModelUser(connection *gorm.DB, userId uint, model interface{}) (bool, error)
+	IsModelTeam(connection *gorm.DB, teamId uint, model interface{}) (bool, error)
 }
