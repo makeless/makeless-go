@@ -80,7 +80,7 @@ func (saas *Saas) updateRoleTeamUserTeam(http go_saas_http.Http) error {
 				teamUser.GetTeam().RWMutex = new(sync.RWMutex)
 			}
 
-			if *teamUser.GetTeam().GetUserId() == userId || *teamUser.GetUserId() == userId {
+			if teamUser.GetTeam().GetUserId() == teamUser.GetUserId() || *teamUser.GetUserId() == userId {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
 			}
@@ -142,7 +142,7 @@ func (saas *Saas) deleteTeamUserTeam(http go_saas_http.Http) error {
 				teamUser.GetTeam().RWMutex = new(sync.RWMutex)
 			}
 
-			if *teamUser.GetTeam().GetUserId() == userId || *teamUser.GetUserId() == userId {
+			if teamUser.GetTeam().GetUserId() == teamUser.GetUserId() || *teamUser.GetUserId() == userId {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
 			}
