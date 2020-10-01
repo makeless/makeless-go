@@ -57,7 +57,7 @@ func (saas *Saas) createTeamInvitationsTeam(http go_saas_http.Http) error {
 			var teamId, _ = strconv.Atoi(c.GetHeader("Team"))
 			var teamInvitationExpire = time.Now().Add(time.Hour * 24 * 7)
 			var teamInvitationAccepted = false
-			var userTeamInvite = &_struct.TeamInvitationTeamCreate{
+			var teamInvitationTeamCreate = &_struct.TeamInvitationTeamCreate{
 				RWMutex: new(sync.RWMutex),
 			}
 			var team = &go_saas_model.Team{
@@ -65,7 +65,7 @@ func (saas *Saas) createTeamInvitationsTeam(http go_saas_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err = c.ShouldBind(userTeamInvite); err != nil {
+			if err = c.ShouldBind(teamInvitationTeamCreate); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
 			}
@@ -84,14 +84,15 @@ func (saas *Saas) createTeamInvitationsTeam(http go_saas_http.Http) error {
 				}
 			}
 
-			var teamInvitations = make([]*go_saas_model.TeamInvitation, len(userTeamInvite.GetInvitations()))
+			var teamInvitations = make([]*go_saas_model.TeamInvitation, len(teamInvitationTeamCreate.GetInvitations()))
 			var index = make(map[string]bool)
-			for _, teamInvitation := range team.GetTeamInvitations() {
-				teamInvitation.RWMutex = new(sync.RWMutex)
-				index[*teamInvitation.GetEmail()] = true
+			for _, teamUser := range team.GetTeamUsers() {
+				teamUser.RWMutex = new(sync.RWMutex)
+				teamUser.GetUser().RWMutex = new(sync.RWMutex)
+				index[*teamUser.GetUser().GetEmail()] = true
 			}
 
-			for i, teamInvitation := range userTeamInvite.GetInvitations() {
+			for i, teamInvitation := range teamInvitationTeamCreate.GetInvitations() {
 				var mail go_saas_mailer.Mail
 				var token string
 				var userInvited = &go_saas_model.User{
