@@ -215,10 +215,13 @@ func (saas *Saas) acceptTeamInvitation(http go_saas_http.Http) error {
 			}
 
 			var teamUser = &go_saas_model.TeamUser{
-				UserId:  &userId,
-				TeamId:  teamInvitation.GetTeamId(),
-				Team:    teamInvitation.GetTeam(),
-				User:    nil,
+				UserId: &userId,
+				TeamId: teamInvitation.GetTeamId(),
+				Team:   teamInvitation.GetTeam(),
+				User: &go_saas_model.User{
+					Model:   go_saas_model.Model{Id: userId},
+					RWMutex: new(sync.RWMutex),
+				},
 				Role:    &go_saas_security.RoleTeamUser,
 				RWMutex: new(sync.RWMutex),
 			}
