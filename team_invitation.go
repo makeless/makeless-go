@@ -218,7 +218,7 @@ func (saas *Saas) acceptTeamInvitation(http go_saas_http.Http) error {
 				UserId:  &userId,
 				TeamId:  teamInvitation.GetTeamId(),
 				Team:    teamInvitation.GetTeam(),
-				User:    teamInvitation.GetUser(),
+				User:    nil,
 				Role:    &go_saas_security.RoleTeamUser,
 				RWMutex: new(sync.RWMutex),
 			}
