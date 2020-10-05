@@ -6,7 +6,7 @@ type Database interface {
 	GetConnection() *gorm.DB
 	SetConnection(connection *gorm.DB)
 	GetConnectionString() string
-	Connect() error
+	Connect(dialector gorm.Dialector) error
 	Migrate() error
 
 	User

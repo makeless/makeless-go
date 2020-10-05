@@ -8,20 +8,12 @@ import (
 type Database struct {
 	connection *gorm.DB
 
-	Dialector gorm.Dialector
-	Username  string
-	Password  string
-	Database  string
-	Host      string
-	Port      string
+	Username string
+	Password string
+	Database string
+	Host     string
+	Port     string
 	*sync.RWMutex
-}
-
-func (database *Database) getDialector() gorm.Dialector {
-	database.RLock()
-	defer database.RUnlock()
-
-	return database.Dialector
 }
 
 func (database *Database) getUsername() string {
