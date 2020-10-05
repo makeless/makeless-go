@@ -1,4 +1,4 @@
-package makeless
+package makeless_go
 
 import (
 	"github.com/gin-gonic/gin"
