@@ -1,10 +1,10 @@
-# go-saas
+# Makeless
 
-Go SaaS Framework - Golang Implementation
+Makeless - SaaS Framework - Golang Implementation
 
 [![Build Status](https://ci.loeffel.io/api/badges/makeless/makeless-go/status.svg)](https://ci.loeffel.io/makeless/makeless-go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/makeless/makeless-go)](https://goreportcard.com/report/github.com/makeless/makeless-go)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fgo-saas%2Fgo-saas.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fgo-saas%2Fgo-saas?ref=badge_shield)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go?ref=badge_shield)
 
 - Based on Golang ([gin](https://github.com/gin-gonic/gin) & [gorm](https://github.com/go-gorm/gorm))
 - Super clean and small
@@ -17,7 +17,7 @@ Go SaaS Framework - Golang Implementation
 
 ## Preview
 
-<img src="https://raw.githubusercontent.com/makeless/makeless-go-ui/master/preview.png" alt="logo">
+<img src="https://raw.githubusercontent.com/makeless/makeless-ui/master/preview.png" alt="logo">
 
 ## Frontend
 
@@ -25,7 +25,7 @@ Go SaaS Framework - Golang Implementation
 
 ## Demo
 
-- Go + TypeScript & Vue.js: [https://github.com/makeless/makeless-go-demo](https://github.com/makeless/makeless-go-demo)
+- Go + TypeScript & Vue.js: [https://github.com/makeless/makeless-demo](https://github.com/makeless/makeless-demo)
 
 ## Usage
 
@@ -132,7 +132,7 @@ func main() {
 		RWMutex:       new(sync.RWMutex),
 	}
 
-	saas := &makeless.Saas{
+	makeless := &makeless.Makeless{
 		Config:   config,
 		Logger:   logger,
 		Mailer:   mailer,
@@ -141,30 +141,30 @@ func main() {
 		RWMutex:  new(sync.RWMutex),
 	}
 
-	if err := saas.Init("./../go-saas.json"); err != nil {
-		saas.GetLogger().Fatal(err)
+	if err := makeless.Init("./../makeless.json"); err != nil {
+		makeless.GetLogger().Fatal(err)
 	}
 
-	if err := saas.Run(); err != nil {
-		saas.GetLogger().Fatal(err)
+	if err := makeless.Run(); err != nil {
+		makeless.GetLogger().Fatal(err)
 	}
 }
 ```
 
 ## Config
 
-go-saas.json
+makeless.json
 
 ```json
 {
-  "name": "Go SaaS",
+  "name": "Makeless",
   "logo": null,
   "locale": "en",
   "host": "http://localhost:3000",
   "mail": {
-    "name": "Go SaaS",
+    "name": "Makeless",
     "logo": null,
-    "from": "Go SaaS <info@go-saas.io>",
+    "from": "Makeless <info@makeless.io>",
     "link": "https://localhost",
     "buttonColor": "#4586ab",
     "buttonTextColor": "#FFFFFF",
@@ -172,7 +172,7 @@ go-saas.json
       "en": {
         "greeting": "Hello",
         "signature": "Best Regards",
-        "copyright": "Copyright © 2020 Go SaaS. All rights reserved."
+        "copyright": "Copyright © 2020 Makeless. All rights reserved."
       }
     }
   },
@@ -193,17 +193,17 @@ go-saas.json
       "en": [
         {
           "label": "GitHub",
-          "to": "https://github.com/go-saas",
+          "to": "https://github.com/makeless",
           "external": true
         },
         {
           "label": "Login",
           "to": "login"
         },
-	{
-	  "label": "Register",
-	  "to": "registration"
-	}
+        {
+          "label": "Register",
+          "to": "register"
+        }
       ]
     }
   }
@@ -212,4 +212,5 @@ go-saas.json
 
 
 ## License
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fgo-saas%2Fgo-saas.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fgo-saas%2Fgo-saas?ref=badge_large)
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go?ref=badge_large)
