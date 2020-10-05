@@ -54,6 +54,7 @@ func (database *Database) AcceptTeamInvitation(connection *gorm.DB, teamInvitati
 
 func (database *Database) DeleteTeamInvitation(connection *gorm.DB, teamInvitation *makeless_go_model.TeamInvitation) (*makeless_go_model.TeamInvitation, error) {
 	return teamInvitation, connection.
+		Unscoped().
 		Delete(teamInvitation).
 		Error
 }

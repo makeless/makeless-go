@@ -34,6 +34,6 @@ func (database *Database) DeleteTokenTeam(connection *gorm.DB, token *makeless_g
 	return connection.
 		Unscoped().
 		Where("tokens.id = ? AND tokens.team_id = ?", token.GetId(), token.GetTeamId()).
-		Delete(&token).
+		Delete(token).
 		Error
 }
