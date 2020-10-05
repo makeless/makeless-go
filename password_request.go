@@ -1,24 +1,24 @@
-package go_saas
+package makeless
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas/http"
-	"github.com/go-saas/go-saas/mailer"
-	"github.com/go-saas/go-saas/model"
-	"github.com/go-saas/go-saas/struct"
+	"github.com/makeless/makeless-go/http"
+	"github.com/makeless/makeless-go/mailer"
+	"github.com/makeless/makeless-go/model"
+	"github.com/makeless/makeless-go/struct"
 	h "net/http"
 	"sync"
 	"time"
 )
 
-func (saas *Saas) passwordRequest(http go_saas_http.Http) error {
+func (makeless *Makeless) passwordRequest(http makeless_go_http.Http) error {
 	http.GetRouter().POST(
 		"/api/password-request",
 		func(c *gin.Context) {
 			var err error
 			var userExists bool
 			var token string
-			var mail go_saas_mailer.Mail
+			var mail makeless_go_mailer.Mail
 			var tokenExpire = time.Now().Add(time.Hour * 1)
 			var tokenUsed = false
 			var tmpPasswordRequest = &_struct.PasswordRequest{
@@ -45,7 +45,7 @@ func (saas *Saas) passwordRequest(http go_saas_http.Http) error {
 				return
 			}
 
-			var passwordRequest = &go_saas_model.PasswordRequest{
+			var passwordRequest = &makeless_go_model.PasswordRequest{
 				Email:   tmpPasswordRequest.GetEmail(),
 				Token:   &token,
 				Expire:  &tokenExpire,

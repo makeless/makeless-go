@@ -1,15 +1,15 @@
-package go_saas_database_basic
+package makeless_go_database_basic
 
-import "github.com/go-saas/go-saas/model"
+import "github.com/makeless/makeless-go/model"
 
 func (database *Database) Migrate() error {
 	return database.GetConnection().AutoMigrate(
-		new(go_saas_model.User),
-		new(go_saas_model.EmailVerification),
-		new(go_saas_model.Token),
-		new(go_saas_model.Team),
-		new(go_saas_model.TeamUser),
-		new(go_saas_model.TeamInvitation),
-		new(go_saas_model.PasswordRequest),
+		new(makeless_go_model.User),
+		new(makeless_go_model.EmailVerification),
+		new(makeless_go_model.Token),
+		new(makeless_go_model.Team),
+		new(makeless_go_model.TeamUser),
+		new(makeless_go_model.TeamInvitation),
+		new(makeless_go_model.PasswordRequest),
 	).Error
 }

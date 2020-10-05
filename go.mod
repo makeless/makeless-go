@@ -1,4 +1,4 @@
-module github.com/go-saas/go-saas
+module github.com/makeless/makeless-go
 
 go 1.15
 

@@ -1,4 +1,4 @@
-package go_saas_database_basic
+package makeless_go_database_basic
 
 import (
 	"fmt"

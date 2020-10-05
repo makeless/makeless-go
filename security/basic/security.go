@@ -1,28 +1,28 @@
-package go_saas_security_basic
+package makeless_go_security_basic
 
 import (
 	"github.com/appleboy/gin-jwt/v2"
-	"github.com/go-saas/go-saas/database"
-	"github.com/go-saas/go-saas/model"
+	"github.com/makeless/makeless-go/database"
+	"github.com/makeless/makeless-go/model"
 	"github.com/jinzhu/gorm"
 	"sync"
 )
 
 type Security struct {
-	Database go_saas_database.Database
+	Database makeless_go_database.Database
 	*sync.RWMutex
 }
 
-func (security *Security) GetDatabase() go_saas_database.Database {
+func (security *Security) GetDatabase() makeless_go_database.Database {
 	security.RLock()
 	defer security.RUnlock()
 
 	return security.Database
 }
 
-func (security *Security) Login(connection *gorm.DB, field string, value string, password string) (*go_saas_model.User, error) {
+func (security *Security) Login(connection *gorm.DB, field string, value string, password string) (*makeless_go_model.User, error) {
 	var err error
-	var user = &go_saas_model.User{
+	var user = &makeless_go_model.User{
 		RWMutex: new(sync.RWMutex),
 	}
 
@@ -41,7 +41,7 @@ func (security *Security) Login(connection *gorm.DB, field string, value string,
 	return user, nil
 }
 
-func (security *Security) Register(connection *gorm.DB, user *go_saas_model.User) (*go_saas_model.User, error) {
+func (security *Security) Register(connection *gorm.DB, user *makeless_go_model.User) (*makeless_go_model.User, error) {
 	encrypted, err := security.EncryptPassword(*user.GetPassword())
 
 	if err != nil {
@@ -57,7 +57,7 @@ func (security *Security) Register(connection *gorm.DB, user *go_saas_model.User
 }
 
 func (security *Security) UserExists(connection *gorm.DB, field string, value string) (bool, error) {
-	_, err := security.GetDatabase().GetUserByField(connection, new(go_saas_model.User), field, value)
+	_, err := security.GetDatabase().GetUserByField(connection, new(makeless_go_model.User), field, value)
 
 	switch err {
 	case gorm.ErrRecordNotFound:
@@ -70,8 +70,8 @@ func (security *Security) UserExists(connection *gorm.DB, field string, value st
 }
 
 func (security *Security) IsModelUser(connection *gorm.DB, userId uint, model interface{}) (bool, error) {
-	var user = &go_saas_model.User{
-		Model:   go_saas_model.Model{Id: userId},
+	var user = &makeless_go_model.User{
+		Model:   makeless_go_model.Model{Id: userId},
 		RWMutex: new(sync.RWMutex),
 	}
 
@@ -79,8 +79,8 @@ func (security *Security) IsModelUser(connection *gorm.DB, userId uint, model in
 }
 
 func (security *Security) IsModelTeam(connection *gorm.DB, teamId uint, model interface{}) (bool, error) {
-	var team = &go_saas_model.Team{
-		Model:   go_saas_model.Model{Id: teamId},
+	var team = &makeless_go_model.Team{
+		Model:   makeless_go_model.Model{Id: teamId},
 		RWMutex: new(sync.RWMutex),
 	}
 

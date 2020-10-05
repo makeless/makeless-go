@@ -1,26 +1,26 @@
-package go_saas
+package makeless
 
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas/http"
-	"github.com/go-saas/go-saas/model"
-	"github.com/go-saas/go-saas/struct"
+	"github.com/makeless/makeless-go/http"
+	"github.com/makeless/makeless-go/model"
+	"github.com/makeless/makeless-go/struct"
 	h "net/http"
 	"sync"
 )
 
-func (saas *Saas) updatePassword(http go_saas_http.Http) error {
+func (makeless *Makeless) updatePassword(http makeless_go_http.Http) error {
 	http.GetRouter().PATCH(
 		"/api/auth/password",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
-		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
+		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
 		func(c *gin.Context) {
 			var err error
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
 			var bcrypted string
-			var user = &go_saas_model.User{
-				Model:   go_saas_model.Model{Id: userId},
+			var user = &makeless_go_model.User{
+				Model:   makeless_go_model.Model{Id: userId},
 				RWMutex: new(sync.RWMutex),
 			}
 			var passwordUpdate = &_struct.PasswordUpdate{

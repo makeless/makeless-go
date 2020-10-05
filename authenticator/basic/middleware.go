@@ -1,4 +1,4 @@
-package go_saas_authenticator_basic
+package makeless_go_authenticator_basic
 
 import (
 	"github.com/appleboy/gin-jwt/v2"

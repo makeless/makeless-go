@@ -1,17 +1,17 @@
-package go_saas
+package makeless
 
 import (
 	"database/sql"
 	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas/http"
-	"github.com/go-saas/go-saas/model"
-	"github.com/go-saas/go-saas/struct"
+	"github.com/makeless/makeless-go/http"
+	"github.com/makeless/makeless-go/model"
+	"github.com/makeless/makeless-go/struct"
 	"github.com/jinzhu/gorm"
 	h "net/http"
 	"sync"
 )
 
-func (saas *Saas) passwordReset(http go_saas_http.Http) error {
+func (makeless *Makeless) passwordReset(http makeless_go_http.Http) error {
 	http.GetRouter().POST(
 		"/api/password-reset",
 		func(c *gin.Context) {
@@ -19,7 +19,7 @@ func (saas *Saas) passwordReset(http go_saas_http.Http) error {
 			var bcrypted string
 			var tx = http.GetDatabase().GetConnection().BeginTx(c, new(sql.TxOptions))
 			var token = c.Query("token")
-			var user = &go_saas_model.User{
+			var user = &makeless_go_model.User{
 				RWMutex: new(sync.RWMutex),
 			}
 			var passwordReset = &_struct.PasswordReset{
@@ -31,7 +31,7 @@ func (saas *Saas) passwordReset(http go_saas_http.Http) error {
 				return
 			}
 
-			var passwordRequest = &go_saas_model.PasswordRequest{
+			var passwordRequest = &makeless_go_model.PasswordRequest{
 				Token:   &token,
 				RWMutex: new(sync.RWMutex),
 			}

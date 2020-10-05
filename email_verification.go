@@ -1,23 +1,23 @@
-package go_saas
+package makeless
 
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas/http"
-	"github.com/go-saas/go-saas/mailer"
-	"github.com/go-saas/go-saas/model"
+	"github.com/makeless/makeless-go/http"
+	"github.com/makeless/makeless-go/mailer"
+	"github.com/makeless/makeless-go/model"
 	"github.com/jinzhu/gorm"
 	h "net/http"
 	"sync"
 )
 
-func (saas *Saas) verifyEmailVerification(http go_saas_http.Http) error {
+func (makeless *Makeless) verifyEmailVerification(http makeless_go_http.Http) error {
 	http.GetRouter().PATCH(
 		"/api/email-verification/verify",
 		func(c *gin.Context) {
 			var err error
 			var token = c.Query("token")
-			var emailVerification = &go_saas_model.EmailVerification{
+			var emailVerification = &makeless_go_model.EmailVerification{
 				RWMutex: new(sync.RWMutex),
 			}
 
@@ -43,16 +43,16 @@ func (saas *Saas) verifyEmailVerification(http go_saas_http.Http) error {
 	return nil
 }
 
-func (saas *Saas) resendEmailVerification(http go_saas_http.Http) error {
+func (makeless *Makeless) resendEmailVerification(http makeless_go_http.Http) error {
 	http.GetRouter().POST(
 		"/api/auth/email-verification/resend",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		func(c *gin.Context) {
 			var err error
-			var mail go_saas_mailer.Mail
+			var mail makeless_go_mailer.Mail
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
-			var user = &go_saas_model.User{
-				Model:   go_saas_model.Model{Id: userId},
+			var user = &makeless_go_model.User{
+				Model:   makeless_go_model.Model{Id: userId},
 				RWMutex: new(sync.RWMutex),
 			}
 

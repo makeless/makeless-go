@@ -1,4 +1,4 @@
-package go_saas_config
+package makeless_go_config
 
 type Configuration interface {
 	GetName() string

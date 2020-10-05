@@ -1,15 +1,15 @@
-package go_saas_authenticator_basic
+package makeless_go_authenticator_basic
 
 import (
 	"github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas/model"
-	"github.com/go-saas/go-saas/struct"
+	"github.com/makeless/makeless-go/model"
+	"github.com/makeless/makeless-go/struct"
 	"sync"
 )
 
 func (authenticator *Authenticator) PayloadHandler(data interface{}) jwt.MapClaims {
-	if user, ok := data.(*go_saas_model.User); ok {
+	if user, ok := data.(*makeless_go_model.User); ok {
 		return jwt.MapClaims{
 			authenticator.GetIdentityKey(): user.GetId(),
 			"email":                        user.GetEmail(),
@@ -24,10 +24,10 @@ func (authenticator *Authenticator) IdentityHandler(c *gin.Context) interface{} 
 	var email = authenticator.GetAuthEmail(c)
 	var emailVerification = authenticator.GetAuthEmailVerification(c)
 
-	return &go_saas_model.User{
-		Model: go_saas_model.Model{Id: authenticator.GetAuthUserId(c)},
+	return &makeless_go_model.User{
+		Model: makeless_go_model.Model{Id: authenticator.GetAuthUserId(c)},
 		Email: &email,
-		EmailVerification: &go_saas_model.EmailVerification{
+		EmailVerification: &makeless_go_model.EmailVerification{
 			Verified: &emailVerification,
 			RWMutex:  new(sync.RWMutex),
 		},

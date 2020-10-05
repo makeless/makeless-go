@@ -1,4 +1,4 @@
-package go_saas_http_basic
+package makeless_go_http_basic
 
 import (
 	"github.com/gin-gonic/gin"

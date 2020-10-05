@@ -1,10 +1,10 @@
-package go_saas_database
+package makeless_go_database
 
 import (
-	"github.com/go-saas/go-saas/model"
+	"github.com/makeless/makeless-go/model"
 	"github.com/jinzhu/gorm"
 )
 
 type Password interface {
-	UpdatePassword(connection *gorm.DB, user *go_saas_model.User, newPassword string) (*go_saas_model.User, error)
+	UpdatePassword(connection *gorm.DB, user *makeless_go_model.User, newPassword string) (*makeless_go_model.User, error)
 }

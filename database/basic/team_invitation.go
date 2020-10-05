@@ -1,13 +1,13 @@
-package go_saas_database_basic
+package makeless_go_database_basic
 
 import (
 	"fmt"
-	"github.com/go-saas/go-saas/model"
+	"github.com/makeless/makeless-go/model"
 	"github.com/jinzhu/gorm"
 	"time"
 )
 
-func (database *Database) GetTeamInvitationByField(connection *gorm.DB, teamInvitation *go_saas_model.TeamInvitation, field string, value string) (*go_saas_model.TeamInvitation, error) {
+func (database *Database) GetTeamInvitationByField(connection *gorm.DB, teamInvitation *makeless_go_model.TeamInvitation, field string, value string) (*makeless_go_model.TeamInvitation, error) {
 	return teamInvitation, connection.
 		Preload("Team").
 		Preload("User").
@@ -21,7 +21,7 @@ func (database *Database) GetTeamInvitationByField(connection *gorm.DB, teamInvi
 		Error
 }
 
-func (database *Database) GetTeamInvitations(connection *gorm.DB, user *go_saas_model.User, teamInvitations []*go_saas_model.TeamInvitation) ([]*go_saas_model.TeamInvitation, error) {
+func (database *Database) GetTeamInvitations(connection *gorm.DB, user *makeless_go_model.User, teamInvitations []*makeless_go_model.TeamInvitation) ([]*makeless_go_model.TeamInvitation, error) {
 	return teamInvitations, connection.
 		Preload("Team").
 		Preload("User").
@@ -33,7 +33,7 @@ func (database *Database) GetTeamInvitations(connection *gorm.DB, user *go_saas_
 		Error
 }
 
-func (database *Database) GetTeamInvitationsTeam(connection *gorm.DB, team *go_saas_model.Team, teamInvitations []*go_saas_model.TeamInvitation) ([]*go_saas_model.TeamInvitation, error) {
+func (database *Database) GetTeamInvitationsTeam(connection *gorm.DB, team *makeless_go_model.Team, teamInvitations []*makeless_go_model.TeamInvitation) ([]*makeless_go_model.TeamInvitation, error) {
 	return teamInvitations, connection.
 		Preload("Team").
 		Preload("User").
@@ -43,7 +43,7 @@ func (database *Database) GetTeamInvitationsTeam(connection *gorm.DB, team *go_s
 		Error
 }
 
-func (database *Database) AcceptTeamInvitation(connection *gorm.DB, teamInvitation *go_saas_model.TeamInvitation) (*go_saas_model.TeamInvitation, error) {
+func (database *Database) AcceptTeamInvitation(connection *gorm.DB, teamInvitation *makeless_go_model.TeamInvitation) (*makeless_go_model.TeamInvitation, error) {
 	return teamInvitation, connection.
 		Model(teamInvitation).
 		Update(map[string]interface{}{
@@ -52,7 +52,7 @@ func (database *Database) AcceptTeamInvitation(connection *gorm.DB, teamInvitati
 		Error
 }
 
-func (database *Database) DeleteTeamInvitation(connection *gorm.DB, teamInvitation *go_saas_model.TeamInvitation) (*go_saas_model.TeamInvitation, error) {
+func (database *Database) DeleteTeamInvitation(connection *gorm.DB, teamInvitation *makeless_go_model.TeamInvitation) (*makeless_go_model.TeamInvitation, error) {
 	return teamInvitation, connection.
 		Delete(teamInvitation).
 		Error

@@ -1,18 +1,18 @@
-package go_saas
+package makeless
 
 import (
 	"fmt"
-	"github.com/go-saas/go-saas/mailer"
-	"github.com/go-saas/go-saas/mailer/basic"
-	"github.com/go-saas/go-saas/model"
+	"github.com/makeless/makeless-go/mailer"
+	"github.com/makeless/makeless-go/mailer/basic"
+	"github.com/makeless/makeless-go/model"
 	"github.com/matcornic/hermes/v2"
 	"sync"
 )
 
-func (saas *Saas) mailEmailVerification(data map[string]interface{}) (go_saas_mailer.Mail, error) {
+func (makeless *Makeless) mailEmailVerification(data map[string]interface{}) (makeless_go_mailer.Mail, error) {
 	var err error
 	var message, messageHtml string
-	var user = data["user"].(*go_saas_model.User)
+	var user = data["user"].(*makeless_go_model.User)
 	var messages = map[string]map[string]string{
 		"en": {
 			"subject":     "Please verify your email address",
@@ -23,34 +23,34 @@ func (saas *Saas) mailEmailVerification(data map[string]interface{}) (go_saas_ma
 
 	config := hermes.Hermes{
 		Product: hermes.Product{
-			Name:      saas.GetConfig().GetConfiguration().GetMail().GetName(),
-			Link:      saas.GetConfig().GetConfiguration().GetMail().GetLink(),
-			Logo:      saas.GetConfig().GetConfiguration().GetMail().GetLogo(),
-			Copyright: saas.GetConfig().GetConfiguration().GetMail().GetTexts(saas.GetConfig().GetConfiguration().GetLocale()).GetCopyright(),
+			Name:      makeless.GetConfig().GetConfiguration().GetMail().GetName(),
+			Link:      makeless.GetConfig().GetConfiguration().GetMail().GetLink(),
+			Logo:      makeless.GetConfig().GetConfiguration().GetMail().GetLogo(),
+			Copyright: makeless.GetConfig().GetConfiguration().GetMail().GetTexts(makeless.GetConfig().GetConfiguration().GetLocale()).GetCopyright(),
 		},
 	}
 
 	email := hermes.Email{
 		Body: hermes.Body{
 			Name:      *user.GetName(),
-			Greeting:  saas.GetConfig().GetConfiguration().GetMail().GetTexts(saas.GetConfig().GetConfiguration().GetLocale()).GetGreeting(),
-			Signature: saas.GetConfig().GetConfiguration().GetMail().GetTexts(saas.GetConfig().GetConfiguration().GetLocale()).GetSignature(),
+			Greeting:  makeless.GetConfig().GetConfiguration().GetMail().GetTexts(makeless.GetConfig().GetConfiguration().GetLocale()).GetGreeting(),
+			Signature: makeless.GetConfig().GetConfiguration().GetMail().GetTexts(makeless.GetConfig().GetConfiguration().GetLocale()).GetSignature(),
 			Actions: []hermes.Action{
 				{
 					Instructions: fmt.Sprintf(
 						"%s %s",
-						messages[saas.GetConfig().GetConfiguration().GetLocale()]["instruction"],
+						messages[makeless.GetConfig().GetConfiguration().GetLocale()]["instruction"],
 						*user.GetEmail(),
 					),
 					Button: hermes.Button{
-						Text: messages[saas.GetConfig().GetConfiguration().GetLocale()]["button"],
+						Text: messages[makeless.GetConfig().GetConfiguration().GetLocale()]["button"],
 						Link: fmt.Sprintf(
 							"%s/email-verification?token=%s",
-							saas.GetConfig().GetConfiguration().GetMail().GetLink(),
+							makeless.GetConfig().GetConfiguration().GetMail().GetLink(),
 							*user.GetEmailVerification().GetToken(),
 						),
-						Color:     saas.GetConfig().GetConfiguration().GetMail().GetButtonColor(),
-						TextColor: saas.GetConfig().GetConfiguration().GetMail().GetButtonTextColor(),
+						Color:     makeless.GetConfig().GetConfiguration().GetMail().GetButtonColor(),
+						TextColor: makeless.GetConfig().GetConfiguration().GetMail().GetButtonTextColor(),
 					},
 				},
 			},
@@ -65,10 +65,10 @@ func (saas *Saas) mailEmailVerification(data map[string]interface{}) (go_saas_ma
 		return nil, err
 	}
 
-	return &go_saas_mailer_basic.Mail{
+	return &makeless_go_mailer_basic.Mail{
 		To:          []string{*user.GetEmail()},
-		From:        saas.GetConfig().GetConfiguration().GetMail().GetFrom(),
-		Subject:     messages[saas.GetConfig().GetConfiguration().GetLocale()]["subject"],
+		From:        makeless.GetConfig().GetConfiguration().GetMail().GetFrom(),
+		Subject:     messages[makeless.GetConfig().GetConfiguration().GetLocale()]["subject"],
 		Message:     []byte(message),
 		HtmlMessage: []byte(messageHtml),
 		RWMutex:     new(sync.RWMutex),

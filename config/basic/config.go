@@ -1,15 +1,15 @@
-package go_saas_config_basic
+package makeless_go_config_basic
 
 import (
 	"encoding/json"
-	"github.com/go-saas/go-saas/config"
+	"github.com/makeless/makeless-go/config"
 	"io/ioutil"
 	"os"
 	"sync"
 )
 
 type Config struct {
-	Configuration go_saas_config.Configuration
+	Configuration makeless_go_config.Configuration
 	*sync.RWMutex
 }
 
@@ -60,7 +60,7 @@ func (config *Config) Load(path string) error {
 	return nil
 }
 
-func (config *Config) GetConfiguration() go_saas_config.Configuration {
+func (config *Config) GetConfiguration() makeless_go_config.Configuration {
 	config.RLock()
 	defer config.RUnlock()
 

@@ -1,12 +1,12 @@
-package go_saas_database
+package makeless_go_database
 
 import (
-	"github.com/go-saas/go-saas/model"
-	"github.com/go-saas/go-saas/struct"
+	"github.com/makeless/makeless-go/model"
+	"github.com/makeless/makeless-go/struct"
 	"github.com/jinzhu/gorm"
 )
 
 type Profile interface {
-	UpdateProfile(connection *gorm.DB, user *go_saas_model.User, profile *_struct.Profile) (*go_saas_model.User, error)
-	UpdateProfileTeam(connection *gorm.DB, team *go_saas_model.Team) (*go_saas_model.Team, error)
+	UpdateProfile(connection *gorm.DB, user *makeless_go_model.User, profile *_struct.Profile) (*makeless_go_model.User, error)
+	UpdateProfileTeam(connection *gorm.DB, team *makeless_go_model.Team) (*makeless_go_model.Team, error)
 }

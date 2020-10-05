@@ -1,11 +1,11 @@
-package go_saas_database_basic
+package makeless_go_database_basic
 
 import (
-	"github.com/go-saas/go-saas/model"
+	"github.com/makeless/makeless-go/model"
 	"github.com/jinzhu/gorm"
 )
 
-func (database *Database) UpdatePassword(connection *gorm.DB, user *go_saas_model.User, newPassword string) (*go_saas_model.User, error) {
+func (database *Database) UpdatePassword(connection *gorm.DB, user *makeless_go_model.User, newPassword string) (*makeless_go_model.User, error) {
 	return user, connection.
 		Model(user).
 		Update(map[string]interface{}{

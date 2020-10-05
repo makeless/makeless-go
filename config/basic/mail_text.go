@@ -1,4 +1,4 @@
-package go_saas_config_basic
+package makeless_go_config_basic
 
 import "sync"
 

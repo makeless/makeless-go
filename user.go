@@ -1,14 +1,14 @@
-package go_saas
+package makeless
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas/http"
-	"github.com/go-saas/go-saas/model"
+	"github.com/makeless/makeless-go/http"
+	"github.com/makeless/makeless-go/model"
 	h "net/http"
 	"sync"
 )
 
-func (saas *Saas) user(http go_saas_http.Http) error {
+func (makeless *Makeless) user(http makeless_go_http.Http) error {
 	http.GetRouter().GET(
 		"/api/auth/user",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
@@ -16,8 +16,8 @@ func (saas *Saas) user(http go_saas_http.Http) error {
 			userId := http.GetAuthenticator().GetAuthUserId(c)
 
 			var err error
-			var user = &go_saas_model.User{
-				Model:   go_saas_model.Model{Id: userId},
+			var user = &makeless_go_model.User{
+				Model:   makeless_go_model.Model{Id: userId},
 				RWMutex: new(sync.RWMutex),
 			}
 

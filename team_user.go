@@ -1,27 +1,27 @@
-package go_saas
+package makeless
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas/http"
-	"github.com/go-saas/go-saas/model"
+	"github.com/makeless/makeless-go/http"
+	"github.com/makeless/makeless-go/model"
 	"github.com/jinzhu/gorm"
 	h "net/http"
 	"strconv"
 	"sync"
 )
 
-func (saas *Saas) deleteTeamUser(http go_saas_http.Http) error {
+func (makeless *Makeless) deleteTeamUser(http makeless_go_http.Http) error {
 	http.GetRouter().DELETE(
 		"/api/auth/team-user",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
-		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
+		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
 		http.TeamUserMiddleware(),
 		http.NotTeamCreatorMiddleware(),
 		func(c *gin.Context) {
 			var err error
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
 			var teamId, _ = strconv.Atoi(c.GetHeader("Team"))
-			var teamUser = &go_saas_model.TeamUser{
+			var teamUser = &makeless_go_model.TeamUser{
 				RWMutex: new(sync.RWMutex),
 			}
 
@@ -43,7 +43,7 @@ func (saas *Saas) deleteTeamUser(http go_saas_http.Http) error {
 				return
 			}
 
-			if err = http.GetEvent().Trigger(userId, "go-saas", "team-user:delete", nil); err != nil {
+			if err = http.GetEvent().Trigger(userId, "go-makeless", "team-user:delete", nil); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

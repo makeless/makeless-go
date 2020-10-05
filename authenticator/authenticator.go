@@ -1,9 +1,9 @@
-package go_saas_authenticator
+package makeless_go_authenticator
 
 import (
 	"github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas/security"
+	"github.com/makeless/makeless-go/security"
 	"time"
 )
 
@@ -11,7 +11,7 @@ type Authenticator interface {
 	SetMiddleware(middleware *jwt.GinJWTMiddleware)
 	GetMiddleware() *jwt.GinJWTMiddleware
 	CreateMiddleware() error
-	GetSecurity() go_saas_security.Security
+	GetSecurity() makeless_go_security.Security
 	GetRealm() string
 	GetKey() []byte
 	GetTimeout() time.Duration

@@ -1,21 +1,21 @@
-package go_saas
+package makeless
 
 import (
 	"fmt"
-	"github.com/go-saas/go-saas/mailer"
-	"github.com/go-saas/go-saas/mailer/basic"
-	"github.com/go-saas/go-saas/model"
+	"github.com/makeless/makeless-go/mailer"
+	"github.com/makeless/makeless-go/mailer/basic"
+	"github.com/makeless/makeless-go/model"
 	"github.com/matcornic/hermes/v2"
 	"sync"
 )
 
-func (saas *Saas) mailTeamInvitation(data map[string]interface{}) (go_saas_mailer.Mail, error) {
+func (makeless *Makeless) mailTeamInvitation(data map[string]interface{}) (makeless_go_mailer.Mail, error) {
 	var err error
 	var name, link, message, messageHtml string
-	var user = data["user"].(*go_saas_model.User)
-	var userInvited = data["userInvited"].(*go_saas_model.User)
+	var user = data["user"].(*makeless_go_model.User)
+	var userInvited = data["userInvited"].(*makeless_go_model.User)
 	var teamName = data["teamName"].(string)
-	var teamInvitation = data["teamInvitation"].(*go_saas_model.TeamInvitation)
+	var teamInvitation = data["teamInvitation"].(*makeless_go_model.TeamInvitation)
 	var messages = map[string]map[string]string{
 		"en": {
 			"subject": fmt.Sprintf(
@@ -39,39 +39,39 @@ func (saas *Saas) mailTeamInvitation(data map[string]interface{}) (go_saas_maile
 
 	switch userInvited.GetName() {
 	case nil:
-		link = fmt.Sprintf("%s/invitation?token=%s", saas.GetConfig().GetConfiguration().GetMail().GetLink(), *teamInvitation.GetToken())
+		link = fmt.Sprintf("%s/invitation?token=%s", makeless.GetConfig().GetConfiguration().GetMail().GetLink(), *teamInvitation.GetToken())
 	default:
 		name = *userInvited.GetName()
-		link = fmt.Sprintf("%s/settings/team-invitation", saas.GetConfig().GetConfiguration().GetMail().GetLink())
+		link = fmt.Sprintf("%s/settings/team-invitation", makeless.GetConfig().GetConfiguration().GetMail().GetLink())
 	}
 
 	config := hermes.Hermes{
 		Product: hermes.Product{
-			Name:      saas.GetConfig().GetConfiguration().GetMail().GetName(),
-			Link:      saas.GetConfig().GetConfiguration().GetMail().GetLink(),
-			Logo:      saas.GetConfig().GetConfiguration().GetMail().GetLogo(),
-			Copyright: saas.GetConfig().GetConfiguration().GetMail().GetTexts(saas.GetConfig().GetConfiguration().GetLocale()).GetCopyright(),
+			Name:      makeless.GetConfig().GetConfiguration().GetMail().GetName(),
+			Link:      makeless.GetConfig().GetConfiguration().GetMail().GetLink(),
+			Logo:      makeless.GetConfig().GetConfiguration().GetMail().GetLogo(),
+			Copyright: makeless.GetConfig().GetConfiguration().GetMail().GetTexts(makeless.GetConfig().GetConfiguration().GetLocale()).GetCopyright(),
 		},
 	}
 
 	email := hermes.Email{
 		Body: hermes.Body{
 			Name:      name,
-			Greeting:  saas.GetConfig().GetConfiguration().GetMail().GetTexts(saas.GetConfig().GetConfiguration().GetLocale()).GetGreeting(),
-			Signature: saas.GetConfig().GetConfiguration().GetMail().GetTexts(saas.GetConfig().GetConfiguration().GetLocale()).GetSignature(),
-			Intros:    []string{messages[saas.GetConfig().GetConfiguration().GetLocale()]["intro"]},
+			Greeting:  makeless.GetConfig().GetConfiguration().GetMail().GetTexts(makeless.GetConfig().GetConfiguration().GetLocale()).GetGreeting(),
+			Signature: makeless.GetConfig().GetConfiguration().GetMail().GetTexts(makeless.GetConfig().GetConfiguration().GetLocale()).GetSignature(),
+			Intros:    []string{messages[makeless.GetConfig().GetConfiguration().GetLocale()]["intro"]},
 			Actions: []hermes.Action{
 				{
-					Instructions: messages[saas.GetConfig().GetConfiguration().GetLocale()]["instruction"],
+					Instructions: messages[makeless.GetConfig().GetConfiguration().GetLocale()]["instruction"],
 					Button: hermes.Button{
-						Text:      messages[saas.GetConfig().GetConfiguration().GetLocale()]["button"],
+						Text:      messages[makeless.GetConfig().GetConfiguration().GetLocale()]["button"],
 						Link:      link,
-						Color:     saas.GetConfig().GetConfiguration().GetMail().GetButtonColor(),
-						TextColor: saas.GetConfig().GetConfiguration().GetMail().GetButtonTextColor(),
+						Color:     makeless.GetConfig().GetConfiguration().GetMail().GetButtonColor(),
+						TextColor: makeless.GetConfig().GetConfiguration().GetMail().GetButtonTextColor(),
 					},
 				},
 			},
-			Outros: []string{messages[saas.GetConfig().GetConfiguration().GetLocale()]["outro"]},
+			Outros: []string{messages[makeless.GetConfig().GetConfiguration().GetLocale()]["outro"]},
 		},
 	}
 
@@ -83,10 +83,10 @@ func (saas *Saas) mailTeamInvitation(data map[string]interface{}) (go_saas_maile
 		return nil, err
 	}
 
-	return &go_saas_mailer_basic.Mail{
+	return &makeless_go_mailer_basic.Mail{
 		To:          []string{*teamInvitation.GetEmail()},
-		From:        saas.GetConfig().GetConfiguration().GetMail().GetFrom(),
-		Subject:     messages[saas.GetConfig().GetConfiguration().GetLocale()]["subject"],
+		From:        makeless.GetConfig().GetConfiguration().GetMail().GetFrom(),
+		Subject:     messages[makeless.GetConfig().GetConfiguration().GetLocale()]["subject"],
 		Message:     []byte(message),
 		HtmlMessage: []byte(messageHtml),
 		RWMutex:     new(sync.RWMutex),

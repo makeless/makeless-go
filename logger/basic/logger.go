@@ -1,4 +1,4 @@
-package go_saas_logger_basic
+package makeless_go_logger_basic
 
 import "log"
 

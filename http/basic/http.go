@@ -1,28 +1,28 @@
-package go_saas_http_basic
+package makeless_go_http_basic
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas/authenticator"
-	"github.com/go-saas/go-saas/database"
-	"github.com/go-saas/go-saas/event"
-	"github.com/go-saas/go-saas/http"
-	"github.com/go-saas/go-saas/logger"
-	go_saas_mailer "github.com/go-saas/go-saas/mailer"
-	"github.com/go-saas/go-saas/security"
-	"github.com/go-saas/go-saas/tls"
+	"github.com/makeless/makeless-go/authenticator"
+	"github.com/makeless/makeless-go/database"
+	"github.com/makeless/makeless-go/event"
+	"github.com/makeless/makeless-go/http"
+	"github.com/makeless/makeless-go/logger"
+	makeless_go_mailer "github.com/makeless/makeless-go/mailer"
+	"github.com/makeless/makeless-go/security"
+	"github.com/makeless/makeless-go/tls"
 	"sync"
 )
 
 type Http struct {
 	Router        *gin.Engine
-	Handlers      map[string]func(http go_saas_http.Http) error
-	Logger        go_saas_logger.Logger
-	Event         go_saas_event.Event
-	Authenticator go_saas_authenticator.Authenticator
-	Security      go_saas_security.Security
-	Database      go_saas_database.Database
-	Mailer        go_saas_mailer.Mailer
-	Tls           go_saas_tls.Tls
+	Handlers      map[string]func(http makeless_go_http.Http) error
+	Logger        makeless_go_logger.Logger
+	Event         makeless_go_event.Event
+	Authenticator makeless_go_authenticator.Authenticator
+	Security      makeless_go_security.Security
+	Database      makeless_go_database.Database
+	Mailer        makeless_go_mailer.Mailer
+	Tls           makeless_go_tls.Tls
 	Origins       []string
 	Headers       []string
 	Port          string
@@ -37,56 +37,56 @@ func (http *Http) GetRouter() *gin.Engine {
 	return http.Router
 }
 
-func (http *Http) GetHandlers() map[string]func(http go_saas_http.Http) error {
+func (http *Http) GetHandlers() map[string]func(http makeless_go_http.Http) error {
 	http.RLock()
 	defer http.RUnlock()
 
 	return http.Handlers
 }
 
-func (http *Http) GetLogger() go_saas_logger.Logger {
+func (http *Http) GetLogger() makeless_go_logger.Logger {
 	http.RLock()
 	defer http.RUnlock()
 
 	return http.Logger
 }
 
-func (http *Http) GetEvent() go_saas_event.Event {
+func (http *Http) GetEvent() makeless_go_event.Event {
 	http.RLock()
 	defer http.RUnlock()
 
 	return http.Event
 }
 
-func (http *Http) GetAuthenticator() go_saas_authenticator.Authenticator {
+func (http *Http) GetAuthenticator() makeless_go_authenticator.Authenticator {
 	http.RLock()
 	defer http.RUnlock()
 
 	return http.Authenticator
 }
 
-func (http *Http) GetSecurity() go_saas_security.Security {
+func (http *Http) GetSecurity() makeless_go_security.Security {
 	http.RLock()
 	defer http.RUnlock()
 
 	return http.Security
 }
 
-func (http *Http) GetDatabase() go_saas_database.Database {
+func (http *Http) GetDatabase() makeless_go_database.Database {
 	http.RLock()
 	defer http.RUnlock()
 
 	return http.Database
 }
 
-func (http *Http) GetMailer() go_saas_mailer.Mailer {
+func (http *Http) GetMailer() makeless_go_mailer.Mailer {
 	http.RLock()
 	defer http.RUnlock()
 
 	return http.Mailer
 }
 
-func (http *Http) GetTls() go_saas_tls.Tls {
+func (http *Http) GetTls() makeless_go_tls.Tls {
 	http.RLock()
 	defer http.RUnlock()
 
@@ -121,7 +121,7 @@ func (http *Http) GetMode() string {
 	return http.Mode
 }
 
-func (http *Http) SetHandler(name string, handler func(http go_saas_http.Http) error) {
+func (http *Http) SetHandler(name string, handler func(http makeless_go_http.Http) error) {
 	handlers := http.GetHandlers()
 
 	http.Lock()

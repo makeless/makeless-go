@@ -1,8 +1,8 @@
-package go_saas
+package makeless
 
-import "github.com/go-saas/go-saas/http"
+import "github.com/makeless/makeless-go/http"
 
-func (saas *Saas) login(http go_saas_http.Http) error {
+func (makeless *Makeless) login(http makeless_go_http.Http) error {
 	http.GetRouter().POST(
 		"/api/login",
 		http.GetAuthenticator().GetMiddleware().LoginHandler,
@@ -11,7 +11,7 @@ func (saas *Saas) login(http go_saas_http.Http) error {
 	return nil
 }
 
-func (saas *Saas) logout(http go_saas_http.Http) error {
+func (makeless *Makeless) logout(http makeless_go_http.Http) error {
 	http.GetRouter().GET(
 		"/api/auth/logout",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
@@ -21,7 +21,7 @@ func (saas *Saas) logout(http go_saas_http.Http) error {
 	return nil
 }
 
-func (saas *Saas) refreshToken(http go_saas_http.Http) error {
+func (makeless *Makeless) refreshToken(http makeless_go_http.Http) error {
 	http.GetRouter().GET(
 		"/api/auth/refresh-token",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),

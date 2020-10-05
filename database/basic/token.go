@@ -1,11 +1,11 @@
-package go_saas_database_basic
+package makeless_go_database_basic
 
 import (
-	"github.com/go-saas/go-saas/model"
+	"github.com/makeless/makeless-go/model"
 	"github.com/jinzhu/gorm"
 )
 
-func (database *Database) GetTokens(connection *gorm.DB, user *go_saas_model.User, tokens []*go_saas_model.Token) ([]*go_saas_model.Token, error) {
+func (database *Database) GetTokens(connection *gorm.DB, user *makeless_go_model.User, tokens []*makeless_go_model.Token) ([]*makeless_go_model.Token, error) {
 	return tokens, connection.
 		Select([]string{
 			"tokens.id",
@@ -20,13 +20,13 @@ func (database *Database) GetTokens(connection *gorm.DB, user *go_saas_model.Use
 		Error
 }
 
-func (database *Database) CreateToken(connection *gorm.DB, token *go_saas_model.Token) (*go_saas_model.Token, error) {
+func (database *Database) CreateToken(connection *gorm.DB, token *makeless_go_model.Token) (*makeless_go_model.Token, error) {
 	return token, connection.
 		Create(&token).
 		Error
 }
 
-func (database *Database) DeleteToken(connection *gorm.DB, token *go_saas_model.Token) error {
+func (database *Database) DeleteToken(connection *gorm.DB, token *makeless_go_model.Token) error {
 	return connection.
 		Unscoped().
 		Where("tokens.id = ? AND tokens.user_id = ? AND tokens.team_id IS NULL", token.GetId(), token.GetUserId()).

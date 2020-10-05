@@ -1,19 +1,19 @@
-package go_saas_security_basic
+package makeless_go_security_basic
 
 import (
-	"github.com/go-saas/go-saas/model"
+	"github.com/makeless/makeless-go/model"
 	"github.com/jinzhu/gorm"
 	"sync"
 )
 
 func (security *Security) IsTeamUser(connection *gorm.DB, teamId uint, userId uint) (bool, error) {
-	var team = &go_saas_model.Team{
-		Model:   go_saas_model.Model{Id: teamId},
+	var team = &makeless_go_model.Team{
+		Model:   makeless_go_model.Model{Id: teamId},
 		RWMutex: new(sync.RWMutex),
 	}
 
-	var user = &go_saas_model.User{
-		Model:   go_saas_model.Model{Id: userId},
+	var user = &makeless_go_model.User{
+		Model:   makeless_go_model.Model{Id: userId},
 		RWMutex: new(sync.RWMutex),
 	}
 
@@ -21,13 +21,13 @@ func (security *Security) IsTeamUser(connection *gorm.DB, teamId uint, userId ui
 }
 
 func (security *Security) IsTeamRole(connection *gorm.DB, role string, teamId uint, userId uint) (bool, error) {
-	var team = &go_saas_model.Team{
-		Model:   go_saas_model.Model{Id: teamId},
+	var team = &makeless_go_model.Team{
+		Model:   makeless_go_model.Model{Id: teamId},
 		RWMutex: new(sync.RWMutex),
 	}
 
-	var user = &go_saas_model.User{
-		Model:   go_saas_model.Model{Id: userId},
+	var user = &makeless_go_model.User{
+		Model:   makeless_go_model.Model{Id: userId},
 		RWMutex: new(sync.RWMutex),
 	}
 
@@ -35,13 +35,13 @@ func (security *Security) IsTeamRole(connection *gorm.DB, role string, teamId ui
 }
 
 func (security *Security) IsTeamCreator(connection *gorm.DB, teamId uint, userId uint) (bool, error) {
-	var team = &go_saas_model.Team{
-		Model:   go_saas_model.Model{Id: teamId},
+	var team = &makeless_go_model.Team{
+		Model:   makeless_go_model.Model{Id: teamId},
 		RWMutex: new(sync.RWMutex),
 	}
 
-	var user = &go_saas_model.User{
-		Model:   go_saas_model.Model{Id: userId},
+	var user = &makeless_go_model.User{
+		Model:   makeless_go_model.Model{Id: userId},
 		RWMutex: new(sync.RWMutex),
 	}
 
@@ -49,13 +49,13 @@ func (security *Security) IsTeamCreator(connection *gorm.DB, teamId uint, userId
 }
 
 func (security *Security) IsNotTeamCreator(connection *gorm.DB, teamId uint, userId uint) (bool, error) {
-	var team = &go_saas_model.Team{
-		Model:   go_saas_model.Model{Id: teamId},
+	var team = &makeless_go_model.Team{
+		Model:   makeless_go_model.Model{Id: teamId},
 		RWMutex: new(sync.RWMutex),
 	}
 
-	var user = &go_saas_model.User{
-		Model:   go_saas_model.Model{Id: userId},
+	var user = &makeless_go_model.User{
+		Model:   makeless_go_model.Model{Id: userId},
 		RWMutex: new(sync.RWMutex),
 	}
 

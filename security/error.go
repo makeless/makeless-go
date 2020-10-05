@@ -1,4 +1,4 @@
-package go_saas_security
+package makeless_go_security
 
 import "errors"
 

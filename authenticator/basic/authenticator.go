@@ -1,15 +1,15 @@
-package go_saas_authenticator_basic
+package makeless_go_authenticator_basic
 
 import (
 	"github.com/appleboy/gin-jwt/v2"
-	"github.com/go-saas/go-saas/security"
+	"github.com/makeless/makeless-go/security"
 	"sync"
 	"time"
 )
 
 type Authenticator struct {
 	Middlware   *jwt.GinJWTMiddleware
-	Security    go_saas_security.Security
+	Security    makeless_go_security.Security
 	Realm       string
 	Key         string
 	Timeout     time.Duration
@@ -32,7 +32,7 @@ func (authenticator *Authenticator) GetMiddleware() *jwt.GinJWTMiddleware {
 	return authenticator.Middlware
 }
 
-func (authenticator *Authenticator) GetSecurity() go_saas_security.Security {
+func (authenticator *Authenticator) GetSecurity() makeless_go_security.Security {
 	authenticator.RLock()
 	defer authenticator.RUnlock()
 

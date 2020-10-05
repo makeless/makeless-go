@@ -1,20 +1,20 @@
-package go_saas_database_basic
+package makeless_go_database_basic
 
 import (
 	"fmt"
-	"github.com/go-saas/go-saas/model"
+	"github.com/makeless/makeless-go/model"
 	"github.com/jinzhu/gorm"
 )
 
 // CreateTeam creates team
-func (database *Database) CreateTeam(connection *gorm.DB, team *go_saas_model.Team) (*go_saas_model.Team, error) {
+func (database *Database) CreateTeam(connection *gorm.DB, team *makeless_go_model.Team) (*makeless_go_model.Team, error) {
 	return team, connection.
 		Create(team).
 		Error
 }
 
 // CreateTeam retrieves team
-func (database *Database) GetTeam(connection *gorm.DB, team *go_saas_model.Team) (*go_saas_model.Team, error) {
+func (database *Database) GetTeam(connection *gorm.DB, team *makeless_go_model.Team) (*makeless_go_model.Team, error) {
 	return team, connection.
 		Preload("TeamUsers.Team").
 		Preload("TeamUsers.User").
@@ -24,7 +24,7 @@ func (database *Database) GetTeam(connection *gorm.DB, team *go_saas_model.Team)
 }
 
 // AddTeamInvitations appends team invitations to a given team
-func (database *Database) AddTeamInvitations(connection *gorm.DB, team *go_saas_model.Team, teamInvitations []*go_saas_model.TeamInvitation) (*go_saas_model.Team, error) {
+func (database *Database) AddTeamInvitations(connection *gorm.DB, team *makeless_go_model.Team, teamInvitations []*makeless_go_model.TeamInvitation) (*makeless_go_model.Team, error) {
 	return team, connection.
 		Model(team).
 		Association("TeamInvitations").
@@ -33,7 +33,7 @@ func (database *Database) AddTeamInvitations(connection *gorm.DB, team *go_saas_
 }
 
 // GetTeamUserByFields retrieves teamUser by fields
-func (database *Database) GetTeamUserByFields(connection *gorm.DB, teamUser *go_saas_model.TeamUser, fields map[string]interface{}) (*go_saas_model.TeamUser, error) {
+func (database *Database) GetTeamUserByFields(connection *gorm.DB, teamUser *makeless_go_model.TeamUser, fields map[string]interface{}) (*makeless_go_model.TeamUser, error) {
 	var query = connection
 
 	for field, value := range fields {
@@ -48,7 +48,7 @@ func (database *Database) GetTeamUserByFields(connection *gorm.DB, teamUser *go_
 }
 
 // GetTeamUsers retrieves team users by search
-func (database *Database) GetTeamUsers(connection *gorm.DB, search string, teamUsers []*go_saas_model.TeamUser, team *go_saas_model.Team) ([]*go_saas_model.TeamUser, error) {
+func (database *Database) GetTeamUsers(connection *gorm.DB, search string, teamUsers []*makeless_go_model.TeamUser, team *makeless_go_model.Team) ([]*makeless_go_model.TeamUser, error) {
 	var query = connection
 
 	if search != "" {
@@ -69,7 +69,7 @@ func (database *Database) GetTeamUsers(connection *gorm.DB, search string, teamU
 }
 
 // AddTeamUser adds teamUsers to team
-func (database *Database) AddTeamUsers(connection *gorm.DB, teamUsers []*go_saas_model.TeamUser, team *go_saas_model.Team) error {
+func (database *Database) AddTeamUsers(connection *gorm.DB, teamUsers []*makeless_go_model.TeamUser, team *makeless_go_model.Team) error {
 	return connection.
 		Model(team).
 		Association("TeamUsers").
@@ -77,7 +77,7 @@ func (database *Database) AddTeamUsers(connection *gorm.DB, teamUsers []*go_saas
 		Error
 }
 
-func (database *Database) UpdateRoleTeamUser(connection *gorm.DB, teamUser *go_saas_model.TeamUser, role string) (*go_saas_model.TeamUser, error) {
+func (database *Database) UpdateRoleTeamUser(connection *gorm.DB, teamUser *makeless_go_model.TeamUser, role string) (*makeless_go_model.TeamUser, error) {
 	return teamUser, connection.
 		Model(teamUser).
 		Update(map[string]interface{}{
@@ -87,7 +87,7 @@ func (database *Database) UpdateRoleTeamUser(connection *gorm.DB, teamUser *go_s
 }
 
 // DeleteTeamUser deletes teamUser
-func (database *Database) DeleteTeamUser(connection *gorm.DB, teamUser *go_saas_model.TeamUser) error {
+func (database *Database) DeleteTeamUser(connection *gorm.DB, teamUser *makeless_go_model.TeamUser) error {
 	return connection.
 		Unscoped().
 		Delete(teamUser).
@@ -95,7 +95,7 @@ func (database *Database) DeleteTeamUser(connection *gorm.DB, teamUser *go_saas_
 }
 
 // DeleteTeam deletes team and all their teamUsers
-func (database *Database) DeleteTeam(connection *gorm.DB, team *go_saas_model.Team) error {
+func (database *Database) DeleteTeam(connection *gorm.DB, team *makeless_go_model.Team) error {
 	return connection.
 		Unscoped().
 		Select("TeamUsers", "TeamInvitations").
@@ -104,7 +104,7 @@ func (database *Database) DeleteTeam(connection *gorm.DB, team *go_saas_model.Te
 }
 
 // IsTeamUser checks if user is part of team
-func (database *Database) IsTeamUser(connection *gorm.DB, team *go_saas_model.Team, user *go_saas_model.User) (bool, error) {
+func (database *Database) IsTeamUser(connection *gorm.DB, team *makeless_go_model.Team, user *makeless_go_model.User) (bool, error) {
 	var count int
 
 	return count == 1, connection.
@@ -114,7 +114,7 @@ func (database *Database) IsTeamUser(connection *gorm.DB, team *go_saas_model.Te
 }
 
 // IsTeamRole checks if user is part of team and has given role
-func (database *Database) IsTeamRole(connection *gorm.DB, role string, team *go_saas_model.Team, user *go_saas_model.User) (bool, error) {
+func (database *Database) IsTeamRole(connection *gorm.DB, role string, team *makeless_go_model.Team, user *makeless_go_model.User) (bool, error) {
 	var count int
 
 	return count == 1, connection.
@@ -124,7 +124,7 @@ func (database *Database) IsTeamRole(connection *gorm.DB, role string, team *go_
 }
 
 // IsTeamCreator checks if user is team creator
-func (database *Database) IsTeamCreator(connection *gorm.DB, team *go_saas_model.Team, user *go_saas_model.User) (bool, error) {
+func (database *Database) IsTeamCreator(connection *gorm.DB, team *makeless_go_model.Team, user *makeless_go_model.User) (bool, error) {
 	var count int
 
 	return count == 1, connection.
@@ -134,7 +134,7 @@ func (database *Database) IsTeamCreator(connection *gorm.DB, team *go_saas_model
 }
 
 // IsNotTeamCreator checks if user is not team creator
-func (database *Database) IsNotTeamCreator(connection *gorm.DB, team *go_saas_model.Team, user *go_saas_model.User) (bool, error) {
+func (database *Database) IsNotTeamCreator(connection *gorm.DB, team *makeless_go_model.Team, user *makeless_go_model.User) (bool, error) {
 	var count int
 
 	return count == 0, connection.
@@ -143,7 +143,7 @@ func (database *Database) IsNotTeamCreator(connection *gorm.DB, team *go_saas_mo
 		Error
 }
 
-func (database *Database) IsModelTeam(connection *gorm.DB, team *go_saas_model.Team, model interface{}) (bool, error) {
+func (database *Database) IsModelTeam(connection *gorm.DB, team *makeless_go_model.Team, model interface{}) (bool, error) {
 	var count int
 
 	return count == 1, connection.

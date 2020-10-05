@@ -1,26 +1,26 @@
-package go_saas
+package makeless
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas/http"
-	"github.com/go-saas/go-saas/model"
-	"github.com/go-saas/go-saas/struct"
+	"github.com/makeless/makeless-go/http"
+	"github.com/makeless/makeless-go/model"
+	"github.com/makeless/makeless-go/struct"
 	h "net/http"
 	"sync"
 )
 
-func (saas *Saas) tokens(http go_saas_http.Http) error {
+func (makeless *Makeless) tokens(http makeless_go_http.Http) error {
 	http.GetRouter().GET(
 		"/api/auth/token",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
-		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
+		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
 		func(c *gin.Context) {
 			userId := http.GetAuthenticator().GetAuthUserId(c)
 
 			var err error
-			var tokens []*go_saas_model.Token
-			var user = &go_saas_model.User{
-				Model:   go_saas_model.Model{Id: userId},
+			var tokens []*makeless_go_model.Token
+			var user = &makeless_go_model.User{
+				Model:   makeless_go_model.Model{Id: userId},
 				RWMutex: new(sync.RWMutex),
 			}
 
@@ -36,11 +36,11 @@ func (saas *Saas) tokens(http go_saas_http.Http) error {
 	return nil
 }
 
-func (saas *Saas) createToken(http go_saas_http.Http) error {
+func (makeless *Makeless) createToken(http makeless_go_http.Http) error {
 	http.GetRouter().POST(
 		"/api/auth/token",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
-		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
+		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
 		func(c *gin.Context) {
 			var err error
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
@@ -53,7 +53,7 @@ func (saas *Saas) createToken(http go_saas_http.Http) error {
 				return
 			}
 
-			var token = &go_saas_model.Token{
+			var token = &makeless_go_model.Token{
 				Note:    tokenCreate.GetNote(),
 				Token:   tokenCreate.GetToken(),
 				UserId:  &userId,
@@ -72,11 +72,11 @@ func (saas *Saas) createToken(http go_saas_http.Http) error {
 	return nil
 }
 
-func (saas *Saas) deleteToken(http go_saas_http.Http) error {
+func (makeless *Makeless) deleteToken(http makeless_go_http.Http) error {
 	http.GetRouter().DELETE(
 		"/api/auth/token",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
-		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
+		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
 		func(c *gin.Context) {
 			var err error
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
@@ -89,8 +89,8 @@ func (saas *Saas) deleteToken(http go_saas_http.Http) error {
 				return
 			}
 
-			var token = &go_saas_model.Token{
-				Model:   go_saas_model.Model{Id: *tokenDelete.GetId()},
+			var token = &makeless_go_model.Token{
+				Model:   makeless_go_model.Model{Id: *tokenDelete.GetId()},
 				UserId:  &userId,
 				RWMutex: new(sync.RWMutex),
 			}

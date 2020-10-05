@@ -1,14 +1,14 @@
-package go_saas_event_basic
+package makeless_go_event_basic
 
 import (
 	"github.com/gin-contrib/sse"
-	"github.com/go-saas/go-saas/event"
+	"github.com/makeless/makeless-go/event"
 	"sync"
 	"time"
 )
 
 type Event struct {
-	Hub   go_saas_event.Hub
+	Hub   makeless_go_event.Hub
 	Error chan error
 	*sync.RWMutex
 }
@@ -17,7 +17,7 @@ func (event *Event) Init() error {
 	return nil
 }
 
-func (event *Event) GetHub() go_saas_event.Hub {
+func (event *Event) GetHub() makeless_go_event.Hub {
 	event.RLock()
 	defer event.RUnlock()
 

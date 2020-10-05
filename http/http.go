@@ -1,26 +1,26 @@
-package go_saas_http
+package makeless_go_http
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas/authenticator"
-	"github.com/go-saas/go-saas/database"
-	"github.com/go-saas/go-saas/event"
-	"github.com/go-saas/go-saas/logger"
-	go_saas_mailer "github.com/go-saas/go-saas/mailer"
-	"github.com/go-saas/go-saas/security"
-	"github.com/go-saas/go-saas/tls"
+	"github.com/makeless/makeless-go/authenticator"
+	"github.com/makeless/makeless-go/database"
+	"github.com/makeless/makeless-go/event"
+	"github.com/makeless/makeless-go/logger"
+	makeless_go_mailer "github.com/makeless/makeless-go/mailer"
+	"github.com/makeless/makeless-go/security"
+	"github.com/makeless/makeless-go/tls"
 )
 
 type Http interface {
 	GetRouter() *gin.Engine
 	GetHandlers() map[string]func(http Http) error
-	GetLogger() go_saas_logger.Logger
-	GetEvent() go_saas_event.Event
-	GetAuthenticator() go_saas_authenticator.Authenticator
-	GetSecurity() go_saas_security.Security
-	GetDatabase() go_saas_database.Database
-	GetMailer() go_saas_mailer.Mailer
-	GetTls() go_saas_tls.Tls
+	GetLogger() makeless_go_logger.Logger
+	GetEvent() makeless_go_event.Event
+	GetAuthenticator() makeless_go_authenticator.Authenticator
+	GetSecurity() makeless_go_security.Security
+	GetDatabase() makeless_go_database.Database
+	GetMailer() makeless_go_mailer.Mailer
+	GetTls() makeless_go_tls.Tls
 	GetOrigins() []string
 	GetHeaders() []string
 	GetPort() string

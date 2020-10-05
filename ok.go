@@ -1,12 +1,12 @@
-package go_saas
+package makeless
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas/http"
+	"github.com/makeless/makeless-go/http"
 	h "net/http"
 )
 
-func (saas *Saas) ok(http go_saas_http.Http) error {
+func (makeless *Makeless) ok(http makeless_go_http.Http) error {
 	http.GetRouter().GET(
 		"/api/ok",
 		func(c *gin.Context) {

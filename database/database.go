@@ -1,4 +1,4 @@
-package go_saas_database
+package makeless_go_database
 
 import "github.com/jinzhu/gorm"
 

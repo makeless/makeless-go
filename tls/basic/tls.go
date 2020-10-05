@@ -1,4 +1,4 @@
-package go_saas_tls_basic
+package makeless_go_tls_basic
 
 import "sync"
 

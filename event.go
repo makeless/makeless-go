@@ -1,16 +1,16 @@
-package go_saas
+package makeless
 
 import (
 	"github.com/gin-contrib/sse"
 	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas/http"
+	"github.com/makeless/makeless-go/http"
 )
 
-func (saas *Saas) events(http go_saas_http.Http) error {
+func (makeless *Makeless) events(http makeless_go_http.Http) error {
 	http.GetRouter().GET(
 		"/api/auth/event",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
-		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
+		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
 		func(c *gin.Context) {
 			userId := http.GetAuthenticator().GetAuthUserId(c)
 
@@ -25,7 +25,7 @@ func (saas *Saas) events(http go_saas_http.Http) error {
 			http.GetEvent().Subscribe(userId, clientId)
 
 			go func() {
-				if err := http.GetEvent().Trigger(userId, "go-saas", "subscribed", clientId); err != nil {
+				if err := http.GetEvent().Trigger(userId, "go-makeless", "subscribed", clientId); err != nil {
 					http.GetEvent().TriggerError(err)
 				}
 			}()
@@ -43,7 +43,7 @@ func (saas *Saas) events(http go_saas_http.Http) error {
 				case <-w.CloseNotify():
 					http.GetEvent().Unsubscribe(userId, clientId)
 
-					if err := http.GetEvent().Trigger(userId, "go-saas", "unsubscribed", clientId); err != nil {
+					if err := http.GetEvent().Trigger(userId, "go-makeless", "unsubscribed", clientId); err != nil {
 						panic(err)
 					}
 				}

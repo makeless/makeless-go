@@ -1,4 +1,4 @@
-package go_saas
+package makeless
 
 import (
 	"fmt"
@@ -10,26 +10,26 @@ import (
 
 	"database/sql"
 	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas/http"
-	"github.com/go-saas/go-saas/mailer"
-	"github.com/go-saas/go-saas/model"
-	"github.com/go-saas/go-saas/security"
-	"github.com/go-saas/go-saas/struct"
+	"github.com/makeless/makeless-go/http"
+	"github.com/makeless/makeless-go/mailer"
+	"github.com/makeless/makeless-go/model"
+	"github.com/makeless/makeless-go/security"
+	"github.com/makeless/makeless-go/struct"
 )
 
-func (saas *Saas) createTeam(http go_saas_http.Http) error {
+func (makeless *Makeless) createTeam(http makeless_go_http.Http) error {
 	http.GetRouter().POST(
 		"/api/auth/team",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
-		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
+		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
 		func(c *gin.Context) {
 			var err error
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
 			var tx = http.GetDatabase().GetConnection().BeginTx(c, new(sql.TxOptions))
 			var teamInvitationExpire = time.Now().Add(time.Hour * 24 * 7)
 			var teamInvitationAccepted = false
-			var user = &go_saas_model.User{
-				Model:   go_saas_model.Model{Id: userId},
+			var user = &makeless_go_model.User{
+				Model:   makeless_go_model.Model{Id: userId},
 				RWMutex: new(sync.RWMutex),
 			}
 			var teamCreate = &_struct.TeamCreate{
@@ -46,15 +46,15 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 				return
 			}
 
-			var teamInvitations = make([]*go_saas_model.TeamInvitation, len(teamCreate.GetInvitations()))
+			var teamInvitations = make([]*makeless_go_model.TeamInvitation, len(teamCreate.GetInvitations()))
 			var index = map[string]bool{
 				*user.GetEmail(): true,
 			}
 
 			for i, teamInvitation := range teamCreate.GetInvitations() {
-				var mail go_saas_mailer.Mail
+				var mail makeless_go_mailer.Mail
 				var token string
-				var userInvited = &go_saas_model.User{
+				var userInvited = &makeless_go_model.User{
 					RWMutex: new(sync.RWMutex),
 				}
 				teamInvitation.RWMutex = new(sync.RWMutex)
@@ -69,7 +69,7 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 					return
 				}
 
-				teamInvitations[i] = &go_saas_model.TeamInvitation{
+				teamInvitations[i] = &makeless_go_model.TeamInvitation{
 					UserId:   &userId,
 					Email:    teamInvitation.GetEmail(),
 					Token:    &token,
@@ -99,11 +99,11 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 				}
 			}
 
-			var team = &go_saas_model.Team{
+			var team = &makeless_go_model.Team{
 				Name:   teamCreate.GetName(),
 				UserId: &userId,
-				TeamUsers: []*go_saas_model.TeamUser{
-					{UserId: &userId, Role: &go_saas_security.RoleTeamOwner, RWMutex: new(sync.RWMutex)},
+				TeamUsers: []*makeless_go_model.TeamUser{
+					{UserId: &userId, Role: &makeless_go_security.RoleTeamOwner, RWMutex: new(sync.RWMutex)},
 				},
 				TeamInvitations: teamInvitations,
 				RWMutex:         new(sync.RWMutex),
@@ -126,7 +126,7 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 				return
 			}
 
-			if err = http.GetEvent().Trigger(userId, "go-saas", "team:create", team); err != nil {
+			if err = http.GetEvent().Trigger(userId, "go-makeless", "team:create", team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -138,18 +138,18 @@ func (saas *Saas) createTeam(http go_saas_http.Http) error {
 	return nil
 }
 
-func (saas *Saas) deleteTeam(http go_saas_http.Http) error {
+func (makeless *Makeless) deleteTeam(http makeless_go_http.Http) error {
 	http.GetRouter().DELETE(
 		"/api/auth/team",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
-		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
+		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
 		http.TeamCreatorMiddleware(),
 		func(c *gin.Context) {
 			var err error
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
 			var teamId, _ = strconv.Atoi(c.GetHeader("Team"))
-			var team = &go_saas_model.Team{
-				Model:   go_saas_model.Model{Id: uint(teamId)},
+			var team = &makeless_go_model.Team{
+				Model:   makeless_go_model.Model{Id: uint(teamId)},
 				RWMutex: new(sync.RWMutex),
 			}
 
@@ -158,7 +158,7 @@ func (saas *Saas) deleteTeam(http go_saas_http.Http) error {
 				return
 			}
 
-			if err = http.GetEvent().Trigger(userId, "go-saas", "team:delete", nil); err != nil {
+			if err = http.GetEvent().Trigger(userId, "go-makeless", "team:delete", nil); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

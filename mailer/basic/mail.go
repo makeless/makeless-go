@@ -1,10 +1,10 @@
-package go_saas_mailer_basic
+package makeless_go_mailer_basic
 
 import (
 	"net/textproto"
 	"sync"
 
-	"github.com/go-saas/go-saas/mailer"
+	"github.com/makeless/makeless-go/mailer"
 )
 
 type Mail struct {
@@ -15,7 +15,7 @@ type Mail struct {
 	Subject     string
 	Message     []byte
 	HtmlMessage []byte
-	Attachments []go_saas_mailer.Attachment
+	Attachments []makeless_go_mailer.Attachment
 	Headers     textproto.MIMEHeader
 
 	*sync.RWMutex
@@ -119,14 +119,14 @@ func (mail *Mail) SetHtmlMessage(htmlMessage []byte) {
 	mail.HtmlMessage = htmlMessage
 }
 
-func (mail *Mail) GetAttachments() []go_saas_mailer.Attachment {
+func (mail *Mail) GetAttachments() []makeless_go_mailer.Attachment {
 	mail.RLock()
 	defer mail.RUnlock()
 
 	return mail.Attachments
 }
 
-func (mail *Mail) SetAttachments(attachments []go_saas_mailer.Attachment) {
+func (mail *Mail) SetAttachments(attachments []makeless_go_mailer.Attachment) {
 	mail.Lock()
 	defer mail.Unlock()
 

@@ -1,4 +1,4 @@
-package go_saas_mailer
+package makeless_go_mailer
 
 import "net/textproto"
 

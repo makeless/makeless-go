@@ -1,7 +1,7 @@
-package go_saas_config_basic
+package makeless_go_config_basic
 
 import (
-	"github.com/go-saas/go-saas/config"
+	"github.com/makeless/makeless-go/config"
 	"sync"
 )
 
@@ -58,7 +58,7 @@ func (mail *Mail) GetButtonTextColor() string {
 	return mail.ButtonTextColor
 }
 
-func (mail *Mail) GetTexts(locale string) go_saas_config.MailText {
+func (mail *Mail) GetTexts(locale string) makeless_go_config.MailText {
 	mail.RLock()
 	defer mail.RUnlock()
 

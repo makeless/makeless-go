@@ -1,4 +1,4 @@
-package go_saas_model
+package makeless_go_model
 
 import (
 	"sync"

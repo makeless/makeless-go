@@ -1,7 +1,7 @@
-package go_saas_config_basic
+package makeless_go_config_basic
 
 import (
-	"github.com/go-saas/go-saas/config"
+	"github.com/makeless/makeless-go/config"
 	"sync"
 )
 
@@ -12,8 +12,8 @@ type Configuration struct {
 	Host              string              `json:"host"`
 	EmailVerification bool                `json:"emailVerification"`
 	Tokens            bool                `json:"tokens"`
-	Teams             go_saas_config.Team `json:"teams"`
-	Mail              go_saas_config.Mail `json:"mail"`
+	Teams             makeless_go_config.Team `json:"teams"`
+	Mail              makeless_go_config.Mail `json:"mail"`
 	*sync.RWMutex
 }
 
@@ -59,14 +59,14 @@ func (configuration *Configuration) GetTokens() bool {
 	return configuration.Tokens
 }
 
-func (configuration *Configuration) GetTeams() go_saas_config.Team {
+func (configuration *Configuration) GetTeams() makeless_go_config.Team {
 	configuration.RLock()
 	defer configuration.RUnlock()
 
 	return configuration.Teams
 }
 
-func (configuration *Configuration) GetMail() go_saas_config.Mail {
+func (configuration *Configuration) GetMail() makeless_go_config.Mail {
 	configuration.RLock()
 	defer configuration.RUnlock()
 

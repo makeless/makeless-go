@@ -1,29 +1,29 @@
-package go_saas
+package makeless
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas/http"
-	"github.com/go-saas/go-saas/model"
-	"github.com/go-saas/go-saas/security"
-	"github.com/go-saas/go-saas/struct"
+	"github.com/makeless/makeless-go/http"
+	"github.com/makeless/makeless-go/model"
+	"github.com/makeless/makeless-go/security"
+	"github.com/makeless/makeless-go/struct"
 	"github.com/jinzhu/gorm"
 	h "net/http"
 	"strconv"
 	"sync"
 )
 
-func (saas *Saas) teamUsersTeam(http go_saas_http.Http) error {
+func (makeless *Makeless) teamUsersTeam(http makeless_go_http.Http) error {
 	http.GetRouter().GET(
 		"/api/auth/team/team-user",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
-		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
-		http.TeamRoleMiddleware(go_saas_security.RoleTeamOwner),
+		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
+		http.TeamRoleMiddleware(makeless_go_security.RoleTeamOwner),
 		func(c *gin.Context) {
 			var err error
 			var teamId, _ = strconv.Atoi(c.GetHeader("Team"))
-			var teamUsers []*go_saas_model.TeamUser
-			var team = &go_saas_model.Team{
-				Model:   go_saas_model.Model{Id: uint(teamId)},
+			var teamUsers []*makeless_go_model.TeamUser
+			var team = &makeless_go_model.Team{
+				Model:   makeless_go_model.Model{Id: uint(teamId)},
 				RWMutex: new(sync.RWMutex),
 			}
 
@@ -39,12 +39,12 @@ func (saas *Saas) teamUsersTeam(http go_saas_http.Http) error {
 	return nil
 }
 
-func (saas *Saas) updateRoleTeamUserTeam(http go_saas_http.Http) error {
+func (makeless *Makeless) updateRoleTeamUserTeam(http makeless_go_http.Http) error {
 	http.GetRouter().PATCH(
 		"/api/auth/team/team-user/role",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
-		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
-		http.TeamRoleMiddleware(go_saas_security.RoleTeamOwner),
+		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
+		http.TeamRoleMiddleware(makeless_go_security.RoleTeamOwner),
 		func(c *gin.Context) {
 			var err error
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
@@ -58,8 +58,8 @@ func (saas *Saas) updateRoleTeamUserTeam(http go_saas_http.Http) error {
 				return
 			}
 
-			var teamUser = &go_saas_model.TeamUser{
-				Model:   go_saas_model.Model{Id: *teamUserTeamUpdateRole.GetId()},
+			var teamUser = &makeless_go_model.TeamUser{
+				Model:   makeless_go_model.Model{Id: *teamUserTeamUpdateRole.GetId()},
 				RWMutex: new(sync.RWMutex),
 			}
 
@@ -85,7 +85,7 @@ func (saas *Saas) updateRoleTeamUserTeam(http go_saas_http.Http) error {
 				return
 			}
 
-			if exists := saas.GetConfig().GetConfiguration().GetTeams().HasRole(*teamUserTeamUpdateRole.GetRole()); !exists {
+			if exists := makeless.GetConfig().GetConfiguration().GetTeams().HasRole(*teamUserTeamUpdateRole.GetRole()); !exists {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 			}
 
@@ -101,12 +101,12 @@ func (saas *Saas) updateRoleTeamUserTeam(http go_saas_http.Http) error {
 	return nil
 }
 
-func (saas *Saas) deleteTeamUserTeam(http go_saas_http.Http) error {
+func (makeless *Makeless) deleteTeamUserTeam(http makeless_go_http.Http) error {
 	http.GetRouter().DELETE(
 		"/api/auth/team/team-user",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
-		http.EmailVerificationMiddleware(saas.GetConfig().GetConfiguration().GetEmailVerification()),
-		http.TeamRoleMiddleware(go_saas_security.RoleTeamOwner),
+		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
+		http.TeamRoleMiddleware(makeless_go_security.RoleTeamOwner),
 		func(c *gin.Context) {
 			var err error
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
@@ -120,8 +120,8 @@ func (saas *Saas) deleteTeamUserTeam(http go_saas_http.Http) error {
 				return
 			}
 
-			var teamUser = &go_saas_model.TeamUser{
-				Model:   go_saas_model.Model{Id: *teamUserTeamDelete.GetId()},
+			var teamUser = &makeless_go_model.TeamUser{
+				Model:   makeless_go_model.Model{Id: *teamUserTeamDelete.GetId()},
 				RWMutex: new(sync.RWMutex),
 			}
 

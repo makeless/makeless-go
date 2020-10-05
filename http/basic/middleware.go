@@ -1,12 +1,12 @@
-package go_saas_http_basic
+package makeless_go_http_basic
 
 import (
 	"errors"
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/go-saas/go-saas/model"
-	"github.com/go-saas/go-saas/security"
+	"github.com/makeless/makeless-go/model"
+	"github.com/makeless/makeless-go/security"
 	"github.com/jinzhu/gorm"
 	h "net/http"
 	"strconv"
@@ -27,7 +27,7 @@ func (http *Http) EmailVerificationMiddleware(enabled bool) gin.HandlerFunc {
 		var err error
 		var userId = http.GetAuthenticator().GetAuthUserId(c)
 		var emailVerification = http.GetAuthenticator().GetAuthEmailVerification(c)
-		var user = &go_saas_model.User{
+		var user = &makeless_go_model.User{
 			RWMutex: new(sync.RWMutex),
 		}
 
@@ -55,7 +55,7 @@ func (http *Http) EmailVerificationMiddleware(enabled bool) gin.HandlerFunc {
 			return
 		}
 
-		c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(go_saas_security.NoEmailVerification, nil))
+		c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(makeless_go_security.NoEmailVerification, nil))
 	}
 }
 
@@ -82,7 +82,7 @@ func (http *Http) TeamUserMiddleware() gin.HandlerFunc {
 		}
 
 		if !teamUser {
-			c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(go_saas_security.NoTeamUserErr, nil))
+			c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(makeless_go_security.NoTeamUserErr, nil))
 			return
 		}
 
@@ -113,7 +113,7 @@ func (http *Http) TeamRoleMiddleware(role string) gin.HandlerFunc {
 		}
 
 		if !teamRole {
-			c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(go_saas_security.NoTeamRoleError, nil))
+			c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(makeless_go_security.NoTeamRoleError, nil))
 			return
 		}
 
@@ -144,7 +144,7 @@ func (http *Http) TeamCreatorMiddleware() gin.HandlerFunc {
 		}
 
 		if !teamCreator {
-			c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(go_saas_security.NoTeamCreatorError, nil))
+			c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(makeless_go_security.NoTeamCreatorError, nil))
 			return
 		}
 
@@ -175,7 +175,7 @@ func (http *Http) NotTeamCreatorMiddleware() gin.HandlerFunc {
 		}
 
 		if !notTeamCreator {
-			c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(go_saas_security.NoTeamCreatorError, nil))
+			c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(makeless_go_security.NoTeamCreatorError, nil))
 			return
 		}
 

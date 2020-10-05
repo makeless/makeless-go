@@ -1,11 +1,11 @@
-package go_saas_database_basic
+package makeless_go_database_basic
 
 import (
-	"github.com/go-saas/go-saas/model"
+	"github.com/makeless/makeless-go/model"
 	"github.com/jinzhu/gorm"
 )
 
-func (database *Database) UpdateProfileTeam(connection *gorm.DB, team *go_saas_model.Team) (*go_saas_model.Team, error) {
+func (database *Database) UpdateProfileTeam(connection *gorm.DB, team *makeless_go_model.Team) (*makeless_go_model.Team, error) {
 	return team, connection.
 		Model(&team).
 		Update(map[string]interface{}{

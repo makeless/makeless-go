@@ -1,4 +1,4 @@
-package go_saas_tls
+package makeless_go_tls
 
 type Tls interface {
 	GetCertPath() string
