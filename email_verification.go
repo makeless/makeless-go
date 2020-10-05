@@ -8,6 +8,7 @@ import (
 	"github.com/makeless/makeless-go/mailer"
 	"github.com/makeless/makeless-go/model"
 	"gorm.io/gorm"
+	"log"
 	h "net/http"
 	"sync"
 )
@@ -31,6 +32,8 @@ func (makeless *Makeless) verifyEmailVerification(http makeless_go_http.Http) er
 				}
 				return
 			}
+
+			log.Printf("%+v", emailVerification)
 
 			if emailVerification, err = http.GetDatabase().VerifyEmailVerification(http.GetDatabase().GetConnection(), emailVerification); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
