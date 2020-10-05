@@ -95,7 +95,6 @@ func (database *Database) DeleteTeamUser(connection *gorm.DB, teamUser *makeless
 // DeleteTeam deletes team and all their teamUsers and teamInvitations
 func (database *Database) DeleteTeam(connection *gorm.DB, team *makeless_go_model.Team) error {
 	return connection.
-		Unscoped().
 		Select("TeamUsers", "TeamInvitations").
 		Delete(team).
 		Error
