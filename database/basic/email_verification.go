@@ -2,8 +2,8 @@ package makeless_go_database_basic
 
 import (
 	"fmt"
-	"gorm.io/gorm"
 	"github.com/makeless/makeless-go/model"
+	"gorm.io/gorm"
 )
 
 func (database *Database) GetEmailVerificationByField(connection *gorm.DB, emailVerification *makeless_go_model.EmailVerification, field string, value string) (*makeless_go_model.EmailVerification, error) {
@@ -20,7 +20,7 @@ func (database *Database) GetEmailVerificationByField(connection *gorm.DB, email
 func (database *Database) VerifyEmailVerification(connection *gorm.DB, emailVerification *makeless_go_model.EmailVerification) (*makeless_go_model.EmailVerification, error) {
 	return emailVerification, connection.
 		Model(emailVerification).
-		Update(map[string]interface{}{
+		Updates(map[string]interface{}{
 			"verified": true,
 		}).
 		Error

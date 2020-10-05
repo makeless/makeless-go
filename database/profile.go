@@ -1,9 +1,9 @@
 package makeless_go_database
 
 import (
-	"gorm.io/gorm"
 	"github.com/makeless/makeless-go/model"
 	"github.com/makeless/makeless-go/struct"
+	"gorm.io/gorm"
 )
 
 type Profile interface {

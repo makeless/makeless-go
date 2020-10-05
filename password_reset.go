@@ -3,10 +3,10 @@ package makeless_go
 import (
 	"database/sql"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"github.com/makeless/makeless-go/http"
 	"github.com/makeless/makeless-go/model"
 	"github.com/makeless/makeless-go/struct"
+	"gorm.io/gorm"
 	h "net/http"
 	"sync"
 )
@@ -17,7 +17,7 @@ func (makeless *Makeless) passwordReset(http makeless_go_http.Http) error {
 		func(c *gin.Context) {
 			var err error
 			var bcrypted string
-			var tx = http.GetDatabase().GetConnection().BeginTx(c, new(sql.TxOptions))
+			var tx = http.GetDatabase().GetConnection().Begin(new(sql.TxOptions))
 			var token = c.Query("token")
 			var user = &makeless_go_model.User{
 				RWMutex: new(sync.RWMutex),

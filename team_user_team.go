@@ -2,11 +2,11 @@ package makeless_go
 
 import (
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"github.com/makeless/makeless-go/http"
 	"github.com/makeless/makeless-go/model"
 	"github.com/makeless/makeless-go/security"
 	"github.com/makeless/makeless-go/struct"
+	"gorm.io/gorm"
 	h "net/http"
 	"strconv"
 	"sync"

@@ -1,9 +1,9 @@
 package makeless_go_security
 
 import (
-	"gorm.io/gorm"
 	"github.com/makeless/makeless-go/database"
 	"github.com/makeless/makeless-go/model"
+	"gorm.io/gorm"
 )
 
 type Security interface {

@@ -1,8 +1,8 @@
 package makeless_go_database
 
 import (
-	"gorm.io/gorm"
 	"github.com/makeless/makeless-go/model"
+	"gorm.io/gorm"
 )
 
 type TeamInvitation interface {

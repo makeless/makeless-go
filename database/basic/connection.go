@@ -31,7 +31,7 @@ func (database *Database) SetConnection(connection *gorm.DB) {
 }
 
 func (database *Database) Connect() error {
-	connection, err := gorm.Open(database.getDialect(), database.GetConnectionString())
+	connection, err := gorm.Open(database.getDialector(), &gorm.Config{})
 
 	if err != nil {
 		return err

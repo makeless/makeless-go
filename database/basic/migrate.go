@@ -11,5 +11,5 @@ func (database *Database) Migrate() error {
 		new(makeless_go_model.TeamUser),
 		new(makeless_go_model.TeamInvitation),
 		new(makeless_go_model.PasswordRequest),
-	).Error
+	)
 }

@@ -1,8 +1,8 @@
 package makeless_go_database_basic
 
 import (
-	"gorm.io/gorm"
 	"github.com/makeless/makeless-go/model"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -21,7 +21,7 @@ func (database *Database) GetPasswordRequest(connection *gorm.DB, passwordReques
 func (database *Database) UpdatePasswordRequest(connection *gorm.DB, passwordRequest *makeless_go_model.PasswordRequest) (*makeless_go_model.PasswordRequest, error) {
 	return passwordRequest, connection.
 		Model(passwordRequest).
-		Update(map[string]interface{}{
+		Updates(map[string]interface{}{
 			"used": true,
 		}).
 		Error

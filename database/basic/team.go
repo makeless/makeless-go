@@ -2,8 +2,8 @@ package makeless_go_database_basic
 
 import (
 	"fmt"
-	"gorm.io/gorm"
 	"github.com/makeless/makeless-go/model"
+	"gorm.io/gorm"
 )
 
 // CreateTeam creates team
@@ -28,8 +28,7 @@ func (database *Database) AddTeamInvitations(connection *gorm.DB, team *makeless
 	return team, connection.
 		Model(team).
 		Association("TeamInvitations").
-		Append(teamInvitations).
-		Error
+		Append(teamInvitations)
 }
 
 // GetTeamUserByFields retrieves teamUser by fields
@@ -73,14 +72,13 @@ func (database *Database) AddTeamUsers(connection *gorm.DB, teamUsers []*makeles
 	return connection.
 		Model(team).
 		Association("TeamUsers").
-		Append(teamUsers).
-		Error
+		Append(teamUsers)
 }
 
 func (database *Database) UpdateRoleTeamUser(connection *gorm.DB, teamUser *makeless_go_model.TeamUser, role string) (*makeless_go_model.TeamUser, error) {
 	return teamUser, connection.
 		Model(teamUser).
-		Update(map[string]interface{}{
+		Updates(map[string]interface{}{
 			"role": role,
 		}).
 		Error
@@ -105,7 +103,7 @@ func (database *Database) DeleteTeam(connection *gorm.DB, team *makeless_go_mode
 
 // IsTeamUser checks if user is part of team
 func (database *Database) IsTeamUser(connection *gorm.DB, team *makeless_go_model.Team, user *makeless_go_model.User) (bool, error) {
-	var count int
+	var count int64
 
 	return count == 1, connection.
 		Raw("SELECT COUNT(*) FROM team_users WHERE team_users.team_id = ? AND team_users.user_id = ? LIMIT 1", team.GetId(), user.GetId()).
@@ -115,7 +113,7 @@ func (database *Database) IsTeamUser(connection *gorm.DB, team *makeless_go_mode
 
 // IsTeamRole checks if user is part of team and has given role
 func (database *Database) IsTeamRole(connection *gorm.DB, role string, team *makeless_go_model.Team, user *makeless_go_model.User) (bool, error) {
-	var count int
+	var count int64
 
 	return count == 1, connection.
 		Raw("SELECT COUNT(*) FROM team_users WHERE team_users.team_id = ? AND team_users.user_id = ? AND team_users.role = ? LIMIT 1", team.GetId(), user.GetId(), role).
@@ -125,7 +123,7 @@ func (database *Database) IsTeamRole(connection *gorm.DB, role string, team *mak
 
 // IsTeamCreator checks if user is team creator
 func (database *Database) IsTeamCreator(connection *gorm.DB, team *makeless_go_model.Team, user *makeless_go_model.User) (bool, error) {
-	var count int
+	var count int64
 
 	return count == 1, connection.
 		Raw("SELECT COUNT(*) FROM teams WHERE teams.id = ? AND teams.user_id = ? LIMIT 1", team.GetId(), user.GetId()).
@@ -135,7 +133,7 @@ func (database *Database) IsTeamCreator(connection *gorm.DB, team *makeless_go_m
 
 // IsNotTeamCreator checks if user is not team creator
 func (database *Database) IsNotTeamCreator(connection *gorm.DB, team *makeless_go_model.Team, user *makeless_go_model.User) (bool, error) {
-	var count int
+	var count int64
 
 	return count == 0, connection.
 		Raw("SELECT COUNT(*) FROM teams WHERE teams.id = ? AND teams.user_id = ? LIMIT 1", team.GetId(), user.GetId()).
@@ -144,7 +142,7 @@ func (database *Database) IsNotTeamCreator(connection *gorm.DB, team *makeless_g
 }
 
 func (database *Database) IsModelTeam(connection *gorm.DB, team *makeless_go_model.Team, model interface{}) (bool, error) {
-	var count int
+	var count int64
 
 	return count == 1, connection.
 		Model(model).

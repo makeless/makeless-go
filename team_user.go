@@ -2,9 +2,9 @@ package makeless_go
 
 import (
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"github.com/makeless/makeless-go/http"
 	"github.com/makeless/makeless-go/model"
+	"gorm.io/gorm"
 	h "net/http"
 	"strconv"
 	"sync"

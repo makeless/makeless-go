@@ -3,12 +3,12 @@ package makeless_go
 import (
 	"database/sql"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"github.com/makeless/makeless-go/http"
 	"github.com/makeless/makeless-go/mailer"
 	"github.com/makeless/makeless-go/model"
 	"github.com/makeless/makeless-go/security"
 	"github.com/makeless/makeless-go/struct"
+	"gorm.io/gorm"
 	h "net/http"
 	"sync"
 )
@@ -74,7 +74,7 @@ func (makeless *Makeless) registerTeamInvitation(http makeless_go_http.Http) err
 			var mail makeless_go_mailer.Mail
 			var token = c.Query("token")
 			var verified = false
-			var tx = http.GetDatabase().GetConnection().BeginTx(c, new(sql.TxOptions))
+			var tx = http.GetDatabase().GetConnection().Begin(new(sql.TxOptions))
 			var register = &_struct.Register{
 				RWMutex: new(sync.RWMutex),
 			}
@@ -177,7 +177,7 @@ func (makeless *Makeless) acceptTeamInvitation(http makeless_go_http.Http) error
 			var err error
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
 			var userEmail = http.GetAuthenticator().GetAuthEmail(c)
-			var tx = http.GetDatabase().GetConnection().BeginTx(c, new(sql.TxOptions))
+			var tx = http.GetDatabase().GetConnection().Begin(new(sql.TxOptions))
 			var user = &makeless_go_model.User{
 				Model:   makeless_go_model.Model{Id: userId},
 				RWMutex: new(sync.RWMutex),

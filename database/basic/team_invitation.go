@@ -2,8 +2,8 @@ package makeless_go_database_basic
 
 import (
 	"fmt"
-	"gorm.io/gorm"
 	"github.com/makeless/makeless-go/model"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -46,7 +46,7 @@ func (database *Database) GetTeamInvitationsTeam(connection *gorm.DB, team *make
 func (database *Database) AcceptTeamInvitation(connection *gorm.DB, teamInvitation *makeless_go_model.TeamInvitation) (*makeless_go_model.TeamInvitation, error) {
 	return teamInvitation, connection.
 		Model(teamInvitation).
-		Update(map[string]interface{}{
+		Updates(map[string]interface{}{
 			"accepted": true,
 		}).
 		Error

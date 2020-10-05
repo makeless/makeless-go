@@ -25,7 +25,7 @@ func (makeless *Makeless) createTeam(http makeless_go_http.Http) error {
 		func(c *gin.Context) {
 			var err error
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
-			var tx = http.GetDatabase().GetConnection().BeginTx(c, new(sql.TxOptions))
+			var tx = http.GetDatabase().GetConnection().Begin(new(sql.TxOptions))
 			var teamInvitationExpire = time.Now().Add(time.Hour * 24 * 7)
 			var teamInvitationAccepted = false
 			var user = &makeless_go_model.User{

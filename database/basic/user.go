@@ -2,8 +2,8 @@ package makeless_go_database_basic
 
 import (
 	"fmt"
-	"gorm.io/gorm"
 	"github.com/makeless/makeless-go/model"
+	"gorm.io/gorm"
 )
 
 // GetUser retrieves user and all there team informations
@@ -38,7 +38,7 @@ func (database *Database) CreateUser(connection *gorm.DB, user *makeless_go_mode
 }
 
 func (database *Database) IsModelUser(connection *gorm.DB, user *makeless_go_model.User, model interface{}) (bool, error) {
-	var count int
+	var count int64
 
 	return count == 1, connection.
 		Model(model).

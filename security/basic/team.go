@@ -1,8 +1,8 @@
 package makeless_go_security_basic
 
 import (
-	"gorm.io/gorm"
 	"github.com/makeless/makeless-go/model"
+	"gorm.io/gorm"
 	"sync"
 )
 

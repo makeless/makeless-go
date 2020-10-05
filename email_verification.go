@@ -3,10 +3,10 @@ package makeless_go
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"github.com/makeless/makeless-go/http"
 	"github.com/makeless/makeless-go/mailer"
 	"github.com/makeless/makeless-go/model"
+	"gorm.io/gorm"
 	h "net/http"
 	"sync"
 )
