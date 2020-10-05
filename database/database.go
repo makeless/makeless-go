@@ -1,6 +1,6 @@
 package makeless_go_database
 
-import "github.com/jinzhu/gorm"
+import "gorm.io/gorm"
 
 type Database interface {
 	GetConnection() *gorm.DB

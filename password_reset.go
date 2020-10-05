@@ -3,7 +3,7 @@ package makeless_go
 import (
 	"database/sql"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 	"github.com/makeless/makeless-go/http"
 	"github.com/makeless/makeless-go/model"
 	"github.com/makeless/makeless-go/struct"

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 	"github.com/makeless/makeless-go/model"
 	"github.com/makeless/makeless-go/security"
 	h "net/http"

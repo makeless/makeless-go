@@ -2,7 +2,7 @@ package makeless_go
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 	h "net/http"
 	"strconv"
 	"sync"

@@ -2,7 +2,7 @@ package makeless_go_database_basic
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 	"github.com/makeless/makeless-go/model"
 	"time"
 )
