@@ -17,7 +17,7 @@ Makeless - SaaS Framework - Golang Implementation
 
 ## Preview
 
-<img src="https://raw.githubusercontent.com/makeless/makeless-ui/master/preview.png" alt="logo">
+<img src="https://raw.githubusercontent.com/makeless/makeless-ui/master/preview.png" alt="preview">
 
 ## Frontend
 
