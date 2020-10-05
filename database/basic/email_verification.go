@@ -13,7 +13,7 @@ func (database *Database) GetEmailVerificationByField(connection *gorm.DB, email
 			value,
 			false,
 		).
-		Find(emailVerification).
+		First(emailVerification).
 		Error
 }
 

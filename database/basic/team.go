@@ -19,7 +19,7 @@ func (database *Database) GetTeam(connection *gorm.DB, team *makeless_go_model.T
 		Preload("TeamUsers.Team").
 		Preload("TeamUsers.User").
 		Preload("TeamInvitations").
-		Find(team).
+		First(team).
 		Error
 }
 
@@ -42,7 +42,7 @@ func (database *Database) GetTeamUserByFields(connection *gorm.DB, teamUser *mak
 	return teamUser, query.
 		Preload("Team").
 		Preload("User").
-		Find(&teamUser).
+		First(&teamUser).
 		Error
 }
 

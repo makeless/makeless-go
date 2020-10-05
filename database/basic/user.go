@@ -26,7 +26,7 @@ func (database *Database) GetUserByField(connection *gorm.DB, user *makeless_go_
 	return user, connection.
 		Preload("EmailVerification").
 		Where(fmt.Sprintf("%s = ?", field), value).
-		Find(&user).
+		First(&user).
 		Error
 }
 

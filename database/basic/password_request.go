@@ -14,7 +14,7 @@ func (database *Database) CreatePasswordRequest(connection *gorm.DB, passwordReq
 
 func (database *Database) GetPasswordRequest(connection *gorm.DB, passwordRequest *makeless_go_model.PasswordRequest) (*makeless_go_model.PasswordRequest, error) {
 	return passwordRequest, connection.
-		Find(passwordRequest, "token = ? AND used = ? AND expire >= ?", passwordRequest.GetToken(), false, time.Now()).
+		First(passwordRequest, "token = ? AND used = ? AND expire >= ?", passwordRequest.GetToken(), false, time.Now()).
 		Error
 }
 

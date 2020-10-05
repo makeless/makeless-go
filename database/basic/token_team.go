@@ -26,7 +26,7 @@ func (database *Database) CreateTokenTeam(connection *gorm.DB, token *makeless_g
 	return token, connection.
 		Create(token).
 		Preload("User").
-		Find(token).
+		First(token).
 		Error
 }
 

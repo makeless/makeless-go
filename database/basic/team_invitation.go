@@ -17,7 +17,7 @@ func (database *Database) GetTeamInvitationByField(connection *gorm.DB, teamInvi
 			false,
 			time.Now(),
 		).
-		Find(teamInvitation).
+		First(teamInvitation).
 		Error
 }
 
