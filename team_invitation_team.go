@@ -1,6 +1,7 @@
 package makeless_go
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/makeless/makeless-go/http"
@@ -182,8 +183,8 @@ func (makeless *Makeless) resendTeamInvitationTeam(http makeless_go_http.Http) e
 			}
 
 			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByField(http.GetDatabase().GetConnection(), teamInvitation, "team_id", fmt.Sprintf("%d", *teamInvitation.GetTeamId())); err != nil {
-				switch err {
-				case gorm.ErrRecordNotFound:
+				switch errors.Is(err, gorm.ErrRecordNotFound) {
+				case true:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				default:
 					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
@@ -245,8 +246,8 @@ func (makeless *Makeless) deleteTeamInvitationTeam(http makeless_go_http.Http) e
 			}
 
 			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByField(http.GetDatabase().GetConnection(), teamInvitation, "team_id", fmt.Sprintf("%d", *teamInvitation.GetTeamId())); err != nil {
-				switch err {
-				case gorm.ErrRecordNotFound:
+				switch errors.Is(err, gorm.ErrRecordNotFound) {
+				case true:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				default:
 					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))

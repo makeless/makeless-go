@@ -2,6 +2,7 @@ package makeless_go
 
 import (
 	"database/sql"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/makeless/makeless-go/http"
 	"github.com/makeless/makeless-go/mailer"
@@ -24,8 +25,8 @@ func (makeless *Makeless) teamInvitation(http makeless_go_http.Http) error {
 			}
 
 			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByField(http.GetDatabase().GetConnection(), teamInvitation, "token", token); err != nil {
-				switch err {
-				case gorm.ErrRecordNotFound:
+				switch errors.Is(err, gorm.ErrRecordNotFound) {
+				case true:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				default:
 					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
@@ -88,8 +89,8 @@ func (makeless *Makeless) registerTeamInvitation(http makeless_go_http.Http) err
 			}
 
 			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByField(http.GetDatabase().GetConnection(), teamInvitation, "token", token); err != nil {
-				switch err {
-				case gorm.ErrRecordNotFound:
+				switch errors.Is(err, gorm.ErrRecordNotFound) {
+				case true:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				default:
 					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
@@ -198,8 +199,8 @@ func (makeless *Makeless) acceptTeamInvitation(http makeless_go_http.Http) error
 			}
 
 			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByField(http.GetDatabase().GetConnection(), teamInvitation, "email", *teamInvitation.GetEmail()); err != nil {
-				switch err {
-				case gorm.ErrRecordNotFound:
+				switch errors.Is(err, gorm.ErrRecordNotFound) {
+				case true:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				default:
 					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
@@ -274,8 +275,8 @@ func (makeless *Makeless) deleteTeamInvitation(http makeless_go_http.Http) error
 			}
 
 			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByField(http.GetDatabase().GetConnection(), teamInvitation, "email", *teamInvitation.GetEmail()); err != nil {
-				switch err {
-				case gorm.ErrRecordNotFound:
+				switch errors.Is(err, gorm.ErrRecordNotFound) {
+				case true:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				default:
 					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))

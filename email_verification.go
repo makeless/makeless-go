@@ -1,6 +1,7 @@
 package makeless_go
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/makeless/makeless-go/http"
@@ -22,8 +23,8 @@ func (makeless *Makeless) verifyEmailVerification(http makeless_go_http.Http) er
 			}
 
 			if emailVerification, err = http.GetDatabase().GetEmailVerificationByField(http.GetDatabase().GetConnection(), emailVerification, "token", token); err != nil {
-				switch err {
-				case gorm.ErrRecordNotFound:
+				switch errors.Is(err, gorm.ErrRecordNotFound) {
+				case true:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				default:
 					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
