@@ -10,7 +10,6 @@ func (makeless *Makeless) events(http makeless_go_http.Http) error {
 	http.GetRouter().GET(
 		"/api/auth/event",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
-		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
 		func(c *gin.Context) {
 			userId := http.GetAuthenticator().GetAuthUserId(c)
 
