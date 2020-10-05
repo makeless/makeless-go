@@ -6,12 +6,12 @@ import (
 )
 
 type Configuration struct {
-	Name              string              `json:"name"`
-	Logo              string              `json:"logo"`
-	Locale            string              `json:"locale"`
-	Host              string              `json:"host"`
-	EmailVerification bool                `json:"emailVerification"`
-	Tokens            bool                `json:"tokens"`
+	Name              string                  `json:"name"`
+	Logo              string                  `json:"logo"`
+	Locale            string                  `json:"locale"`
+	Host              string                  `json:"host"`
+	EmailVerification bool                    `json:"emailVerification"`
+	Tokens            bool                    `json:"tokens"`
 	Teams             makeless_go_config.Team `json:"teams"`
 	Mail              makeless_go_config.Mail `json:"mail"`
 	*sync.RWMutex

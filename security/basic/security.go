@@ -2,9 +2,9 @@ package makeless_go_security_basic
 
 import (
 	"github.com/appleboy/gin-jwt/v2"
+	"github.com/jinzhu/gorm"
 	"github.com/makeless/makeless-go/database"
 	"github.com/makeless/makeless-go/model"
-	"github.com/jinzhu/gorm"
 	"sync"
 )
 

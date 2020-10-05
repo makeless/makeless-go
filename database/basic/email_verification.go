@@ -2,8 +2,8 @@ package makeless_go_database_basic
 
 import (
 	"fmt"
-	"github.com/makeless/makeless-go/model"
 	"github.com/jinzhu/gorm"
+	"github.com/makeless/makeless-go/model"
 )
 
 func (database *Database) GetEmailVerificationByField(connection *gorm.DB, emailVerification *makeless_go_model.EmailVerification, field string, value string) (*makeless_go_model.EmailVerification, error) {

@@ -1,8 +1,8 @@
 package makeless_go_database_basic
 
 import (
-	"github.com/makeless/makeless-go/model"
 	"github.com/jinzhu/gorm"
+	"github.com/makeless/makeless-go/model"
 )
 
 func (database *Database) GetTokensTeam(connection *gorm.DB, team *makeless_go_model.Team, tokens []*makeless_go_model.Token) ([]*makeless_go_model.Token, error) {

@@ -1,8 +1,8 @@
 package makeless_go_database
 
 import (
-	"github.com/makeless/makeless-go/model"
 	"github.com/jinzhu/gorm"
+	"github.com/makeless/makeless-go/model"
 )
 
 type Team interface {

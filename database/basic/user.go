@@ -2,8 +2,8 @@ package makeless_go_database_basic
 
 import (
 	"fmt"
-	"github.com/makeless/makeless-go/model"
 	"github.com/jinzhu/gorm"
+	"github.com/makeless/makeless-go/model"
 )
 
 // GetUser retrieves user and all there team informations

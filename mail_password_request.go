@@ -70,4 +70,3 @@ func (makeless *Makeless) mailPasswordRequest(data map[string]interface{}) (make
 		RWMutex:     new(sync.RWMutex),
 	}, nil
 }
-

@@ -7,8 +7,8 @@ import (
 	"net/smtp"
 	"sync"
 
-	"github.com/makeless/makeless-go/mailer"
 	"github.com/jordan-wright/email"
+	"github.com/makeless/makeless-go/mailer"
 )
 
 type Mailer struct {
