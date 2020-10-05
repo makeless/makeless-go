@@ -24,6 +24,7 @@ func (makeless *Makeless) verifyEmailVerification(http makeless_go_http.Http) er
 			}
 
 			if emailVerification, err = http.GetDatabase().GetEmailVerificationByField(http.GetDatabase().GetConnection(), emailVerification, "token", token); err != nil {
+				log.Printf("%+v", err)
 				switch errors.Is(err, gorm.ErrRecordNotFound) {
 				case true:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
@@ -32,8 +33,6 @@ func (makeless *Makeless) verifyEmailVerification(http makeless_go_http.Http) er
 				}
 				return
 			}
-
-			log.Printf("%+v", emailVerification)
 
 			if emailVerification, err = http.GetDatabase().VerifyEmailVerification(http.GetDatabase().GetConnection(), emailVerification); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
