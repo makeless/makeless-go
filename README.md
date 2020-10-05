@@ -50,7 +50,7 @@ import (
 	"github.com/makeless/makeless-go/mailer"
 	"github.com/makeless/makeless-go/mailer/basic"
 	"github.com/makeless/makeless-go/security/basic"
-	_ "github.com/go-sql-driver/mysql"
+	"gorm.io/driver/mysql"
 )
 
 func main() {
@@ -75,7 +75,6 @@ func main() {
 
 	// database
 	database := &makeless_go_database_basic.Database{
-		Dialect:  "mysql",
 		Host:     os.Getenv("DB_HOST"),
 		Database: os.Getenv("DB_NAME"),
 		Port:     os.Getenv("DB_PORT"),
@@ -132,7 +131,7 @@ func main() {
 		RWMutex:       new(sync.RWMutex),
 	}
 
-	makeless := &makeless.Makeless{
+	makeless := &makeless_go.Makeless{
 		Config:   config,
 		Logger:   logger,
 		Mailer:   mailer,
@@ -141,7 +140,7 @@ func main() {
 		RWMutex:  new(sync.RWMutex),
 	}
 
-	if err := makeless.Init("./../makeless.json"); err != nil {
+	if err := makeless.Init(mysql.Open(database.GetConnectionString()), "./makeless.json"); err != nil {
 		makeless.GetLogger().Fatal(err)
 	}
 
