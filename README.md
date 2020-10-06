@@ -7,6 +7,7 @@ Makeless - SaaS Framework - Golang Implementation
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go?ref=badge_shield)
 
 - Based on Golang ([gin](https://github.com/gin-gonic/gin) & [gorm](https://github.com/go-gorm/gorm))
+- Concurrency safe & scalable
 - Super clean and small
 - Fully customizable and configurable
 - State of the art Authentication with JWT HttpOnly Cookies
