@@ -15,6 +15,10 @@ Makeless - SaaS Framework - Golang Implementation
 - Token management for users and teams
 - Subscriptions and Per-Seat Payments out of the box (coming soon)
 
+## License
+
+Currently there is no license - will be non free for commercial use and will include the [commons clause license](https://commonsclause.com).
+
 ## Preview
 
 <img src="https://raw.githubusercontent.com/makeless/makeless-ui/master/preview.png" alt="preview">
