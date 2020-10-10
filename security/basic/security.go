@@ -5,6 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/makeless/makeless-go/database"
 	"github.com/makeless/makeless-go/model"
+	"github.com/makeless/makeless-go/security"
 	"sync"
 )
 
@@ -42,8 +43,16 @@ func (security *Security) Login(connection *gorm.DB, field string, value string,
 }
 
 func (security *Security) Register(connection *gorm.DB, user *makeless_go_model.User) (*makeless_go_model.User, error) {
-	encrypted, err := security.EncryptPassword(*user.GetPassword())
+	exists, err := security.UserExists(connection, "email", *user.Email)
+	if err != nil {
+		return nil, err
+	}
 
+	if exists {
+		return nil, makeless_go_security.UserAlreadyExist
+	}
+
+	encrypted, err := security.EncryptPassword(*user.GetPassword())
 	if err != nil {
 		return nil, err
 	}

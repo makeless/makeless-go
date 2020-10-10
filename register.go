@@ -6,6 +6,7 @@ import (
 	"github.com/makeless/makeless-go/mailer"
 	"github.com/makeless/makeless-go/model"
 	"github.com/makeless/makeless-go/struct"
+	"github.com/makeless/makeless-go/security"
 	h "net/http"
 	"sync"
 )
@@ -43,8 +44,14 @@ func (makeless *Makeless) register(http makeless_go_http.Http) error {
 		}
 
 		if user, err = http.GetSecurity().Register(http.GetSecurity().GetDatabase().GetConnection(), user); err != nil {
-			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
-			return
+			switch err {
+			case makeless_go_security.UserAlreadyExist:
+				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+				return
+			default:
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
 		}
 
 		if user.GetEmailVerification().RWMutex == nil {
