@@ -40,10 +40,12 @@ func (database *Database) CreateUser(connection *gorm.DB, user *makeless_go_mode
 func (database *Database) IsModelUser(connection *gorm.DB, user *makeless_go_model.User, model interface{}) (bool, error) {
 	var count int
 
-	return count == 1, connection.
+	err := connection.
 		Model(model).
 		Select("COUNT(*)").
 		Where("user_id = ?", user.GetId()).
 		Count(&count).
 		Error
+
+	return count == 1, err
 }
