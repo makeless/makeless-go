@@ -126,7 +126,7 @@ func (makeless *Makeless) createTeam(http makeless_go_http.Http) error {
 				return
 			}
 
-			if err = http.GetEvent().Trigger(userId, "go-makeless", "team:create", team); err != nil {
+			if err = http.GetEvent().Trigger(userId, "makeless", "team:create", team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -158,7 +158,7 @@ func (makeless *Makeless) deleteTeam(http makeless_go_http.Http) error {
 				return
 			}
 
-			if err = http.GetEvent().Trigger(userId, "go-makeless", "team:delete", nil); err != nil {
+			if err = http.GetEvent().Trigger(userId, "makeless", "team:delete", nil); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

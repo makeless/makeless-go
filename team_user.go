@@ -43,7 +43,7 @@ func (makeless *Makeless) deleteTeamUser(http makeless_go_http.Http) error {
 				return
 			}
 
-			if err = http.GetEvent().Trigger(userId, "go-makeless", "team-user:delete", nil); err != nil {
+			if err = http.GetEvent().Trigger(userId, "makeless", "team-user:delete", nil); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
