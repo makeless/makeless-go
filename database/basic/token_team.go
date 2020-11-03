@@ -32,7 +32,6 @@ func (database *Database) CreateTokenTeam(connection *gorm.DB, token *makeless_g
 
 func (database *Database) DeleteTokenTeam(connection *gorm.DB, token *makeless_go_model.Token) error {
 	return connection.
-		Unscoped().
 		Where("tokens.id = ? AND tokens.team_id = ?", token.GetId(), token.GetTeamId()).
 		Delete(token).
 		Error

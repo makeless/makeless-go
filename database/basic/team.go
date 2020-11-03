@@ -87,7 +87,6 @@ func (database *Database) UpdateRoleTeamUser(connection *gorm.DB, teamUser *make
 // DeleteTeamUser deletes teamUser
 func (database *Database) DeleteTeamUser(connection *gorm.DB, teamUser *makeless_go_model.TeamUser) error {
 	return connection.
-		Unscoped().
 		Delete(teamUser).
 		Error
 }
@@ -96,7 +95,7 @@ func (database *Database) DeleteTeamUser(connection *gorm.DB, teamUser *makeless
 func (database *Database) DeleteTeam(connection *gorm.DB, team *makeless_go_model.Team) error {
 	return connection.
 		Debug().
-		Select("TeamUsers", "TeamInvitations").
+		Select("TeamUsers", "TeamInvitations", "Tokens").
 		Delete(team).
 		Error
 }
