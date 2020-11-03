@@ -1,10 +1,11 @@
 package makeless_go_security_basic
 
 import (
+	"errors"
 	"github.com/appleboy/gin-jwt/v2"
-	"github.com/jinzhu/gorm"
 	"github.com/makeless/makeless-go/database"
 	"github.com/makeless/makeless-go/model"
+	"gorm.io/gorm"
 	"sync"
 )
 
@@ -57,16 +58,18 @@ func (security *Security) Register(connection *gorm.DB, user *makeless_go_model.
 }
 
 func (security *Security) UserExists(connection *gorm.DB, field string, value string) (bool, error) {
-	_, err := security.GetDatabase().GetUserByField(connection, new(makeless_go_model.User), field, value)
+	var err error
 
-	switch err {
-	case gorm.ErrRecordNotFound:
-		return false, nil
-	case nil:
-		return true, nil
-	default:
-		return false, err
+	if _, err = security.GetDatabase().GetUserByField(connection, new(makeless_go_model.User), field, value); err != nil {
+		switch errors.Is(err, gorm.ErrRecordNotFound) {
+		case true:
+			return false, nil
+		default:
+			return false, err
+		}
 	}
+
+	return true, nil
 }
 
 func (security *Security) IsModelUser(connection *gorm.DB, userId uint, model interface{}) (bool, error) {

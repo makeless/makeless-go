@@ -2,11 +2,12 @@ package makeless_go
 
 import (
 	"database/sql"
+	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"github.com/makeless/makeless-go/http"
 	"github.com/makeless/makeless-go/model"
 	"github.com/makeless/makeless-go/struct"
+	"gorm.io/gorm"
 	h "net/http"
 	"sync"
 )
@@ -17,7 +18,7 @@ func (makeless *Makeless) passwordReset(http makeless_go_http.Http) error {
 		func(c *gin.Context) {
 			var err error
 			var bcrypted string
-			var tx = http.GetDatabase().GetConnection().BeginTx(c, new(sql.TxOptions))
+			var tx = http.GetDatabase().GetConnection().Begin(new(sql.TxOptions))
 			var token = c.Query("token")
 			var user = &makeless_go_model.User{
 				RWMutex: new(sync.RWMutex),
@@ -37,8 +38,8 @@ func (makeless *Makeless) passwordReset(http makeless_go_http.Http) error {
 			}
 
 			if passwordRequest, err = http.GetDatabase().GetPasswordRequest(http.GetDatabase().GetConnection(), passwordRequest); err != nil {
-				switch err {
-				case gorm.ErrRecordNotFound:
+				switch errors.Is(err, gorm.ErrRecordNotFound) {
+				case true:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				default:
 					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
@@ -47,8 +48,8 @@ func (makeless *Makeless) passwordReset(http makeless_go_http.Http) error {
 			}
 
 			if user, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection(), user, "email", *passwordRequest.GetEmail()); err != nil {
-				switch err {
-				case gorm.ErrRecordNotFound:
+				switch errors.Is(err, gorm.ErrRecordNotFound) {
+				case true:
 					c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(err, nil))
 				default:
 					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))

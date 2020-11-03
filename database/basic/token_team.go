@@ -1,8 +1,8 @@
 package makeless_go_database_basic
 
 import (
-	"github.com/jinzhu/gorm"
 	"github.com/makeless/makeless-go/model"
+	"gorm.io/gorm"
 )
 
 func (database *Database) GetTokensTeam(connection *gorm.DB, team *makeless_go_model.Team, tokens []*makeless_go_model.Token) ([]*makeless_go_model.Token, error) {
@@ -26,7 +26,7 @@ func (database *Database) CreateTokenTeam(connection *gorm.DB, token *makeless_g
 	return token, connection.
 		Create(token).
 		Preload("User").
-		Find(token).
+		First(token).
 		Error
 }
 
@@ -34,6 +34,6 @@ func (database *Database) DeleteTokenTeam(connection *gorm.DB, token *makeless_g
 	return connection.
 		Unscoped().
 		Where("tokens.id = ? AND tokens.team_id = ?", token.GetId(), token.GetTeamId()).
-		Delete(&token).
+		Delete(token).
 		Error
 }

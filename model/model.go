@@ -1,10 +1,13 @@
 package makeless_go_model
 
-import "time"
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 type Model struct {
-	Id        uint       `gorm:"primary_key" json:"id"`
-	CreatedAt time.Time  `json:"createdAt"`
-	UpdatedAt time.Time  `json:"updatedAt"`
-	DeletedAt *time.Time `sql:"index" json:"deletedAt"`
+	Id        uint           `gorm:"primary_key" json:"id"`
+	CreatedAt time.Time      `json:"createdAt"`
+	UpdatedAt time.Time      `json:"updatedAt"`
+	DeletedAt gorm.DeletedAt `sql:"index" json:"deletedAt"`
 }
