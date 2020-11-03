@@ -24,7 +24,7 @@ func (makeless *Makeless) events(http makeless_go_http.Http) error {
 			http.GetEvent().Subscribe(userId, clientId)
 
 			go func() {
-				if err := http.GetEvent().Trigger(userId, "go-makeless", "subscribed", clientId); err != nil {
+				if err := http.GetEvent().Trigger(userId, "makeless", "subscribed", clientId); err != nil {
 					http.GetEvent().TriggerError(err)
 				}
 			}()
@@ -42,7 +42,7 @@ func (makeless *Makeless) events(http makeless_go_http.Http) error {
 				case <-w.CloseNotify():
 					http.GetEvent().Unsubscribe(userId, clientId)
 
-					if err := http.GetEvent().Trigger(userId, "go-makeless", "unsubscribed", clientId); err != nil {
+					if err := http.GetEvent().Trigger(userId, "makeless", "unsubscribed", clientId); err != nil {
 						panic(err)
 					}
 				}
