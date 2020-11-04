@@ -22,6 +22,7 @@ func (database *Database) GetTokensTeam(connection *gorm.DB, team *makeless_go_m
 		Error
 }
 
+// FIXME: Remove query
 func (database *Database) CreateTokenTeam(connection *gorm.DB, token *makeless_go_model.Token) (*makeless_go_model.Token, error) {
 	return token, connection.
 		Create(token).
