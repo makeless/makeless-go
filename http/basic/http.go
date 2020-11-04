@@ -7,7 +7,7 @@ import (
 	"github.com/makeless/makeless-go/event"
 	"github.com/makeless/makeless-go/http"
 	"github.com/makeless/makeless-go/logger"
-	makeless_go_mailer "github.com/makeless/makeless-go/mailer"
+	"github.com/makeless/makeless-go/mailer"
 	"github.com/makeless/makeless-go/security"
 	"github.com/makeless/makeless-go/tls"
 	"sync"

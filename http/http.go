@@ -6,7 +6,7 @@ import (
 	"github.com/makeless/makeless-go/database"
 	"github.com/makeless/makeless-go/event"
 	"github.com/makeless/makeless-go/logger"
-	makeless_go_mailer "github.com/makeless/makeless-go/mailer"
+	"github.com/makeless/makeless-go/mailer"
 	"github.com/makeless/makeless-go/security"
 	"github.com/makeless/makeless-go/tls"
 )
@@ -27,11 +27,7 @@ type Http interface {
 	GetMode() string
 	SetHandler(name string, handler func(http Http) error)
 	Response(error error, data interface{}) gin.H
-	CorsMiddleware(Origins []string, AllowHeaders []string) gin.HandlerFunc
-	EmailVerificationMiddleware(enabled bool) gin.HandlerFunc
-	TeamUserMiddleware() gin.HandlerFunc
-	TeamRoleMiddleware(role string) gin.HandlerFunc
-	TeamCreatorMiddleware() gin.HandlerFunc
-	NotTeamCreatorMiddleware() gin.HandlerFunc
 	Start() error
+
+	Middleware
 }

@@ -83,6 +83,11 @@ func (makeless *Makeless) registerTeamInvitation(http makeless_go_http.Http) err
 				RWMutex: new(sync.RWMutex),
 			}
 
+			if err = tx.Error; err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
 			if err := c.ShouldBind(register); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
@@ -185,6 +190,11 @@ func (makeless *Makeless) acceptTeamInvitation(http makeless_go_http.Http) error
 			}
 			var teamInvitationAccept = &_struct.TeamInvitationAccept{
 				RWMutex: new(sync.RWMutex),
+			}
+
+			if err = tx.Error; err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
 			}
 
 			if err := c.ShouldBind(teamInvitationAccept); err != nil {
