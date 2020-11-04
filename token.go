@@ -24,7 +24,7 @@ func (makeless *Makeless) tokens(http makeless_go_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if tokens, err = http.GetDatabase().GetTokens(http.GetDatabase().GetConnection(), user, tokens); err != nil {
+			if tokens, err = http.GetDatabase().GetTokens(http.GetDatabase().GetConnection().WithContext(c), user, tokens); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -60,7 +60,7 @@ func (makeless *Makeless) createToken(http makeless_go_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if token, err = http.GetDatabase().CreateToken(http.GetDatabase().GetConnection(), token); err != nil {
+			if token, err = http.GetDatabase().CreateToken(http.GetDatabase().GetConnection().WithContext(c), token); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -95,7 +95,7 @@ func (makeless *Makeless) deleteToken(http makeless_go_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err = http.GetDatabase().DeleteToken(http.GetDatabase().GetConnection(), token); err != nil {
+			if err = http.GetDatabase().DeleteToken(http.GetDatabase().GetConnection().WithContext(c), token); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

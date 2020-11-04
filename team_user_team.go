@@ -28,7 +28,7 @@ func (makeless *Makeless) teamUsersTeam(http makeless_go_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if teamUsers, err = http.GetDatabase().GetTeamUsers(http.GetDatabase().GetConnection(), c.Query("search"), teamUsers, team); err != nil {
+			if teamUsers, err = http.GetDatabase().GetTeamUsers(http.GetDatabase().GetConnection().WithContext(c), c.Query("search"), teamUsers, team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -64,7 +64,7 @@ func (makeless *Makeless) updateRoleTeamUserTeam(http makeless_go_http.Http) err
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if teamUser, err = http.GetDatabase().GetTeamUserByFields(http.GetDatabase().GetConnection(), teamUser, map[string]interface{}{
+			if teamUser, err = http.GetDatabase().GetTeamUserByFields(http.GetDatabase().GetConnection().WithContext(c), teamUser, map[string]interface{}{
 				"id":      teamUser.GetId(),
 				"team_id": teamId,
 			}); err != nil {
@@ -90,7 +90,7 @@ func (makeless *Makeless) updateRoleTeamUserTeam(http makeless_go_http.Http) err
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 			}
 
-			if teamUser, err = http.GetDatabase().UpdateRoleTeamUser(http.GetDatabase().GetConnection(), teamUser, *teamUserTeamUpdateRole.GetRole()); err != nil {
+			if teamUser, err = http.GetDatabase().UpdateRoleTeamUser(http.GetDatabase().GetConnection().WithContext(c), teamUser, *teamUserTeamUpdateRole.GetRole()); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -126,7 +126,7 @@ func (makeless *Makeless) deleteTeamUserTeam(http makeless_go_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if teamUser, err = http.GetDatabase().GetTeamUserByFields(http.GetDatabase().GetConnection(), teamUser, map[string]interface{}{
+			if teamUser, err = http.GetDatabase().GetTeamUserByFields(http.GetDatabase().GetConnection().WithContext(c), teamUser, map[string]interface{}{
 				"id":      teamUser.GetId(),
 				"team_id": teamId,
 			}); err != nil {
@@ -148,7 +148,7 @@ func (makeless *Makeless) deleteTeamUserTeam(http makeless_go_http.Http) error {
 				return
 			}
 
-			if err = http.GetDatabase().DeleteTeamUser(http.GetDatabase().GetConnection(), teamUser); err != nil {
+			if err = http.GetDatabase().DeleteTeamUser(http.GetDatabase().GetConnection().WithContext(c), teamUser); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

@@ -9,5 +9,5 @@ type Model struct {
 	Id        uint           `gorm:"primary_key" json:"id"`
 	CreatedAt time.Time      `json:"createdAt"`
 	UpdatedAt time.Time      `json:"updatedAt"`
-	DeletedAt gorm.DeletedAt `sql:"index" json:"deletedAt"`
+	DeletedAt *gorm.DeletedAt `sql:"index" json:"deletedAt"`
 }

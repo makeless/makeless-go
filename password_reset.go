@@ -18,7 +18,7 @@ func (makeless *Makeless) passwordReset(http makeless_go_http.Http) error {
 		func(c *gin.Context) {
 			var err error
 			var bcrypted string
-			var tx = http.GetDatabase().GetConnection().Begin(new(sql.TxOptions))
+			var tx = http.GetDatabase().GetConnection().WithContext(c).Begin(new(sql.TxOptions))
 			var token = c.Query("token")
 			var user = &makeless_go_model.User{
 				RWMutex: new(sync.RWMutex),
@@ -37,7 +37,7 @@ func (makeless *Makeless) passwordReset(http makeless_go_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if passwordRequest, err = http.GetDatabase().GetPasswordRequest(http.GetDatabase().GetConnection(), passwordRequest); err != nil {
+			if passwordRequest, err = http.GetDatabase().GetPasswordRequest(http.GetDatabase().GetConnection().WithContext(c), passwordRequest); err != nil {
 				switch errors.Is(err, gorm.ErrRecordNotFound) {
 				case true:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
@@ -47,7 +47,7 @@ func (makeless *Makeless) passwordReset(http makeless_go_http.Http) error {
 				return
 			}
 
-			if user, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection(), user, "email", *passwordRequest.GetEmail()); err != nil {
+			if user, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection().WithContext(c), user, "email", *passwordRequest.GetEmail()); err != nil {
 				switch errors.Is(err, gorm.ErrRecordNotFound) {
 				case true:
 					c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(err, nil))

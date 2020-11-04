@@ -53,7 +53,7 @@ func (makeless *Makeless) passwordRequest(http makeless_go_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err = http.GetDatabase().CreatePasswordRequest(http.GetDatabase().GetConnection(), passwordRequest); err != nil {
+			if err = http.GetDatabase().CreatePasswordRequest(http.GetDatabase().GetConnection().WithContext(c), passwordRequest); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

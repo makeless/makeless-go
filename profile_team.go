@@ -35,7 +35,7 @@ func (makeless *Makeless) updateProfileTeam(http makeless_go_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if team, err = http.GetDatabase().UpdateProfileTeam(http.GetDatabase().GetConnection(), team); err != nil {
+			if team, err = http.GetDatabase().UpdateProfileTeam(http.GetDatabase().GetConnection().WithContext(c), team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

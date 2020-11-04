@@ -24,7 +24,7 @@ func (makeless *Makeless) teamInvitation(http makeless_go_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByField(http.GetDatabase().GetConnection(), teamInvitation, "token", token); err != nil {
+			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByField(http.GetDatabase().GetConnection().WithContext(c), teamInvitation, "token", token); err != nil {
 				switch errors.Is(err, gorm.ErrRecordNotFound) {
 				case true:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
@@ -55,7 +55,7 @@ func (makeless *Makeless) teamInvitations(http makeless_go_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if teamInvitations, err = http.GetDatabase().GetTeamInvitations(http.GetDatabase().GetConnection(), user, teamInvitations); err != nil {
+			if teamInvitations, err = http.GetDatabase().GetTeamInvitations(http.GetDatabase().GetConnection().WithContext(c), user, teamInvitations); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -75,7 +75,7 @@ func (makeless *Makeless) registerTeamInvitation(http makeless_go_http.Http) err
 			var mail makeless_go_mailer.Mail
 			var token = c.Query("token")
 			var verified = false
-			var tx = http.GetDatabase().GetConnection().Begin(new(sql.TxOptions))
+			var tx = http.GetDatabase().GetConnection().WithContext(c).Begin(new(sql.TxOptions))
 			var register = &_struct.Register{
 				RWMutex: new(sync.RWMutex),
 			}
@@ -88,7 +88,7 @@ func (makeless *Makeless) registerTeamInvitation(http makeless_go_http.Http) err
 				return
 			}
 
-			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByField(http.GetDatabase().GetConnection(), teamInvitation, "token", token); err != nil {
+			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByField(http.GetDatabase().GetConnection().WithContext(c), teamInvitation, "token", token); err != nil {
 				switch errors.Is(err, gorm.ErrRecordNotFound) {
 				case true:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
@@ -178,7 +178,7 @@ func (makeless *Makeless) acceptTeamInvitation(http makeless_go_http.Http) error
 			var err error
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
 			var userEmail = http.GetAuthenticator().GetAuthEmail(c)
-			var tx = http.GetDatabase().GetConnection().Begin(new(sql.TxOptions))
+			var tx = http.GetDatabase().GetConnection().WithContext(c).Begin(new(sql.TxOptions))
 			var user = &makeless_go_model.User{
 				Model:   makeless_go_model.Model{Id: userId},
 				RWMutex: new(sync.RWMutex),
@@ -198,7 +198,7 @@ func (makeless *Makeless) acceptTeamInvitation(http makeless_go_http.Http) error
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByField(http.GetDatabase().GetConnection(), teamInvitation, "email", *teamInvitation.GetEmail()); err != nil {
+			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByField(http.GetDatabase().GetConnection().WithContext(c), teamInvitation, "email", *teamInvitation.GetEmail()); err != nil {
 				switch errors.Is(err, gorm.ErrRecordNotFound) {
 				case true:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
@@ -208,7 +208,7 @@ func (makeless *Makeless) acceptTeamInvitation(http makeless_go_http.Http) error
 				return
 			}
 
-			if user, err = http.GetDatabase().GetUser(http.GetDatabase().GetConnection(), user); err != nil {
+			if user, err = http.GetDatabase().GetUser(http.GetDatabase().GetConnection().WithContext(c), user); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -274,7 +274,7 @@ func (makeless *Makeless) deleteTeamInvitation(http makeless_go_http.Http) error
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByField(http.GetDatabase().GetConnection(), teamInvitation, "email", *teamInvitation.GetEmail()); err != nil {
+			if teamInvitation, err = http.GetDatabase().GetTeamInvitationByField(http.GetDatabase().GetConnection().WithContext(c), teamInvitation, "email", *teamInvitation.GetEmail()); err != nil {
 				switch errors.Is(err, gorm.ErrRecordNotFound) {
 				case true:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
@@ -284,7 +284,7 @@ func (makeless *Makeless) deleteTeamInvitation(http makeless_go_http.Http) error
 				return
 			}
 
-			if _, err = http.GetDatabase().DeleteTeamInvitation(http.GetDatabase().GetConnection(), teamInvitation); err != nil {
+			if _, err = http.GetDatabase().DeleteTeamInvitation(http.GetDatabase().GetConnection().WithContext(c), teamInvitation); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

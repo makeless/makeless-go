@@ -42,7 +42,7 @@ func (makeless *Makeless) updatePassword(http makeless_go_http.Http) error {
 				return
 			}
 
-			if _, err = http.GetDatabase().UpdatePassword(http.GetDatabase().GetConnection(), user, bcrypted); err != nil {
+			if _, err = http.GetDatabase().UpdatePassword(http.GetDatabase().GetConnection().WithContext(c), user, bcrypted); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

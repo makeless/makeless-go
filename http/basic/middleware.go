@@ -36,7 +36,7 @@ func (http *Http) EmailVerificationMiddleware(enabled bool) gin.HandlerFunc {
 			return
 		}
 
-		if user, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection(), user, "id", fmt.Sprintf("%d", userId)); err != nil {
+		if user, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection().WithContext(c), user, "id", fmt.Sprintf("%d", userId)); err != nil {
 			switch errors.Is(err, gorm.ErrRecordNotFound) {
 			case true:
 				c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(err, nil))

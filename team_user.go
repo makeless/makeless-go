@@ -26,7 +26,7 @@ func (makeless *Makeless) deleteTeamUser(http makeless_go_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if teamUser, err = http.GetDatabase().GetTeamUserByFields(http.GetDatabase().GetConnection(), teamUser, map[string]interface{}{
+			if teamUser, err = http.GetDatabase().GetTeamUserByFields(http.GetDatabase().GetConnection().WithContext(c), teamUser, map[string]interface{}{
 				"team_id": teamId,
 				"user_id": userId,
 			}); err != nil {
@@ -39,7 +39,7 @@ func (makeless *Makeless) deleteTeamUser(http makeless_go_http.Http) error {
 				return
 			}
 
-			if err = http.GetDatabase().DeleteTeamUser(http.GetDatabase().GetConnection(), teamUser); err != nil {
+			if err = http.GetDatabase().DeleteTeamUser(http.GetDatabase().GetConnection().WithContext(c), teamUser); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

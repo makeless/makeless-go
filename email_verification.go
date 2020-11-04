@@ -8,7 +8,6 @@ import (
 	"github.com/makeless/makeless-go/mailer"
 	"github.com/makeless/makeless-go/model"
 	"gorm.io/gorm"
-	"log"
 	h "net/http"
 	"sync"
 )
@@ -23,8 +22,7 @@ func (makeless *Makeless) verifyEmailVerification(http makeless_go_http.Http) er
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if emailVerification, err = http.GetDatabase().GetEmailVerificationByField(http.GetDatabase().GetConnection(), emailVerification, "token", token); err != nil {
-				log.Printf("%+v", err)
+			if emailVerification, err = http.GetDatabase().GetEmailVerificationByField(http.GetDatabase().GetConnection().WithContext(c), emailVerification, "token", token); err != nil {
 				switch errors.Is(err, gorm.ErrRecordNotFound) {
 				case true:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
@@ -34,7 +32,7 @@ func (makeless *Makeless) verifyEmailVerification(http makeless_go_http.Http) er
 				return
 			}
 
-			if emailVerification, err = http.GetDatabase().VerifyEmailVerification(http.GetDatabase().GetConnection(), emailVerification); err != nil {
+			if emailVerification, err = http.GetDatabase().VerifyEmailVerification(http.GetDatabase().GetConnection().WithContext(c), emailVerification); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -59,7 +57,7 @@ func (makeless *Makeless) resendEmailVerification(http makeless_go_http.Http) er
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if user, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection(), user, "id", fmt.Sprintf("%d", user.GetId())); err != nil {
+			if user, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection().WithContext(c), user, "id", fmt.Sprintf("%d", user.GetId())); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
