@@ -43,7 +43,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/makeless/makeless-go"
 	"github.com/makeless/makeless-go/authenticator/basic"
 	"github.com/makeless/makeless-go/config/basic"
@@ -118,9 +117,14 @@ func main() {
 		RWMutex:     new(sync.RWMutex),
 	}
 
+	// router
+	router := &makeless_go_http_basic.Router{
+		RWMutex: new(sync.RWMutex),
+	}
+
 	// http
 	http := &makeless_go_http_basic.Http{
-		Router:        gin.Default(),
+		Router:        router,
 		Handlers:      make(map[string]func(http makeless_go_http.Http) error),
 		Logger:        logger,
 		Event:         event,
