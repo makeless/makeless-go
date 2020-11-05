@@ -36,6 +36,13 @@ func (makeless *Makeless) createTeam(http makeless_go_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
+			defer func() {
+				if r := recover(); r != nil {
+					tx.Rollback()
+					panic(r)
+				}
+			}()
+
 			if err = tx.Error; err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return

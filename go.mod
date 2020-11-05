@@ -8,10 +8,11 @@ require (
 	github.com/Masterminds/sprig v2.22.0+incompatible // indirect
 	github.com/PuerkitoBio/goquery v1.6.0 // indirect
 	github.com/andybalholm/cascadia v1.2.0 // indirect
-	github.com/appleboy/gin-jwt/v2 v2.6.3
+	github.com/appleboy/gin-jwt/v2 v2.6.4
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-contrib/sse v0.1.0
-	github.com/gin-gonic/gin v1.6.3-0.20201025090830-16cd8cdd4ef9
+	github.com/gin-gonic/gin v1.6.3
+	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/google/uuid v1.1.2 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
@@ -24,7 +25,6 @@ require (
 	github.com/mitchellh/copystructure v1.0.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/olekukonko/tablewriter v0.0.4 // indirect
-	github.com/tidwall/gjson v1.6.0 // indirect
 	github.com/ugorji/go v1.1.13 // indirect
 	github.com/vanng822/go-premailer v1.9.0 // indirect
 	golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897
