@@ -15,7 +15,7 @@ import (
 )
 
 func (makeless *Makeless) teamInvitation(http makeless_go_http.Http) error {
-	http.GetRouter().GET(
+	http.GetRouter().GetEngine().GET(
 		"/api/team-invitation",
 		func(c *gin.Context) {
 			var err error
@@ -42,7 +42,7 @@ func (makeless *Makeless) teamInvitation(http makeless_go_http.Http) error {
 }
 
 func (makeless *Makeless) teamInvitations(http makeless_go_http.Http) error {
-	http.GetRouter().GET(
+	http.GetRouter().GetEngine().GET(
 		"/api/auth/team-invitation",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
@@ -68,7 +68,7 @@ func (makeless *Makeless) teamInvitations(http makeless_go_http.Http) error {
 }
 
 func (makeless *Makeless) registerTeamInvitation(http makeless_go_http.Http) error {
-	http.GetRouter().POST(
+	http.GetRouter().GetEngine().POST(
 		"/api/team-invitation/register",
 		func(c *gin.Context) {
 			var err error
@@ -175,7 +175,7 @@ func (makeless *Makeless) registerTeamInvitation(http makeless_go_http.Http) err
 }
 
 func (makeless *Makeless) acceptTeamInvitation(http makeless_go_http.Http) error {
-	http.GetRouter().PATCH(
+	http.GetRouter().GetEngine().PATCH(
 		"/api/auth/team-invitation/accept",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
@@ -262,7 +262,7 @@ func (makeless *Makeless) acceptTeamInvitation(http makeless_go_http.Http) error
 }
 
 func (makeless *Makeless) deleteTeamInvitation(http makeless_go_http.Http) error {
-	http.GetRouter().DELETE(
+	http.GetRouter().GetEngine().DELETE(
 		"/api/auth/team-invitation",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),

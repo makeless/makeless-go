@@ -12,7 +12,7 @@ import (
 )
 
 func (makeless *Makeless) tokensTeam(http makeless_go_http.Http) error {
-	http.GetRouter().GET(
+	http.GetRouter().GetEngine().GET(
 		"/api/auth/team/token",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
@@ -41,7 +41,7 @@ func (makeless *Makeless) tokensTeam(http makeless_go_http.Http) error {
 }
 
 func (makeless *Makeless) createTokenTeam(http makeless_go_http.Http) error {
-	http.GetRouter().POST(
+	http.GetRouter().GetEngine().POST(
 		"/api/auth/team/token",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
@@ -91,7 +91,7 @@ func (makeless *Makeless) createTokenTeam(http makeless_go_http.Http) error {
 }
 
 func (makeless *Makeless) deleteTokenTeam(http makeless_go_http.Http) error {
-	http.GetRouter().DELETE(
+	http.GetRouter().GetEngine().DELETE(
 		"/api/auth/team/token",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),

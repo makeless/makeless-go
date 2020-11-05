@@ -14,7 +14,7 @@ import (
 )
 
 func (makeless *Makeless) teamUsersTeam(http makeless_go_http.Http) error {
-	http.GetRouter().GET(
+	http.GetRouter().GetEngine().GET(
 		"/api/auth/team/team-user",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
@@ -41,7 +41,7 @@ func (makeless *Makeless) teamUsersTeam(http makeless_go_http.Http) error {
 }
 
 func (makeless *Makeless) updateRoleTeamUserTeam(http makeless_go_http.Http) error {
-	http.GetRouter().PATCH(
+	http.GetRouter().GetEngine().PATCH(
 		"/api/auth/team/team-user/role",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
@@ -103,7 +103,7 @@ func (makeless *Makeless) updateRoleTeamUserTeam(http makeless_go_http.Http) err
 }
 
 func (makeless *Makeless) deleteTeamUserTeam(http makeless_go_http.Http) error {
-	http.GetRouter().DELETE(
+	http.GetRouter().GetEngine().DELETE(
 		"/api/auth/team/team-user",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),

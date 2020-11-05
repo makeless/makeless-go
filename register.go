@@ -11,7 +11,7 @@ import (
 )
 
 func (makeless *Makeless) register(http makeless_go_http.Http) error {
-	http.GetRouter().POST("/api/register", func(c *gin.Context) {
+	http.GetRouter().GetEngine().POST("/api/register", func(c *gin.Context) {
 		var err error
 		var token string
 		var mail makeless_go_mailer.Mail

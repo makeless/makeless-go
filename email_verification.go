@@ -13,7 +13,7 @@ import (
 )
 
 func (makeless *Makeless) verifyEmailVerification(http makeless_go_http.Http) error {
-	http.GetRouter().PATCH(
+	http.GetRouter().GetEngine().PATCH(
 		"/api/email-verification/verify",
 		func(c *gin.Context) {
 			var err error
@@ -45,7 +45,7 @@ func (makeless *Makeless) verifyEmailVerification(http makeless_go_http.Http) er
 }
 
 func (makeless *Makeless) resendEmailVerification(http makeless_go_http.Http) error {
-	http.GetRouter().POST(
+	http.GetRouter().GetEngine().POST(
 		"/api/auth/email-verification/resend",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		func(c *gin.Context) {

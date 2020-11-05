@@ -13,7 +13,7 @@ import (
 )
 
 func (makeless *Makeless) passwordReset(http makeless_go_http.Http) error {
-	http.GetRouter().POST(
+	http.GetRouter().GetEngine().POST(
 		"/api/password-reset",
 		func(c *gin.Context) {
 			var err error

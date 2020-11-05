@@ -12,7 +12,7 @@ import (
 )
 
 type Http interface {
-	GetRouter() *gin.Engine
+	GetRouter() Router
 	GetHandlers() map[string]func(http Http) error
 	GetLogger() makeless_go_logger.Logger
 	GetEvent() makeless_go_event.Event

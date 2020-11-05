@@ -12,7 +12,7 @@ import (
 )
 
 func (makeless *Makeless) passwordRequest(http makeless_go_http.Http) error {
-	http.GetRouter().POST(
+	http.GetRouter().GetEngine().POST(
 		"/api/password-request",
 		func(c *gin.Context) {
 			var err error
