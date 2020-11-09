@@ -19,7 +19,12 @@ Makeless - SaaS Framework - Golang Implementation
 
 ## License
 
-Currently there is no license - will be non free for commercial use and will include the [commons clause license](https://commonsclause.com).
+Currently there is no license! We are working on this
+
+- Will be free to use for personal or non profit organizations
+- Will be non free for commercial use
+- Will include the [commons clause license](https://commonsclause.com)
+- Every contributor will get unlimited commercial licenses
 
 ## Preview
 
