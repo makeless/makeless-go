@@ -10,6 +10,7 @@ Makeless - SaaS Framework - Golang Implementation
 - Concurrency safe & scalable
 - Super clean and small
 - Fully customizable and configurable
+- Multilingual
 - State of the art Authentication with JWT HttpOnly Cookies
 - User management
 - Team management
@@ -169,11 +170,12 @@ makeless.json
   "logo": null,
   "locale": "en",
   "host": "http://localhost:3000",
+  "emailVerification": true,
   "mail": {
     "name": "Makeless",
     "logo": null,
     "from": "Makeless <info@makeless.io>",
-    "link": "https://localhost",
+    "link": "http://localhost",
     "buttonColor": "#4586ab",
     "buttonTextColor": "#FFFFFF",
     "texts": {
@@ -185,9 +187,6 @@ makeless.json
     }
   },
   "tokens": true,
-  "teams": {
-    "tokens": true
-  },
   "navigation": {
     "left": {
       "en": [
@@ -211,6 +210,71 @@ makeless.json
         {
           "label": "Register",
           "to": "register"
+        }
+      ]
+    }
+  },
+  "settingsNavigation": {
+    "en": [
+      {
+        "title": "Settings",
+        "items": [
+          {
+            "label": "Profile",
+            "to": "profile"
+          },
+          {
+            "label": "Password",
+            "to": "password"
+          },
+          {
+            "label": "Teams",
+            "to": "team"
+          },
+          {
+            "label": "Team Invitations",
+            "to": "team-invitation"
+          },
+          {
+            "label": "Tokens",
+            "to": "token"
+          }
+        ]
+      }
+    ]
+  },
+  "teams": {
+    "tokens": true,
+    "roles": {
+      "owner": {
+        "en": "Owner"
+      },
+      "user": {
+        "en": "User"
+      }
+    },
+    "settingsNavigation": {
+      "en": [
+        {
+          "title": "Settings",
+          "items": [
+            {
+              "label": "Profile",
+              "to": "profile"
+            },
+            {
+              "label": "Users",
+              "to": "team-user-team"
+            },
+            {
+              "label": "Tokens",
+              "to": "token"
+            },
+            {
+              "label": "Pending invitations",
+              "to": "team-invitation"
+            }
+          ]
         }
       ]
     }
