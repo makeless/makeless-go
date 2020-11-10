@@ -5,7 +5,7 @@ Makeless - SaaS Framework - Golang Implementation
 [![Build Status](https://ci.loeffel.io/api/badges/makeless/makeless-go/status.svg)](https://ci.loeffel.io/makeless/makeless-go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/makeless/makeless-go)](https://goreportcard.com/report/github.com/makeless/makeless-go)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go?ref=badge_shield)
-![Discord](https://img.shields.io/discord/775684445314744341?label=discord) 
+[![Discord](https://img.shields.io/discord/775684445314744341?label=discord)](https://discord.gg/K7Une7gndt) 
 
 - Based on Golang ([gin](https://github.com/gin-gonic/gin) & [gorm](https://github.com/go-gorm/gorm))
 - Concurrency safe & scalable
