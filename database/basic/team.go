@@ -103,8 +103,8 @@ func (database *Database) DeleteTeam(connection *gorm.DB, team *makeless_go_mode
 func (database *Database) IsTeamUser(connection *gorm.DB, team *makeless_go_model.Team, user *makeless_go_model.User) (bool, error) {
 	var count int64
 
-	return count == 1, connection.
-		Raw("SELECT COUNT(*) FROM team_users WHERE team_users.team_id = ? AND team_users.user_id = ? LIMIT 1", team.GetId(), user.GetId()).
+	return count >= 1, connection.
+		Raw("SELECT COUNT(*) FROM team_users WHERE team_users.team_id = ? AND team_users.user_id = ?", team.GetId(), user.GetId()).
 		Count(&count).
 		Error
 }
@@ -113,8 +113,8 @@ func (database *Database) IsTeamUser(connection *gorm.DB, team *makeless_go_mode
 func (database *Database) IsTeamRole(connection *gorm.DB, role string, team *makeless_go_model.Team, user *makeless_go_model.User) (bool, error) {
 	var count int64
 
-	return count == 1, connection.
-		Raw("SELECT COUNT(*) FROM team_users WHERE team_users.team_id = ? AND team_users.user_id = ? AND team_users.role = ? LIMIT 1", team.GetId(), user.GetId(), role).
+	return count >= 1, connection.
+		Raw("SELECT COUNT(*) FROM team_users WHERE team_users.team_id = ? AND team_users.user_id = ? AND team_users.role = ?", team.GetId(), user.GetId(), role).
 		Count(&count).
 		Error
 }
@@ -123,8 +123,8 @@ func (database *Database) IsTeamRole(connection *gorm.DB, role string, team *mak
 func (database *Database) IsTeamCreator(connection *gorm.DB, team *makeless_go_model.Team, user *makeless_go_model.User) (bool, error) {
 	var count int64
 
-	return count == 1, connection.
-		Raw("SELECT COUNT(*) FROM teams WHERE teams.id = ? AND teams.user_id = ? LIMIT 1", team.GetId(), user.GetId()).
+	return count >= 1, connection.
+		Raw("SELECT COUNT(*) FROM teams WHERE teams.id = ? AND teams.user_id = ?", team.GetId(), user.GetId()).
 		Count(&count).
 		Error
 }
@@ -142,7 +142,7 @@ func (database *Database) IsNotTeamCreator(connection *gorm.DB, team *makeless_g
 func (database *Database) IsModelTeam(connection *gorm.DB, team *makeless_go_model.Team, model interface{}) (bool, error) {
 	var count int64
 
-	return count == 1, connection.
+	return count >= 1, connection.
 		Model(model).
 		Select("COUNT(*)").
 		Where("team_id = ?", team.GetId()).
