@@ -44,7 +44,13 @@ func (event *Event) Unsubscribe(userId uint, clientId uint) {
 }
 
 func (event *Event) Trigger(userId uint, channel string, id string, data interface{}) error {
-	event.GetHub().GetUser(userId).Range(func(clientId, client interface{}) bool {
+	var user = event.GetHub().GetUser(userId)
+
+	if user == nil {
+		return nil
+	}
+
+	user.Range(func(clientId, client interface{}) bool {
 		client.(chan sse.Event) <- sse.Event{
 			Event: channel,
 			Retry: 3,
