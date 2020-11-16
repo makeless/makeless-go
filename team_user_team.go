@@ -82,7 +82,7 @@ func (makeless *Makeless) updateRoleTeamUserTeam(http makeless_go_http.Http) err
 			}
 
 			if teamUser.GetTeam().GetUserId() == teamUser.GetUserId() || *teamUser.GetUserId() == userId {
-				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(makeless_go_security.UserNotDeletable, nil))
 				return
 			}
 
