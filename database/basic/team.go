@@ -84,6 +84,7 @@ func (database *Database) UpdateRoleTeamUser(connection *gorm.DB, teamUser *make
 		Error
 }
 
+// FIXME: Delete tokens & invitations
 // DeleteTeamUser deletes teamUser
 func (database *Database) DeleteTeamUser(connection *gorm.DB, teamUser *makeless_go_model.TeamUser) error {
 	return connection.
