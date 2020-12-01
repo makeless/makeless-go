@@ -1,7 +1,7 @@
 # Makeless
 
 Makeless - SaaS Framework - Golang Implementation
-  
+
 [![Build Status](https://ci.loeffel.io/api/badges/makeless/makeless-go/status.svg)](https://ci.loeffel.io/makeless/makeless-go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/makeless/makeless-go)](https://goreportcard.com/report/github.com/makeless/makeless-go)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go?ref=badge_shield)
@@ -15,7 +15,7 @@ Makeless - SaaS Framework - Golang Implementation
 - State of the art Authentication with JWT HttpOnly Cookies
 - User management
 - Team management
-- Token management for users and teams
+- Token management for users and teams (deprecated - should be replaced soon)
 - Realtime events
 - Subscriptions and Per-Seat Payments out of the box (coming soon)
 

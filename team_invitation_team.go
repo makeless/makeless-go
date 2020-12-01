@@ -127,8 +127,8 @@ func (makeless *Makeless) createTeamInvitationsTeam(http makeless_go_http.Http) 
 				}
 
 				if mail, err = http.GetMailer().GetMail("teamInvitation", map[string]interface{}{
+					"user":           teamUser.GetUser(),
 					"userInvited":    userInvited,
-					"teamUser":       teamUser,
 					"teamName":       *team.GetName(),
 					"teamInvitation": teamInvitations[i],
 				}); err != nil {
@@ -203,8 +203,8 @@ func (makeless *Makeless) resendTeamInvitationTeam(http makeless_go_http.Http) e
 			teamInvitation.GetTeam().RWMutex = new(sync.RWMutex)
 
 			if mail, err = http.GetMailer().GetMail("teamInvitation", map[string]interface{}{
+				"user":           teamInvitation.GetTeamUser().GetUser(),
 				"userInvited":    userInvited,
-				"teamUser":       teamInvitation.GetTeamUser(),
 				"teamName":       *teamInvitation.GetTeam().GetName(),
 				"teamInvitation": teamInvitation,
 			}); err != nil {

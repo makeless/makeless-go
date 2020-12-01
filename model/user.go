@@ -12,7 +12,6 @@ type User struct {
 	EmailVerification *EmailVerification `gorm:"" json:"emailVerification"`
 
 	TeamUsers       []*TeamUser       `json:"teamUsers" binding:"-"`
-	TeamInvitations []*TeamInvitation `json:"teamInvitations" binding:"-"`
 	Tokens          []*Token          `json:"tokens" binding:"-"`
 
 	*sync.RWMutex `json:"-"`
