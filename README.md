@@ -26,7 +26,7 @@ Makeless - SaaS Framework - Golang Implementation
 
 ## Frontend
 
-- TypeScript & Vue.js: [https://github.com/makeless/makeless-go-ui](https://github.com/makeless/makeless-go-ui)
+- TypeScript & Vue.js: [https://github.com/makeless/makeless-ui](https://github.com/makeless/makeless-ui)
 
 ## Demo
 
