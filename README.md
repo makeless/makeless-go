@@ -1,7 +1,8 @@
 # Makeless
 
 Makeless - SaaS Framework - Golang Implementation
-  
+
+[![License](https://img.shields.io/badge/license-polyform:noncommercial-blue)](https://polyformproject.org/licenses/noncommercial/1.0.0/)
 [![Build Status](https://ci.loeffel.io/api/badges/makeless/makeless-go/status.svg)](https://ci.loeffel.io/makeless/makeless-go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/makeless/makeless-go)](https://goreportcard.com/report/github.com/makeless/makeless-go)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go?ref=badge_shield)
@@ -18,15 +19,6 @@ Makeless - SaaS Framework - Golang Implementation
 - Token management for users and teams
 - Realtime events
 - Subscriptions and Per-Seat Payments out of the box (coming soon)
-
-## License
-
-Currently there is no license! We are working on this
-
-- Will be free to use for personal or non profit organizations
-- Will be non free for commercial use
-- Will include the [commons clause license](https://commonsclause.com)
-- Every contributor will get unlimited commercial licenses
 
 ## Preview
 
@@ -289,7 +281,10 @@ makeless.json
 }
 ```
 
-
 ## License
+
+Makeless is licensed under the [Polyform Noncommercial](https://polyformproject.org/licenses/noncommercial/1.0.0/) license.  
+Exemption: Every contributor gets free access to a commercial license.  
+Please contact lucas@loeffel.io for a commercial license.
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go?ref=badge_large)
