@@ -283,8 +283,8 @@ makeless.json
 
 ## License
 
-Makeless is licensed under the [Polyform Noncommercial](https://polyformproject.org/licenses/noncommercial/1.0.0/) license.  
-Exemption: Every contributor gets free access to a commercial license.  
-Please contact lucas@loeffel.io for a commercial license.
+- Makeless is licensed under the [Polyform Noncommercial](https://polyformproject.org/licenses/noncommercial/1.0.0/) license.  
+- Exemption: Every contributor gets free access to a commercial license.  
+- Please contact lucas@loeffel.io for a commercial license.
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go?ref=badge_large)
