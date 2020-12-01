@@ -117,6 +117,11 @@ func (makeless *Makeless) createTeam(http makeless_go_http.Http) error {
 				}
 			}
 
+			if team, err = http.GetDatabase().AddTeamInvitations(http.GetDatabase().GetConnection().WithContext(c), team, teamInvitations); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
 			if team, err = http.GetDatabase().GetTeam(http.GetDatabase().GetConnection().WithContext(c), team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
