@@ -1,7 +1,8 @@
 # Makeless
 
 Makeless - SaaS Framework - Golang Implementation
-  
+
+[![License](https://img.shields.io/badge/license-polyform:noncommercial-blue)](https://polyformproject.org/licenses/noncommercial/1.0.0/)
 [![Build Status](https://ci.loeffel.io/api/badges/makeless/makeless-go/status.svg)](https://ci.loeffel.io/makeless/makeless-go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/makeless/makeless-go)](https://goreportcard.com/report/github.com/makeless/makeless-go)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go?ref=badge_shield)
@@ -18,15 +19,6 @@ Makeless - SaaS Framework - Golang Implementation
 - Token management for users and teams
 - Realtime events
 - Subscriptions and Per-Seat Payments out of the box (coming soon)
-
-## License
-
-Currently there is no license! We are working on this
-
-- Will be free to use for personal or non profit organizations
-- Will be non free for commercial use
-- Will include the [commons clause license](https://commonsclause.com)
-- Every contributor will get unlimited commercial licenses
 
 ## Preview
 
@@ -169,127 +161,12 @@ func main() {
 
 ## Config
 
-makeless.json
-
-```json
-{
-  "name": "Makeless",
-  "logo": null,
-  "locale": "en",
-  "host": "http://localhost:3000",
-  "emailVerification": true,
-  "mail": {
-    "name": "Makeless",
-    "logo": null,
-    "from": "Makeless <info@makeless.io>",
-    "link": "http://localhost",
-    "buttonColor": "#4586ab",
-    "buttonTextColor": "#FFFFFF",
-    "texts": {
-      "en": {
-        "greeting": "Hello",
-        "signature": "Best Regards",
-        "copyright": "Copyright © 2020 Makeless. All rights reserved."
-      }
-    }
-  },
-  "tokens": true,
-  "navigation": {
-    "left": {
-      "en": [
-        {
-          "label": "Dashboard",
-          "to": "dashboard"
-        }
-      ]
-    },
-    "right": {
-      "en": [
-        {
-          "label": "GitHub",
-          "to": "https://github.com/makeless",
-          "external": true
-        },
-        {
-          "label": "Login",
-          "to": "login"
-        },
-        {
-          "label": "Register",
-          "to": "register"
-        }
-      ]
-    }
-  },
-  "settingsNavigation": {
-    "en": [
-      {
-        "title": "Settings",
-        "items": [
-          {
-            "label": "Profile",
-            "to": "profile"
-          },
-          {
-            "label": "Password",
-            "to": "password"
-          },
-          {
-            "label": "Teams",
-            "to": "team"
-          },
-          {
-            "label": "Team Invitations",
-            "to": "team-invitation"
-          },
-          {
-            "label": "Tokens",
-            "to": "token"
-          }
-        ]
-      }
-    ]
-  },
-  "teams": {
-    "tokens": true,
-    "roles": {
-      "owner": {
-        "en": "Owner"
-      },
-      "user": {
-        "en": "User"
-      }
-    },
-    "settingsNavigation": {
-      "en": [
-        {
-          "title": "Settings",
-          "items": [
-            {
-              "label": "Profile",
-              "to": "profile"
-            },
-            {
-              "label": "Users",
-              "to": "team-user-team"
-            },
-            {
-              "label": "Tokens",
-              "to": "token"
-            },
-            {
-              "label": "Pending invitations",
-              "to": "team-invitation"
-            }
-          ]
-        }
-      ]
-    }
-  }
-}
-```
-
+Demo [makeless.json](https://github.com/makeless/makeless-demo/blob/master/makeless.json)
 
 ## License
+
+- Makeless is licensed under the [Polyform Noncommercial](https://polyformproject.org/licenses/noncommercial/1.0.0/) license.  
+- Exemption: Every contributor gets free access to a commercial license.  
+- Please contact lucas@loeffel.io for a commercial license.
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go?ref=badge_large)
