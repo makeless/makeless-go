@@ -10,8 +10,8 @@ type TeamInvitation struct {
 	TeamId *uint `gorm:"not null" json:"teamId"`
 	Team   *Team `json:"team"`
 
-	UserId *uint `gorm:"not null" json:"userId"`
-	User   *User `json:"user"`
+	TeamUserId *uint     `gorm:"not null" json:"teamUserId"`
+	TeamUser   *TeamUser `json:"teamUser"`
 
 	Email    *string    `gorm:"not null" json:"email"`
 	Token    *string    `gorm:"unique;not null" json:"-"`
@@ -35,11 +35,11 @@ func (teamInvitation *TeamInvitation) GetTeamId() *uint {
 	return teamInvitation.TeamId
 }
 
-func (teamInvitation *TeamInvitation) GetUser() *User {
+func (teamInvitation *TeamInvitation) GetTeamUser() *TeamUser {
 	teamInvitation.RLock()
 	defer teamInvitation.RUnlock()
 
-	return teamInvitation.User
+	return teamInvitation.TeamUser
 }
 
 func (teamInvitation *TeamInvitation) GetEmail() *string {
