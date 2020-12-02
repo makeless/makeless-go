@@ -53,7 +53,7 @@ func (makeless *Makeless) createTeamInvitationsTeam(http makeless_go_http.Http) 
 		http.TeamRoleMiddleware(makeless_go_security.RoleTeamOwner),
 		func(c *gin.Context) {
 			var err error
-			var user *makeless_go_model.User
+			var teamUser *makeless_go_model.TeamUser
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
 			var teamId, _ = strconv.Atoi(c.GetHeader("Team"))
 			var teamInvitationExpire = time.Now().Add(time.Hour * 24 * 7)
@@ -76,21 +76,21 @@ func (makeless *Makeless) createTeamInvitationsTeam(http makeless_go_http.Http) 
 				return
 			}
 
-			for _, teamUser := range team.GetTeamUsers() {
-				teamUser.RWMutex = new(sync.RWMutex)
-				teamUser.GetUser().RWMutex = new(sync.RWMutex)
+			var teamInvitations = make([]*makeless_go_model.TeamInvitation, len(teamInvitationTeamCreate.GetInvitations()))
+			var index = make(map[string]bool)
+			for _, tmpTeamUser := range team.GetTeamUsers() {
+				tmpTeamUser.RWMutex = new(sync.RWMutex)
+				tmpTeamUser.GetUser().RWMutex = new(sync.RWMutex)
 
-				if userId == teamUser.GetUser().GetId() {
-					user = teamUser.GetUser()
+				index[*tmpTeamUser.GetUser().GetEmail()] = true
+				if userId == tmpTeamUser.GetUser().GetId() {
+					teamUser = tmpTeamUser
 				}
 			}
 
-			var teamInvitations = make([]*makeless_go_model.TeamInvitation, len(teamInvitationTeamCreate.GetInvitations()))
-			var index = make(map[string]bool)
-			for _, teamUser := range team.GetTeamUsers() {
-				teamUser.RWMutex = new(sync.RWMutex)
-				teamUser.GetUser().RWMutex = new(sync.RWMutex)
-				index[*teamUser.GetUser().GetEmail()] = true
+			if teamUser == nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(makeless_go_security.NoTeamUserErr, nil))
+				return
 			}
 
 			for i, teamInvitation := range teamInvitationTeamCreate.GetInvitations() {
@@ -111,13 +111,14 @@ func (makeless *Makeless) createTeamInvitationsTeam(http makeless_go_http.Http) 
 					return
 				}
 
+				var tmpTeamUserId = teamUser.GetId()
 				teamInvitations[i] = &makeless_go_model.TeamInvitation{
-					UserId:   &userId,
-					Email:    teamInvitation.GetEmail(),
-					Token:    &token,
-					Expire:   &teamInvitationExpire,
-					Accepted: &teamInvitationAccepted,
-					RWMutex:  new(sync.RWMutex),
+					TeamUserId: &tmpTeamUserId,
+					Email:      teamInvitation.GetEmail(),
+					Token:      &token,
+					Expire:     &teamInvitationExpire,
+					Accepted:   &teamInvitationAccepted,
+					RWMutex:    new(sync.RWMutex),
 				}
 
 				if userInvited, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection().WithContext(c), userInvited, "email", *teamInvitations[i].GetEmail()); err != nil && err != gorm.ErrRecordNotFound {
@@ -126,7 +127,7 @@ func (makeless *Makeless) createTeamInvitationsTeam(http makeless_go_http.Http) 
 				}
 
 				if mail, err = http.GetMailer().GetMail("teamInvitation", map[string]interface{}{
-					"user":           user,
+					"user":           teamUser.GetUser(),
 					"userInvited":    userInvited,
 					"teamName":       *team.GetName(),
 					"teamInvitation": teamInvitations[i],
@@ -197,9 +198,12 @@ func (makeless *Makeless) resendTeamInvitationTeam(http makeless_go_http.Http) e
 				return
 			}
 
-			teamInvitation.GetUser().RWMutex, teamInvitation.GetTeam().RWMutex = new(sync.RWMutex), new(sync.RWMutex)
+			teamInvitation.GetTeamUser().RWMutex = new(sync.RWMutex)
+			teamInvitation.GetTeamUser().GetUser().RWMutex = new(sync.RWMutex)
+			teamInvitation.GetTeam().RWMutex = new(sync.RWMutex)
+
 			if mail, err = http.GetMailer().GetMail("teamInvitation", map[string]interface{}{
-				"user":           teamInvitation.GetUser(),
+				"user":           teamInvitation.GetTeamUser().GetUser(),
 				"userInvited":    userInvited,
 				"teamName":       *teamInvitation.GetTeam().GetName(),
 				"teamInvitation": teamInvitation,

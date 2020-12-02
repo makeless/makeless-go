@@ -16,7 +16,7 @@ Makeless - SaaS Framework - Golang Implementation
 - State of the art Authentication with JWT HttpOnly Cookies
 - User management
 - Team management
-- Token management for users and teams
+- Token management for users and teams (deprecated - should be replaced soon)
 - Realtime events
 - Subscriptions and Per-Seat Payments out of the box (coming soon)
 

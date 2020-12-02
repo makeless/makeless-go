@@ -8,7 +8,6 @@ import (
 	"sync"
 	"time"
 
-	"database/sql"
 	"github.com/gin-gonic/gin"
 	"github.com/makeless/makeless-go/http"
 	"github.com/makeless/makeless-go/mailer"
@@ -25,7 +24,6 @@ func (makeless *Makeless) createTeam(http makeless_go_http.Http) error {
 		func(c *gin.Context) {
 			var err error
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
-			var tx = http.GetDatabase().GetConnection().WithContext(c).Begin(new(sql.TxOptions))
 			var teamInvitationExpire = time.Now().Add(time.Hour * 24 * 7)
 			var teamInvitationAccepted = false
 			var user = &makeless_go_model.User{
@@ -34,18 +32,6 @@ func (makeless *Makeless) createTeam(http makeless_go_http.Http) error {
 			}
 			var teamCreate = &_struct.TeamCreate{
 				RWMutex: new(sync.RWMutex),
-			}
-
-			defer func() {
-				if r := recover(); r != nil {
-					tx.Rollback()
-					panic(r)
-				}
-			}()
-
-			if err = tx.Error; err != nil {
-				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
-				return
 			}
 
 			if err = c.ShouldBind(teamCreate); err != nil {
@@ -58,9 +44,28 @@ func (makeless *Makeless) createTeam(http makeless_go_http.Http) error {
 				return
 			}
 
+			var teamUser = &makeless_go_model.TeamUser{
+				UserId:  &userId,
+				Role:    &makeless_go_security.RoleTeamOwner,
+				RWMutex: new(sync.RWMutex),
+			}
+			var team = &makeless_go_model.Team{
+				Name:   teamCreate.GetName(),
+				UserId: &userId,
+				TeamUsers: []*makeless_go_model.TeamUser{
+					teamUser,
+				},
+				TeamInvitations: nil,
+				RWMutex:         new(sync.RWMutex),
+			}
 			var teamInvitations = make([]*makeless_go_model.TeamInvitation, len(teamCreate.GetInvitations()))
 			var index = map[string]bool{
 				*user.GetEmail(): true,
+			}
+
+			if team, err = http.GetDatabase().CreateTeam(http.GetDatabase().GetConnection().WithContext(c), team); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
 			}
 
 			for i, teamInvitation := range teamCreate.GetInvitations() {
@@ -81,13 +86,14 @@ func (makeless *Makeless) createTeam(http makeless_go_http.Http) error {
 					return
 				}
 
+				var tmpTeamUserId = teamUser.GetId()
 				teamInvitations[i] = &makeless_go_model.TeamInvitation{
-					UserId:   &userId,
-					Email:    teamInvitation.GetEmail(),
-					Token:    &token,
-					Expire:   &teamInvitationExpire,
-					Accepted: &teamInvitationAccepted,
-					RWMutex:  new(sync.RWMutex),
+					TeamUserId: &tmpTeamUserId,
+					Email:      teamInvitation.GetEmail(),
+					Token:      &token,
+					Expire:     &teamInvitationExpire,
+					Accepted:   &teamInvitationAccepted,
+					RWMutex:    new(sync.RWMutex),
 				}
 
 				if userInvited, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection().WithContext(c), userInvited, "email", *teamInvitations[i].GetEmail()); err != nil && err != gorm.ErrRecordNotFound {
@@ -111,29 +117,12 @@ func (makeless *Makeless) createTeam(http makeless_go_http.Http) error {
 				}
 			}
 
-			var team = &makeless_go_model.Team{
-				Name:   teamCreate.GetName(),
-				UserId: &userId,
-				TeamUsers: []*makeless_go_model.TeamUser{
-					{UserId: &userId, Role: &makeless_go_security.RoleTeamOwner, RWMutex: new(sync.RWMutex)},
-				},
-				TeamInvitations: teamInvitations,
-				RWMutex:         new(sync.RWMutex),
-			}
-
-			if team, err = http.GetDatabase().CreateTeam(tx, team); err != nil {
-				tx.Rollback()
+			if team, err = http.GetDatabase().AddTeamInvitations(http.GetDatabase().GetConnection().WithContext(c), team, teamInvitations); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
 
-			if team, err = http.GetDatabase().GetTeam(tx, team); err != nil {
-				tx.Rollback()
-				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
-				return
-			}
-
-			if err = tx.Commit().Error; err != nil {
+			if team, err = http.GetDatabase().GetTeam(http.GetDatabase().GetConnection().WithContext(c), team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
