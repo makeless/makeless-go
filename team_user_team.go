@@ -1,19 +1,20 @@
 package makeless_go
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"github.com/makeless/makeless-go/http"
 	"github.com/makeless/makeless-go/model"
 	"github.com/makeless/makeless-go/security"
 	"github.com/makeless/makeless-go/struct"
+	"gorm.io/gorm"
 	h "net/http"
 	"strconv"
 	"sync"
 )
 
 func (makeless *Makeless) teamUsersTeam(http makeless_go_http.Http) error {
-	http.GetRouter().GET(
+	http.GetRouter().GetEngine().GET(
 		"/api/auth/team/team-user",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
@@ -27,7 +28,7 @@ func (makeless *Makeless) teamUsersTeam(http makeless_go_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if teamUsers, err = http.GetDatabase().GetTeamUsers(http.GetDatabase().GetConnection(), c.Query("search"), teamUsers, team); err != nil {
+			if teamUsers, err = http.GetDatabase().GetTeamUsers(http.GetDatabase().GetConnection().WithContext(c), c.Query("search"), teamUsers, team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -40,7 +41,7 @@ func (makeless *Makeless) teamUsersTeam(http makeless_go_http.Http) error {
 }
 
 func (makeless *Makeless) updateRoleTeamUserTeam(http makeless_go_http.Http) error {
-	http.GetRouter().PATCH(
+	http.GetRouter().GetEngine().PATCH(
 		"/api/auth/team/team-user/role",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
@@ -63,12 +64,12 @@ func (makeless *Makeless) updateRoleTeamUserTeam(http makeless_go_http.Http) err
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if teamUser, err = http.GetDatabase().GetTeamUserByFields(http.GetDatabase().GetConnection(), teamUser, map[string]interface{}{
+			if teamUser, err = http.GetDatabase().GetTeamUserByFields(http.GetDatabase().GetConnection().WithContext(c), teamUser, map[string]interface{}{
 				"id":      teamUser.GetId(),
 				"team_id": teamId,
 			}); err != nil {
-				switch err {
-				case gorm.ErrRecordNotFound:
+				switch errors.Is(err, gorm.ErrRecordNotFound) {
+				case true:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				default:
 					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
@@ -81,7 +82,7 @@ func (makeless *Makeless) updateRoleTeamUserTeam(http makeless_go_http.Http) err
 			}
 
 			if teamUser.GetTeam().GetUserId() == teamUser.GetUserId() || *teamUser.GetUserId() == userId {
-				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
+				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(makeless_go_security.UserNotDeletable, nil))
 				return
 			}
 
@@ -89,7 +90,7 @@ func (makeless *Makeless) updateRoleTeamUserTeam(http makeless_go_http.Http) err
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 			}
 
-			if teamUser, err = http.GetDatabase().UpdateRoleTeamUser(http.GetDatabase().GetConnection(), teamUser, *teamUserTeamUpdateRole.GetRole()); err != nil {
+			if teamUser, err = http.GetDatabase().UpdateRoleTeamUser(http.GetDatabase().GetConnection().WithContext(c), teamUser, *teamUserTeamUpdateRole.GetRole()); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -102,7 +103,7 @@ func (makeless *Makeless) updateRoleTeamUserTeam(http makeless_go_http.Http) err
 }
 
 func (makeless *Makeless) deleteTeamUserTeam(http makeless_go_http.Http) error {
-	http.GetRouter().DELETE(
+	http.GetRouter().GetEngine().DELETE(
 		"/api/auth/team/team-user",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
@@ -125,12 +126,12 @@ func (makeless *Makeless) deleteTeamUserTeam(http makeless_go_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if teamUser, err = http.GetDatabase().GetTeamUserByFields(http.GetDatabase().GetConnection(), teamUser, map[string]interface{}{
+			if teamUser, err = http.GetDatabase().GetTeamUserByFields(http.GetDatabase().GetConnection().WithContext(c), teamUser, map[string]interface{}{
 				"id":      teamUser.GetId(),
 				"team_id": teamId,
 			}); err != nil {
-				switch err {
-				case gorm.ErrRecordNotFound:
+				switch errors.Is(err, gorm.ErrRecordNotFound) {
+				case true:
 					c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				default:
 					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
@@ -147,7 +148,7 @@ func (makeless *Makeless) deleteTeamUserTeam(http makeless_go_http.Http) error {
 				return
 			}
 
-			if err = http.GetDatabase().DeleteTeamUser(http.GetDatabase().GetConnection(), teamUser); err != nil {
+			if err = http.GetDatabase().DeleteTeamUser(http.GetDatabase().GetConnection().WithContext(c), teamUser); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

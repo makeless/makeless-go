@@ -11,7 +11,7 @@ import (
 )
 
 func (makeless *Makeless) updatePassword(http makeless_go_http.Http) error {
-	http.GetRouter().PATCH(
+	http.GetRouter().GetEngine().PATCH(
 		"/api/auth/password",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
@@ -42,7 +42,7 @@ func (makeless *Makeless) updatePassword(http makeless_go_http.Http) error {
 				return
 			}
 
-			if _, err = http.GetDatabase().UpdatePassword(http.GetDatabase().GetConnection(), user, bcrypted); err != nil {
+			if _, err = http.GetDatabase().UpdatePassword(http.GetDatabase().GetConnection().WithContext(c), user, bcrypted); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

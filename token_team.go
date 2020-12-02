@@ -12,7 +12,7 @@ import (
 )
 
 func (makeless *Makeless) tokensTeam(http makeless_go_http.Http) error {
-	http.GetRouter().GET(
+	http.GetRouter().GetEngine().GET(
 		"/api/auth/team/token",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
@@ -28,7 +28,7 @@ func (makeless *Makeless) tokensTeam(http makeless_go_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if tokens, err = http.GetDatabase().GetTokensTeam(http.GetDatabase().GetConnection(), team, tokens); err != nil {
+			if tokens, err = http.GetDatabase().GetTokensTeam(http.GetDatabase().GetConnection().WithContext(c), team, tokens); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -41,7 +41,7 @@ func (makeless *Makeless) tokensTeam(http makeless_go_http.Http) error {
 }
 
 func (makeless *Makeless) createTokenTeam(http makeless_go_http.Http) error {
-	http.GetRouter().POST(
+	http.GetRouter().GetEngine().POST(
 		"/api/auth/team/token",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
@@ -78,7 +78,7 @@ func (makeless *Makeless) createTokenTeam(http makeless_go_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if token, err = http.GetDatabase().CreateTokenTeam(http.GetDatabase().GetConnection(), token); err != nil {
+			if token, err = http.GetDatabase().CreateTokenTeam(http.GetDatabase().GetConnection().WithContext(c), token); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -91,7 +91,7 @@ func (makeless *Makeless) createTokenTeam(http makeless_go_http.Http) error {
 }
 
 func (makeless *Makeless) deleteTokenTeam(http makeless_go_http.Http) error {
-	http.GetRouter().DELETE(
+	http.GetRouter().GetEngine().DELETE(
 		"/api/auth/team/token",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
@@ -115,7 +115,7 @@ func (makeless *Makeless) deleteTokenTeam(http makeless_go_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err = http.GetDatabase().DeleteTokenTeam(http.GetDatabase().GetConnection(), token); err != nil {
+			if err = http.GetDatabase().DeleteTokenTeam(http.GetDatabase().GetConnection().WithContext(c), token); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

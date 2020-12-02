@@ -2,7 +2,7 @@ package makeless_go
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 	h "net/http"
 	"strconv"
 	"sync"
@@ -18,14 +18,14 @@ import (
 )
 
 func (makeless *Makeless) createTeam(http makeless_go_http.Http) error {
-	http.GetRouter().POST(
+	http.GetRouter().GetEngine().POST(
 		"/api/auth/team",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
 		func(c *gin.Context) {
 			var err error
 			var userId = http.GetAuthenticator().GetAuthUserId(c)
-			var tx = http.GetDatabase().GetConnection().BeginTx(c, new(sql.TxOptions))
+			var tx = http.GetDatabase().GetConnection().WithContext(c).Begin(new(sql.TxOptions))
 			var teamInvitationExpire = time.Now().Add(time.Hour * 24 * 7)
 			var teamInvitationAccepted = false
 			var user = &makeless_go_model.User{
@@ -36,12 +36,24 @@ func (makeless *Makeless) createTeam(http makeless_go_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
+			defer func() {
+				if r := recover(); r != nil {
+					tx.Rollback()
+					panic(r)
+				}
+			}()
+
+			if err = tx.Error; err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
 			if err = c.ShouldBind(teamCreate); err != nil {
 				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
 				return
 			}
 
-			if user, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection(), user, "id", fmt.Sprintf("%d", user.GetId())); err != nil {
+			if user, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection().WithContext(c), user, "id", fmt.Sprintf("%d", user.GetId())); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -78,7 +90,7 @@ func (makeless *Makeless) createTeam(http makeless_go_http.Http) error {
 					RWMutex:  new(sync.RWMutex),
 				}
 
-				if userInvited, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection(), userInvited, "email", *teamInvitations[i].GetEmail()); err != nil && err != gorm.ErrRecordNotFound {
+				if userInvited, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection().WithContext(c), userInvited, "email", *teamInvitations[i].GetEmail()); err != nil && err != gorm.ErrRecordNotFound {
 					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 					return
 				}
@@ -126,7 +138,7 @@ func (makeless *Makeless) createTeam(http makeless_go_http.Http) error {
 				return
 			}
 
-			if err = http.GetEvent().Trigger(userId, "go-makeless", "team:create", team); err != nil {
+			if err = http.GetEvent().Trigger(userId, "makeless", "team:create", team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
@@ -139,7 +151,7 @@ func (makeless *Makeless) createTeam(http makeless_go_http.Http) error {
 }
 
 func (makeless *Makeless) deleteTeam(http makeless_go_http.Http) error {
-	http.GetRouter().DELETE(
+	http.GetRouter().GetEngine().DELETE(
 		"/api/auth/team",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
@@ -153,12 +165,12 @@ func (makeless *Makeless) deleteTeam(http makeless_go_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if err = http.GetDatabase().DeleteTeam(http.GetDatabase().GetConnection(), team); err != nil {
+			if err = http.GetDatabase().DeleteTeam(http.GetDatabase().GetConnection().WithContext(c), team); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
 
-			if err = http.GetEvent().Trigger(userId, "go-makeless", "team:delete", nil); err != nil {
+			if err = http.GetEvent().Trigger(userId, "makeless", "team:delete", nil); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

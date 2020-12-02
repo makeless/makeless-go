@@ -5,3 +5,4 @@ ls:
 ignore:
   - .git
   - .idea
+  - .github

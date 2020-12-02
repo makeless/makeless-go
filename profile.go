@@ -10,7 +10,7 @@ import (
 )
 
 func (makeless *Makeless) updateProfile(http makeless_go_http.Http) error {
-	http.GetRouter().PATCH(
+	http.GetRouter().GetEngine().PATCH(
 		"/api/auth/profile",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.EmailVerificationMiddleware(makeless.GetConfig().GetConfiguration().GetEmailVerification()),
@@ -30,7 +30,7 @@ func (makeless *Makeless) updateProfile(http makeless_go_http.Http) error {
 				return
 			}
 
-			if user, err = http.GetDatabase().UpdateProfile(http.GetDatabase().GetConnection(), user, profile); err != nil {
+			if user, err = http.GetDatabase().UpdateProfile(http.GetDatabase().GetConnection().WithContext(c), user, profile); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

@@ -2,7 +2,7 @@ package makeless_go_database_basic
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 func (database *Database) GetConnectionString() string {
@@ -30,8 +30,8 @@ func (database *Database) SetConnection(connection *gorm.DB) {
 	database.connection = connection
 }
 
-func (database *Database) Connect() error {
-	connection, err := gorm.Open(database.getDialect(), database.GetConnectionString())
+func (database *Database) Connect(dialector gorm.Dialector) error {
+	connection, err := gorm.Open(dialector, &gorm.Config{})
 
 	if err != nil {
 		return err

@@ -1,13 +1,9 @@
 package makeless_go_http_basic
 
-import (
-	"github.com/gin-gonic/gin"
-)
-
 func (http *Http) Start() error {
-	router := http.GetRouter()
-	router.Use(http.CorsMiddleware(http.GetOrigins(), http.GetHeaders()))
-	router.Use(gin.Recovery())
+	if err := http.GetRouter().Init(http); err != nil {
+		return err
+	}
 
 	for _, handler := range http.GetHandlers() {
 		if err := handler(http); err != nil {
@@ -16,8 +12,8 @@ func (http *Http) Start() error {
 	}
 
 	if http.GetTls() != nil {
-		return router.RunTLS(":"+http.GetPort(), http.GetTls().GetCertPath(), http.GetTls().GetKeyPath())
+		return http.GetRouter().GetEngine().RunTLS(":"+http.GetPort(), http.GetTls().GetCertPath(), http.GetTls().GetKeyPath())
 	}
 
-	return router.Run(":" + http.GetPort())
+	return http.GetRouter().GetEngine().Run(":" + http.GetPort())
 }

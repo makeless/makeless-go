@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"github.com/makeless/makeless-go/model"
 	"github.com/makeless/makeless-go/security"
+	"gorm.io/gorm"
 	h "net/http"
 	"strconv"
 	"sync"
@@ -36,9 +36,9 @@ func (http *Http) EmailVerificationMiddleware(enabled bool) gin.HandlerFunc {
 			return
 		}
 
-		if user, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection(), user, "id", fmt.Sprintf("%d", userId)); err != nil {
-			switch err {
-			case gorm.ErrRecordNotFound:
+		if user, err = http.GetDatabase().GetUserByField(http.GetDatabase().GetConnection().WithContext(c), user, "id", fmt.Sprintf("%d", userId)); err != nil {
+			switch errors.Is(err, gorm.ErrRecordNotFound) {
+			case true:
 				c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(err, nil))
 			default:
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))

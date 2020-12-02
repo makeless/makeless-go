@@ -1,27 +1,19 @@
 package makeless_go_database_basic
 
 import (
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 	"sync"
 )
 
 type Database struct {
 	connection *gorm.DB
 
-	Dialect  string
 	Username string
 	Password string
 	Database string
 	Host     string
 	Port     string
 	*sync.RWMutex
-}
-
-func (database *Database) getDialect() string {
-	database.RLock()
-	defer database.RUnlock()
-
-	return database.Dialect
 }
 
 func (database *Database) getUsername() string {

@@ -3,7 +3,7 @@ package makeless_go
 import "github.com/makeless/makeless-go/http"
 
 func (makeless *Makeless) login(http makeless_go_http.Http) error {
-	http.GetRouter().POST(
+	http.GetRouter().GetEngine().POST(
 		"/api/login",
 		http.GetAuthenticator().GetMiddleware().LoginHandler,
 	)
@@ -12,7 +12,7 @@ func (makeless *Makeless) login(http makeless_go_http.Http) error {
 }
 
 func (makeless *Makeless) logout(http makeless_go_http.Http) error {
-	http.GetRouter().GET(
+	http.GetRouter().GetEngine().GET(
 		"/api/auth/logout",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.GetAuthenticator().GetMiddleware().LogoutHandler,
@@ -22,7 +22,7 @@ func (makeless *Makeless) logout(http makeless_go_http.Http) error {
 }
 
 func (makeless *Makeless) refreshToken(http makeless_go_http.Http) error {
-	http.GetRouter().GET(
+	http.GetRouter().GetEngine().GET(
 		"/api/auth/refresh-token",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		http.GetAuthenticator().GetMiddleware().RefreshHandler,

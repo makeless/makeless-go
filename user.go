@@ -9,7 +9,7 @@ import (
 )
 
 func (makeless *Makeless) user(http makeless_go_http.Http) error {
-	http.GetRouter().GET(
+	http.GetRouter().GetEngine().GET(
 		"/api/auth/user",
 		http.GetAuthenticator().GetMiddleware().MiddlewareFunc(),
 		func(c *gin.Context) {
@@ -21,7 +21,7 @@ func (makeless *Makeless) user(http makeless_go_http.Http) error {
 				RWMutex: new(sync.RWMutex),
 			}
 
-			if user, err = http.GetDatabase().GetUser(http.GetDatabase().GetConnection(), user); err != nil {
+			if user, err = http.GetDatabase().GetUser(http.GetDatabase().GetConnection().WithContext(c), user); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

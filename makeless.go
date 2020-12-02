@@ -1,6 +1,7 @@
 package makeless_go
 
 import (
+	"gorm.io/gorm"
 	"sync"
 
 	"github.com/makeless/makeless-go/config"
@@ -62,7 +63,7 @@ func (makeless *Makeless) SetMail(name string, handler func(data map[string]inte
 	makeless.GetMailer().SetHandler(name, handler)
 }
 
-func (makeless *Makeless) Init(path string) error {
+func (makeless *Makeless) Init(dialector gorm.Dialector, path string) error {
 	if err := makeless.GetConfig().Load(path); err != nil {
 		return err
 	}
@@ -75,7 +76,7 @@ func (makeless *Makeless) Init(path string) error {
 		return err
 	}
 
-	if err := makeless.GetDatabase().Connect(); err != nil {
+	if err := makeless.GetDatabase().Connect(dialector); err != nil {
 		return err
 	}
 
@@ -137,7 +138,10 @@ func (makeless *Makeless) Init(path string) error {
 
 	makeless.SetMail("emailVerification", makeless.mailEmailVerification)
 	makeless.SetMail("passwordRequest", makeless.mailPasswordRequest)
-	makeless.SetMail("teamInvitation", makeless.mailTeamInvitation)
+
+	if makeless.GetConfig().GetConfiguration().GetTeams() != nil {
+		makeless.SetMail("teamInvitation", makeless.mailTeamInvitation)
+	}
 
 	return nil
 }

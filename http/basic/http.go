@@ -1,20 +1,19 @@
 package makeless_go_http_basic
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/makeless/makeless-go/authenticator"
 	"github.com/makeless/makeless-go/database"
 	"github.com/makeless/makeless-go/event"
 	"github.com/makeless/makeless-go/http"
 	"github.com/makeless/makeless-go/logger"
-	makeless_go_mailer "github.com/makeless/makeless-go/mailer"
+	"github.com/makeless/makeless-go/mailer"
 	"github.com/makeless/makeless-go/security"
 	"github.com/makeless/makeless-go/tls"
 	"sync"
 )
 
 type Http struct {
-	Router        *gin.Engine
+	Router        makeless_go_http.Router
 	Handlers      map[string]func(http makeless_go_http.Http) error
 	Logger        makeless_go_logger.Logger
 	Event         makeless_go_event.Event
@@ -30,7 +29,7 @@ type Http struct {
 	*sync.RWMutex
 }
 
-func (http *Http) GetRouter() *gin.Engine {
+func (http *Http) GetRouter() makeless_go_http.Router {
 	http.RLock()
 	defer http.RUnlock()
 

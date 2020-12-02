@@ -1,8 +1,8 @@
 package makeless_go_database
 
 import (
-	"github.com/jinzhu/gorm"
 	"github.com/makeless/makeless-go/model"
+	"gorm.io/gorm"
 )
 
 type User interface {

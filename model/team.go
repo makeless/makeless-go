@@ -11,6 +11,7 @@ type Team struct {
 
 	TeamUsers       []*TeamUser       `json:"teamUsers"`
 	TeamInvitations []*TeamInvitation `json:"teamInvitations"`
+	Tokens          []*Token          `json:"tokens"`
 
 	*sync.RWMutex
 }

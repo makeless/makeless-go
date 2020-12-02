@@ -2,17 +2,22 @@
 
 Makeless - SaaS Framework - Golang Implementation
 
+[![License](https://img.shields.io/badge/license-polyform:noncommercial-blue)](https://polyformproject.org/licenses/noncommercial/1.0.0/)
 [![Build Status](https://ci.loeffel.io/api/badges/makeless/makeless-go/status.svg)](https://ci.loeffel.io/makeless/makeless-go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/makeless/makeless-go)](https://goreportcard.com/report/github.com/makeless/makeless-go)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go?ref=badge_shield)
+[![Discord](https://img.shields.io/discord/775684445314744341?label=discord)](https://discord.gg/K7Une7gndt) 
 
 - Based on Golang ([gin](https://github.com/gin-gonic/gin) & [gorm](https://github.com/go-gorm/gorm))
+- Concurrency safe & scalable
 - Super clean and small
 - Fully customizable and configurable
+- Multilingual
 - State of the art Authentication with JWT HttpOnly Cookies
 - User management
 - Team management
 - Token management for users and teams
+- Realtime events
 - Subscriptions and Per-Seat Payments out of the box (coming soon)
 
 ## Preview
@@ -21,7 +26,7 @@ Makeless - SaaS Framework - Golang Implementation
 
 ## Frontend
 
-- TypeScript & Vue.js: [https://github.com/makeless/makeless-go-ui](https://github.com/makeless/makeless-go-ui)
+- TypeScript & Vue.js: [https://github.com/makeless/makeless-ui](https://github.com/makeless/makeless-ui)
 
 ## Demo
 
@@ -38,7 +43,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/makeless/makeless-go"
 	"github.com/makeless/makeless-go/authenticator/basic"
 	"github.com/makeless/makeless-go/config/basic"
@@ -50,7 +54,7 @@ import (
 	"github.com/makeless/makeless-go/mailer"
 	"github.com/makeless/makeless-go/mailer/basic"
 	"github.com/makeless/makeless-go/security/basic"
-	_ "github.com/go-sql-driver/mysql"
+	"gorm.io/driver/mysql"
 )
 
 func main() {
@@ -75,7 +79,6 @@ func main() {
 
 	// database
 	database := &makeless_go_database_basic.Database{
-		Dialect:  "mysql",
 		Host:     os.Getenv("DB_HOST"),
 		Database: os.Getenv("DB_NAME"),
 		Port:     os.Getenv("DB_PORT"),
@@ -114,9 +117,14 @@ func main() {
 		RWMutex:     new(sync.RWMutex),
 	}
 
+	// router
+	router := &makeless_go_http_basic.Router{
+		RWMutex: new(sync.RWMutex),
+	}
+
 	// http
 	http := &makeless_go_http_basic.Http{
-		Router:        gin.Default(),
+		Router:        router,
 		Handlers:      make(map[string]func(http makeless_go_http.Http) error),
 		Logger:        logger,
 		Event:         event,
@@ -132,7 +140,7 @@ func main() {
 		RWMutex:       new(sync.RWMutex),
 	}
 
-	makeless := &makeless.Makeless{
+	makeless := &makeless_go.Makeless{
 		Config:   config,
 		Logger:   logger,
 		Mailer:   mailer,
@@ -141,7 +149,7 @@ func main() {
 		RWMutex:  new(sync.RWMutex),
 	}
 
-	if err := makeless.Init("./../makeless.json"); err != nil {
+	if err := makeless.Init(mysql.Open(database.GetConnectionString()), "./makeless.json"); err != nil {
 		makeless.GetLogger().Fatal(err)
 	}
 
@@ -153,64 +161,12 @@ func main() {
 
 ## Config
 
-makeless.json
-
-```json
-{
-  "name": "Makeless",
-  "logo": null,
-  "locale": "en",
-  "host": "http://localhost:3000",
-  "mail": {
-    "name": "Makeless",
-    "logo": null,
-    "from": "Makeless <info@makeless.io>",
-    "link": "https://localhost",
-    "buttonColor": "#4586ab",
-    "buttonTextColor": "#FFFFFF",
-    "texts": {
-      "en": {
-        "greeting": "Hello",
-        "signature": "Best Regards",
-        "copyright": "Copyright © 2020 Makeless. All rights reserved."
-      }
-    }
-  },
-  "tokens": true,
-  "teams": {
-    "tokens": true
-  },
-  "navigation": {
-    "left": {
-      "en": [
-        {
-          "label": "Dashboard",
-          "to": "dashboard"
-        }
-      ]
-    },
-    "right": {
-      "en": [
-        {
-          "label": "GitHub",
-          "to": "https://github.com/makeless",
-          "external": true
-        },
-        {
-          "label": "Login",
-          "to": "login"
-        },
-        {
-          "label": "Register",
-          "to": "register"
-        }
-      ]
-    }
-  }
-}
-```
-
+Demo [makeless.json](https://github.com/makeless/makeless-demo/blob/master/makeless.json)
 
 ## License
+
+- Makeless is licensed under the [Polyform Noncommercial](https://polyformproject.org/licenses/noncommercial/1.0.0/) license.  
+- Exemption: Every contributor gets free access to a commercial license.  
+- Please contact lucas@loeffel.io for a commercial license.
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmakeless%2Fmakeless-go?ref=badge_large)

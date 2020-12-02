@@ -2,8 +2,9 @@ package makeless_go_database_basic
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
-	"github.com/makeless/makeless-go/model"
+
+	makeless_go_model "github.com/makeless/makeless-go/model"
+	"gorm.io/gorm"
 )
 
 // GetUser retrieves user and all there team informations
@@ -26,7 +27,7 @@ func (database *Database) GetUserByField(connection *gorm.DB, user *makeless_go_
 	return user, connection.
 		Preload("EmailVerification").
 		Where(fmt.Sprintf("%s = ?", field), value).
-		Find(&user).
+		First(&user).
 		Error
 }
 
@@ -38,7 +39,7 @@ func (database *Database) CreateUser(connection *gorm.DB, user *makeless_go_mode
 }
 
 func (database *Database) IsModelUser(connection *gorm.DB, user *makeless_go_model.User, model interface{}) (bool, error) {
-	var count int
+	var count int64
 
 	err := connection.
 		Model(model).
@@ -47,5 +48,5 @@ func (database *Database) IsModelUser(connection *gorm.DB, user *makeless_go_mod
 		Count(&count).
 		Error
 
-	return count == 1, err
+	return count >= 1, err
 }
