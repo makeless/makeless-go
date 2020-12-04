@@ -155,7 +155,7 @@ func (http *Http) TeamCreatorMiddleware() gin.HandlerFunc {
 func (http *Http) NotTeamCreatorMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var err error
-		var notTeamCreator bool
+		var teamCreator bool
 		var teamId int
 		var userId = http.GetAuthenticator().GetAuthUserId(c)
 
@@ -169,12 +169,12 @@ func (http *Http) NotTeamCreatorMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		if notTeamCreator, err = http.GetSecurity().IsNotTeamCreator(http.GetSecurity().GetDatabase().GetConnection(), uint(teamId), userId); err != nil {
+		if teamCreator, err = http.GetSecurity().IsTeamCreator(http.GetSecurity().GetDatabase().GetConnection(), uint(teamId), userId); err != nil {
 			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 			return
 		}
 
-		if !notTeamCreator {
+		if teamCreator {
 			c.AbortWithStatusJSON(h.StatusUnauthorized, http.Response(makeless_go_security.NoTeamCreatorError, nil))
 			return
 		}
