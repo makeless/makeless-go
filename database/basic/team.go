@@ -130,16 +130,6 @@ func (database *Database) IsTeamCreator(connection *gorm.DB, team *makeless_go_m
 		Error
 }
 
-// IsNotTeamCreator checks if user is not team creator
-func (database *Database) IsNotTeamCreator(connection *gorm.DB, team *makeless_go_model.Team, user *makeless_go_model.User) (bool, error) {
-	var count int64
-
-	return count == 0, connection.
-		Raw("SELECT COUNT(*) FROM teams WHERE teams.id = ? AND teams.user_id = ? LIMIT 1", team.GetId(), user.GetId()).
-		Count(&count).
-		Error
-}
-
 func (database *Database) IsModelTeam(connection *gorm.DB, team *makeless_go_model.Team, model interface{}) (bool, error) {
 	var count int64
 
