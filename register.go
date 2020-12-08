@@ -1,20 +1,22 @@
 package makeless_go
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/makeless/makeless-go/http"
-	"github.com/makeless/makeless-go/mailer"
-	"github.com/makeless/makeless-go/model"
-	"github.com/makeless/makeless-go/struct"
-	"github.com/makeless/makeless-go/security"
 	h "net/http"
 	"sync"
+
+	"github.com/gin-gonic/gin"
+	makeless_go_http "github.com/makeless/makeless-go/http"
+	makeless_go_mailer "github.com/makeless/makeless-go/mailer"
+	makeless_go_model "github.com/makeless/makeless-go/model"
+	makeless_go_security "github.com/makeless/makeless-go/security"
+	_struct "github.com/makeless/makeless-go/struct"
 )
 
 func (makeless *Makeless) register(http makeless_go_http.Http) error {
 	http.GetRouter().GetEngine().POST("/api/register", func(c *gin.Context) {
 		var err error
 		var token string
+		var userExists bool
 		var mail makeless_go_mailer.Mail
 		var verified = false
 		var register = &_struct.Register{
@@ -43,15 +45,19 @@ func (makeless *Makeless) register(http makeless_go_http.Http) error {
 			RWMutex: new(sync.RWMutex),
 		}
 
+		if userExists, err = http.GetSecurity().UserExists(http.GetSecurity().GetDatabase().GetConnection(), "email", *user.Email); err != nil {
+			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+			return
+		}
+
+		if userExists {
+			c.AbortWithStatusJSON(h.StatusOK, http.Response(makeless_go_security.UserAlreadyExist, nil))
+			return
+		}
+
 		if user, err = http.GetSecurity().Register(http.GetSecurity().GetDatabase().GetConnection(), user); err != nil {
-			switch err {
-			case makeless_go_security.UserAlreadyExist:
-				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(err, nil))
-				return
-			default:
-				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
-				return
-			}
+			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+			return
 		}
 
 		if user.GetEmailVerification().RWMutex == nil {

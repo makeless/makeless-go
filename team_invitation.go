@@ -3,15 +3,16 @@ package makeless_go
 import (
 	"database/sql"
 	"errors"
-	"github.com/gin-gonic/gin"
-	"github.com/makeless/makeless-go/http"
-	"github.com/makeless/makeless-go/mailer"
-	"github.com/makeless/makeless-go/model"
-	"github.com/makeless/makeless-go/security"
-	"github.com/makeless/makeless-go/struct"
-	"gorm.io/gorm"
 	h "net/http"
 	"sync"
+
+	"github.com/gin-gonic/gin"
+	makeless_go_http "github.com/makeless/makeless-go/http"
+	makeless_go_mailer "github.com/makeless/makeless-go/mailer"
+	makeless_go_model "github.com/makeless/makeless-go/model"
+	makeless_go_security "github.com/makeless/makeless-go/security"
+	_struct "github.com/makeless/makeless-go/struct"
+	"gorm.io/gorm"
 )
 
 func (makeless *Makeless) teamInvitation(http makeless_go_http.Http) error {
@@ -73,6 +74,7 @@ func (makeless *Makeless) registerTeamInvitation(http makeless_go_http.Http) err
 		func(c *gin.Context) {
 			var err error
 			var mail makeless_go_mailer.Mail
+			var userExists bool
 			var token = c.Query("token")
 			var verified = false
 			var tx = http.GetDatabase().GetConnection().WithContext(c).Begin(new(sql.TxOptions))
@@ -125,6 +127,16 @@ func (makeless *Makeless) registerTeamInvitation(http makeless_go_http.Http) err
 					RWMutex:  new(sync.RWMutex),
 				},
 				RWMutex: new(sync.RWMutex),
+			}
+
+			if userExists, err = http.GetSecurity().UserExists(http.GetSecurity().GetDatabase().GetConnection(), "email", *user.Email); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			if userExists {
+				c.AbortWithStatusJSON(h.StatusOK, http.Response(makeless_go_security.UserAlreadyExist, nil))
+				return
 			}
 
 			if user, err = http.GetSecurity().Register(tx, user); err != nil {

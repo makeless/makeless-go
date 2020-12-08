@@ -7,6 +7,6 @@ var (
 	NoTeamCreatorError  = errors.New("no team creator")
 	NoTeamRoleError     = errors.New("no team role")
 	NoEmailVerification = errors.New("no email verification")
-	UserAlreadyExist    = errors.New("you are already registred")
+	UserAlreadyExist    = errors.New("user already exists")
 	UserNotDeletable    = errors.New("user not deletable")
 )
