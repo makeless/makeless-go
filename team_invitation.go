@@ -135,7 +135,7 @@ func (makeless *Makeless) registerTeamInvitation(http makeless_go_http.Http) err
 			}
 
 			if userExists {
-				c.AbortWithStatusJSON(h.StatusOK, http.Response(makeless_go_security.UserAlreadyExist, nil))
+				c.AbortWithStatusJSON(h.StatusOK, http.Response(makeless_go_security.UserAlreadyExists, nil))
 				return
 			}
 

@@ -51,7 +51,7 @@ func (makeless *Makeless) register(http makeless_go_http.Http) error {
 		}
 
 		if userExists {
-			c.AbortWithStatusJSON(h.StatusOK, http.Response(makeless_go_security.UserAlreadyExist, nil))
+			c.AbortWithStatusJSON(h.StatusOK, http.Response(makeless_go_security.UserAlreadyExists, nil))
 			return
 		}
 

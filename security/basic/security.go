@@ -45,6 +45,7 @@ func (security *Security) Login(connection *gorm.DB, field string, value string,
 
 func (security *Security) Register(connection *gorm.DB, user *makeless_go_model.User) (*makeless_go_model.User, error) {
 	encrypted, err := security.EncryptPassword(*user.GetPassword())
+
 	if err != nil {
 		return nil, err
 	}
