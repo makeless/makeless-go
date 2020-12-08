@@ -18,6 +18,5 @@ type Team interface {
 	IsTeamUser(connection *gorm.DB, team *makeless_go_model.Team, user *makeless_go_model.User) (bool, error)
 	IsTeamRole(connection *gorm.DB, role string, team *makeless_go_model.Team, user *makeless_go_model.User) (bool, error)
 	IsTeamCreator(connection *gorm.DB, team *makeless_go_model.Team, user *makeless_go_model.User) (bool, error)
-	IsNotTeamCreator(connection *gorm.DB, team *makeless_go_model.Team, user *makeless_go_model.User) (bool, error)
 	IsModelTeam(connection *gorm.DB, team *makeless_go_model.Team, model interface{}) (bool, error)
 }

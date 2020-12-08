@@ -25,11 +25,13 @@ require (
 	github.com/mitchellh/copystructure v1.0.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/olekukonko/tablewriter v0.0.4 // indirect
-	github.com/ugorji/go v1.1.13 // indirect
+	github.com/russross/blackfriday/v2 v2.1.0 // indirect
+	github.com/ugorji/go v1.2.0 // indirect
 	github.com/vanng822/go-premailer v1.9.0 // indirect
-	golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897
-	golang.org/x/net v0.0.0-20201031054903-ff519b6c9102 // indirect
-	golang.org/x/sys v0.0.0-20201101102859-da207088b7d1 // indirect
+	golang.org/x/crypto v0.0.0-20201124201722-c8d3bf9c5392
+	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b // indirect
+	golang.org/x/sys v0.0.0-20201130171929-760e229fe7c5 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
-	gorm.io/gorm v1.20.5
+	gopkg.in/yaml.v2 v2.4.0 // indirect
+	gorm.io/gorm v1.20.7
 )

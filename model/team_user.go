@@ -14,6 +14,8 @@ type TeamUser struct {
 
 	Role *string `gorm:"not null" json:"role"`
 
+	TeamInvitations []*TeamInvitation `json:"teamInvitations" binding:"-"`
+
 	*sync.RWMutex
 }
 
