@@ -3,16 +3,15 @@ package makeless_go
 import (
 	"database/sql"
 	"errors"
+	"github.com/gin-gonic/gin"
+	"github.com/makeless/makeless-go/http"
+	"github.com/makeless/makeless-go/mailer"
+	"github.com/makeless/makeless-go/model"
+	"github.com/makeless/makeless-go/security"
+	"github.com/makeless/makeless-go/struct"
+	"gorm.io/gorm"
 	h "net/http"
 	"sync"
-
-	"github.com/gin-gonic/gin"
-	makeless_go_http "github.com/makeless/makeless-go/http"
-	makeless_go_mailer "github.com/makeless/makeless-go/mailer"
-	makeless_go_model "github.com/makeless/makeless-go/model"
-	makeless_go_security "github.com/makeless/makeless-go/security"
-	_struct "github.com/makeless/makeless-go/struct"
-	"gorm.io/gorm"
 )
 
 func (makeless *Makeless) teamInvitation(http makeless_go_http.Http) error {
@@ -135,7 +134,7 @@ func (makeless *Makeless) registerTeamInvitation(http makeless_go_http.Http) err
 			}
 
 			if userExists {
-				c.AbortWithStatusJSON(h.StatusOK, http.Response(makeless_go_security.UserAlreadyExists, nil))
+				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(makeless_go_security.UserAlreadyExists, nil))
 				return
 			}
 
