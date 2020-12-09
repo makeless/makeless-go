@@ -2,12 +2,11 @@ package makeless_go_security_basic
 
 import (
 	"errors"
-	"sync"
-
-	jwt "github.com/appleboy/gin-jwt/v2"
-	makeless_go_database "github.com/makeless/makeless-go/database"
-	makeless_go_model "github.com/makeless/makeless-go/model"
+	"github.com/appleboy/gin-jwt/v2"
+	"github.com/makeless/makeless-go/database"
+	"github.com/makeless/makeless-go/model"
 	"gorm.io/gorm"
+	"sync"
 )
 
 type Security struct {

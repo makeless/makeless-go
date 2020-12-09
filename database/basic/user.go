@@ -3,7 +3,7 @@ package makeless_go_database_basic
 import (
 	"fmt"
 
-	makeless_go_model "github.com/makeless/makeless-go/model"
+	"github.com/makeless/makeless-go/model"
 	"gorm.io/gorm"
 )
 
