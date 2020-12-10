@@ -73,6 +73,7 @@ func (makeless *Makeless) registerTeamInvitation(http makeless_go_http.Http) err
 		func(c *gin.Context) {
 			var err error
 			var mail makeless_go_mailer.Mail
+			var userExists bool
 			var token = c.Query("token")
 			var verified = false
 			var tx = http.GetDatabase().GetConnection().WithContext(c).Begin(new(sql.TxOptions))
@@ -125,6 +126,16 @@ func (makeless *Makeless) registerTeamInvitation(http makeless_go_http.Http) err
 					RWMutex:  new(sync.RWMutex),
 				},
 				RWMutex: new(sync.RWMutex),
+			}
+
+			if userExists, err = http.GetSecurity().UserExists(http.GetSecurity().GetDatabase().GetConnection(), "email", *user.Email); err != nil {
+				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+				return
+			}
+
+			if userExists {
+				c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(makeless_go_security.UserAlreadyExists, nil))
+				return
 			}
 
 			if user, err = http.GetSecurity().Register(tx, user); err != nil {
