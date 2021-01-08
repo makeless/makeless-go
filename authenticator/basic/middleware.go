@@ -22,7 +22,7 @@ func (authenticator *Authenticator) CreateMiddleware() error {
 		SecureCookie:    false, //non HTTPS dev environments
 		CookieHTTPOnly:  true,
 		CookieName:      "jwt",
-		TokenLookup:     "header:Authorization,cookie:jwt",
+		TokenLookup:     "cookie:jwt",
 	})
 
 	if err != nil {
