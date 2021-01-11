@@ -81,6 +81,6 @@ func (queue *Queue) Remove() (makeless_go_queue.Node, error) {
 	return head, nil
 }
 
-func (queue *Queue) Empty() bool {
-	return queue.getHead() == nil
+func (queue *Queue) Empty() (bool, error) {
+	return queue.getHead() == nil, nil
 }
