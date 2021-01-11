@@ -63,12 +63,21 @@ func (queue *Queue) Add(node *Node) error {
 }
 
 func (queue *Queue) Remove() (*Node, error) {
-	var node = queue.getHead()
-	queue.setHead(nil)
+	var head = queue.getHead()
+
+	if head == nil {
+		return nil, nil
+	}
+
+	var next = head.getNext()
+
+	queue.setHead(next)
+
 	if queue.getHead() == nil {
 		queue.setTail(nil)
 	}
-	return node, nil
+
+	return head, nil
 }
 
 func (queue *Queue) Empty() bool {

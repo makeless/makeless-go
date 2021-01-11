@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestPush(t *testing.T) {
+func TestAdd(t *testing.T) {
 	var queue = &Queue{
 		Context: context.Background(),
 		RWMutex: new(sync.RWMutex),
@@ -47,6 +47,13 @@ func TestPush(t *testing.T) {
 		},
 		{
 			Queue:        queue,
+			Node:         secondNode,
+			Err:          nil,
+			ExpectedHead: firstNode,
+			ExpectedTail: secondNode,
+		},
+		{
+			Queue:        queue,
 			Node:         thirdNode,
 			Err:          nil,
 			ExpectedHead: firstNode,
@@ -59,9 +66,9 @@ func TestPush(t *testing.T) {
 		assert.Equalf(t, test.Err, err, "%d: error not equal", i)
 
 		head := test.Queue.getHead()
-		tail := test.Queue.getTail()
-
 		assert.Equal(t, test.ExpectedHead, head)
+
+		tail := test.Queue.getTail()
 		assert.Equal(t, test.ExpectedTail, tail)
 	}
 }
