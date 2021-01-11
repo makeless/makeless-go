@@ -10,73 +10,52 @@ import (
 func TestPush(t *testing.T) {
 	var queue = &Queue{
 		Context: context.Background(),
-		Map:     new(sync.Map),
+		RWMutex: new(sync.RWMutex),
+	}
+
+	var firstNode = &Node{
+		Data:    0,
+		next:    nil,
+		RWMutex: new(sync.RWMutex),
+	}
+
+	var secondNode = &Node{
+		Data:    0,
+		next:    firstNode,
 		RWMutex: new(sync.RWMutex),
 	}
 
 	tests := []struct {
-		Queue    *Queue
-		Channel  string
-		Item     *Item
-		Err      error
-		Expected []*Item
+		Queue        *Queue
+		Node         *Node
+		Err          error
+		ExpectedHead *Node
+		ExpectedTail *Node
 	}{
 		{
-			Channel: "numbers",
-			Queue:   queue,
-			Item: &Item{
-				Data:  0,
-				Async: false,
-			},
-			Err: nil,
-			Expected: []*Item{
-				{
-					Data:  0,
-					Async: false,
-				},
-			},
+			Queue:        queue,
+			Node:         firstNode,
+			Err:          nil,
+			ExpectedHead: firstNode,
+			ExpectedTail: firstNode,
 		},
 		{
-			Channel: "numbers",
-			Queue:   queue,
-			Item: &Item{
-				Data:  1,
-				Async: false,
-			},
-			Err: nil,
-			Expected: []*Item{
-				{
-					Data:  0,
-					Async: false,
-				},
-				{
-					Data:  1,
-					Async: false,
-				},
-			},
-		},
-		{
-			Channel: "strings",
-			Queue:   queue,
-			Item: &Item{
-				Data:  "0",
-				Async: false,
-			},
-			Err: nil,
-			Expected: []*Item{
-				{
-					Data:  "0",
-					Async: false,
-				},
-			},
+			Queue:        queue,
+			Node:         secondNode,
+			Err:          nil,
+			ExpectedHead: firstNode,
+			ExpectedTail: secondNode,
 		},
 	}
 
 	for i, test := range tests {
-		err := test.Queue.Push(test.Channel, test.Item)
+		err := test.Queue.Add(test.Node)
 		assert.Equalf(t, test.Err, err, "%d: error not equal", i)
 
-		load, _ := test.Queue.Load(test.Channel)
-		assert.Equal(t, test.Expected, load)
+		head := test.Queue.getHead()
+		tail := test.Queue.getTail()
+
+		assert.Equal(t, test.ExpectedHead, head)
+		assert.Equal(t, test.ExpectedTail, tail)
 	}
 }

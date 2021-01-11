@@ -4,6 +4,7 @@ import "context"
 
 type Queue interface {
 	GetContext() context.Context
-	Pop(channel string, item Item) error
-	Push(channel string) (Item, error)
+	Add(node Node) error
+	Remove() (Node, error)
+	Empty() (bool, error)
 }

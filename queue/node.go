@@ -1,6 +1,5 @@
 package makeless_go_queue
 
-type Item interface {
+type Node interface {
 	GetData() interface{}
-	GetAsync() bool
 }

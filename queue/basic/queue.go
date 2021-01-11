@@ -8,8 +8,37 @@ import (
 type Queue struct {
 	Context context.Context
 
-	*sync.Map
+	head *Node
+	tail *Node
 	*sync.RWMutex
+}
+
+func (queue *Queue) getHead() *Node {
+	queue.RLock()
+	defer queue.RUnlock()
+
+	return queue.head
+}
+
+func (queue *Queue) setHead(head *Node) {
+	queue.Lock()
+	defer queue.Unlock()
+
+	queue.head = head
+}
+
+func (queue *Queue) getTail() *Node {
+	queue.RLock()
+	defer queue.RUnlock()
+
+	return queue.tail
+}
+
+func (queue *Queue) setTail(tail *Node) {
+	queue.Lock()
+	defer queue.Unlock()
+
+	queue.tail = tail
 }
 
 func (queue *Queue) GetContext() context.Context {
@@ -19,24 +48,24 @@ func (queue *Queue) GetContext() context.Context {
 	return queue.Context
 }
 
-func (queue *Queue) Push(channel string, item *Item) error {
-	list, exists := queue.Load(channel)
-
-	if list == nil || !exists {
-		list = make([]*Item, 0)
+func (queue *Queue) Add(node *Node) error {
+	if queue.getTail() != nil {
+		queue.getTail().setNext(node)
 	}
 
-	list = append(list.([]*Item), item)
-	queue.Store(channel, list)
+	queue.setTail(node)
+
+	if queue.getHead() == nil {
+		queue.setHead(node)
+	}
+
 	return nil
 }
 
-func (queue *Queue) Pop(channel string) (*Item, error) {
-	list, exists := queue.Load(channel)
+func (queue *Queue) Remove() (*Node, error) {
+	return nil, nil
+}
 
-	if list == nil || !exists {
-		return nil, nil
-	}
-
-	return list.([]*Item)[len(list.([]*Item))-1], nil
+func (queue *Queue) Empty() bool {
+	return queue.getHead() == nil
 }
