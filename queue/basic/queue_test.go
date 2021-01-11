@@ -20,8 +20,14 @@ func TestPush(t *testing.T) {
 	}
 
 	var secondNode = &Node{
-		Data:    0,
+		Data:    1,
 		next:    firstNode,
+		RWMutex: new(sync.RWMutex),
+	}
+
+	var thirdNode = &Node{
+		Data:    2,
+		next:    secondNode,
 		RWMutex: new(sync.RWMutex),
 	}
 
@@ -41,10 +47,10 @@ func TestPush(t *testing.T) {
 		},
 		{
 			Queue:        queue,
-			Node:         secondNode,
+			Node:         thirdNode,
 			Err:          nil,
 			ExpectedHead: firstNode,
-			ExpectedTail: secondNode,
+			ExpectedTail: thirdNode,
 		},
 	}
 
