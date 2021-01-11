@@ -6,6 +6,7 @@ import (
 	"github.com/makeless/makeless-go/mailer"
 	"github.com/makeless/makeless-go/model"
 	"github.com/makeless/makeless-go/struct"
+	"github.com/makeless/makeless-go/security"
 	h "net/http"
 	"sync"
 )
@@ -14,6 +15,7 @@ func (makeless *Makeless) register(http makeless_go_http.Http) error {
 	http.GetRouter().GetEngine().POST("/api/register", func(c *gin.Context) {
 		var err error
 		var token string
+		var userExists bool
 		var mail makeless_go_mailer.Mail
 		var verified = false
 		var register = &_struct.Register{
@@ -40,6 +42,16 @@ func (makeless *Makeless) register(http makeless_go_http.Http) error {
 				RWMutex:  new(sync.RWMutex),
 			},
 			RWMutex: new(sync.RWMutex),
+		}
+
+		if userExists, err = http.GetSecurity().UserExists(http.GetSecurity().GetDatabase().GetConnection(), "email", *user.Email); err != nil {
+			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
+			return
+		}
+
+		if userExists {
+			c.AbortWithStatusJSON(h.StatusBadRequest, http.Response(makeless_go_security.UserAlreadyExists, nil))
+			return
 		}
 
 		if user, err = http.GetSecurity().Register(http.GetSecurity().GetDatabase().GetConnection(), user); err != nil {
