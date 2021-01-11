@@ -6,9 +6,9 @@ import (
 )
 
 type Attachment struct {
-	Filename string
-	Data     []byte
-	Headers  textproto.MIMEHeader
+	Filename string               `json:"filename"`
+	Data     []byte               `json:"data"`
+	Headers  textproto.MIMEHeader `json:"headers"`
 	*sync.RWMutex
 }
 

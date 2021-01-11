@@ -8,15 +8,15 @@ import (
 )
 
 type Mail struct {
-	To          []string
-	Cc          []string
-	Bcc         []string
-	From        string
-	Subject     string
-	Message     []byte
-	HtmlMessage []byte
-	Attachments []makeless_go_mailer.Attachment
-	Headers     textproto.MIMEHeader
+	To          []string                        `json:"to"`
+	Cc          []string                        `json:"cc"`
+	Bcc         []string                        `json:"bcc"`
+	From        string                          `json:"from"`
+	Subject     string                          `json:"subject"`
+	Message     []byte                          `json:"message"`
+	HtmlMessage []byte                          `json:"htmlMessage"`
+	Attachments []makeless_go_mailer.Attachment `json:"attachments"`
+	Headers     textproto.MIMEHeader            `json:"headers"`
 
 	*sync.RWMutex
 }
