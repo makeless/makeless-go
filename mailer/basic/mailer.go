@@ -9,10 +9,13 @@ import (
 
 	"github.com/jordan-wright/email"
 	"github.com/makeless/makeless-go/mailer"
+	"github.com/makeless/makeless-go/queue"
+	"github.com/makeless/makeless-go/queue/basic"
 )
 
 type Mailer struct {
 	Handlers map[string]func(data map[string]interface{}) (makeless_go_mailer.Mail, error)
+	Queue    makeless_go_queue.Queue
 	Auth     smtp.Auth
 	Tls      *tls.Config
 	Host     string
@@ -58,6 +61,13 @@ func (mailer *Mailer) GetMail(name string, data map[string]interface{}) (makeles
 	}
 
 	return handler(data)
+}
+
+func (mailer *Mailer) GetQueue() makeless_go_queue.Queue {
+	mailer.RLock()
+	defer mailer.RUnlock()
+
+	return mailer.Queue
 }
 
 func (mailer *Mailer) GetAuth() smtp.Auth {
@@ -154,4 +164,11 @@ func (mailer *Mailer) Send(ctx context.Context, mail makeless_go_mailer.Mail) er
 	}
 
 	return e.SendWithTLS(fmt.Sprintf("%s:%s", mailer.GetHost(), mailer.GetPort()), mailer.GetAuth(), mailer.GetTls())
+}
+
+func (mailer *Mailer) SendQueue(mail Mail) error {
+	return mailer.GetQueue().Add(&basic.Node{
+		Data:    mail,
+		RWMutex: new(sync.RWMutex),
+	})
 }

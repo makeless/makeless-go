@@ -175,7 +175,7 @@ func (makeless *Makeless) registerTeamInvitation(http makeless_go_http.Http) err
 				return
 			}
 
-			if err = http.GetMailer().Send(c, mail); err != nil {
+			if err = http.GetMailer().SendQueue(mail); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

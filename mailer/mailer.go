@@ -11,4 +11,5 @@ type Mailer interface {
 	SetHandler(name string, handler func(data map[string]interface{}) (Mail, error))
 	GetMail(name string, data map[string]interface{}) (Mail, error)
 	Send(ctx context.Context, mail Mail) error
+	SendQueue(mail Mail) error
 }

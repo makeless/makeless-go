@@ -5,8 +5,8 @@ import (
 	"github.com/makeless/makeless-go/http"
 	"github.com/makeless/makeless-go/mailer"
 	"github.com/makeless/makeless-go/model"
-	"github.com/makeless/makeless-go/struct"
 	"github.com/makeless/makeless-go/security"
+	"github.com/makeless/makeless-go/struct"
 	h "net/http"
 	"sync"
 )
@@ -70,7 +70,7 @@ func (makeless *Makeless) register(http makeless_go_http.Http) error {
 			return
 		}
 
-		if err = http.GetMailer().Send(c, mail); err != nil {
+		if err = http.GetMailer().SendQueue(mail); err != nil {
 			c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 			return
 		}

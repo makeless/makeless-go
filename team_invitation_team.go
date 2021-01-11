@@ -136,7 +136,7 @@ func (makeless *Makeless) createTeamInvitationsTeam(http makeless_go_http.Http) 
 					return
 				}
 
-				if err = http.GetMailer().Send(c, mail); err != nil {
+				if err = http.GetMailer().SendQueue(mail); err != nil {
 					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 					return
 				}
@@ -212,7 +212,7 @@ func (makeless *Makeless) resendTeamInvitationTeam(http makeless_go_http.Http) e
 				return
 			}
 
-			if err = http.GetMailer().Send(c, mail); err != nil {
+			if err = http.GetMailer().SendQueue(mail); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}
