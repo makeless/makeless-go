@@ -1,4 +1,4 @@
-package basic
+package makeless_go_queue_basic
 
 import (
 	"context"

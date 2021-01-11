@@ -167,7 +167,7 @@ func (mailer *Mailer) Send(ctx context.Context, mail makeless_go_mailer.Mail) er
 }
 
 func (mailer *Mailer) SendQueue(mail Mail) error {
-	return mailer.GetQueue().Add(&basic.Node{
+	return mailer.GetQueue().Add(&makeless_go_queue_basic.Node{
 		Data:    mail,
 		RWMutex: new(sync.RWMutex),
 	})
