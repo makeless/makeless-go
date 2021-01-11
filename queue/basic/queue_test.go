@@ -2,6 +2,7 @@ package makeless_go_queue_basic
 
 import (
 	"context"
+	"github.com/makeless/makeless-go/queue"
 	"github.com/stretchr/testify/assert"
 	"sync"
 	"testing"
@@ -33,10 +34,10 @@ func TestAdd(t *testing.T) {
 
 	tests := []struct {
 		Queue        *Queue
-		Node         *Node
+		Node         makeless_go_queue.Node
 		Err          error
-		ExpectedHead *Node
-		ExpectedTail *Node
+		ExpectedHead makeless_go_queue.Node
+		ExpectedTail makeless_go_queue.Node
 	}{
 		{
 			Queue:        queue,
