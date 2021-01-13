@@ -14,6 +14,10 @@ type Queue struct {
 	*sync.RWMutex
 }
 
+func (queue *Queue) Init() error {
+	return nil
+}
+
 func (queue *Queue) getHead() makeless_go_queue.Node {
 	queue.RLock()
 	defer queue.RUnlock()
