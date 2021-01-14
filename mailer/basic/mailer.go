@@ -166,7 +166,7 @@ func (mailer *Mailer) Send(ctx context.Context, mail makeless_go_mailer.Mail) er
 	return e.SendWithTLS(fmt.Sprintf("%s:%s", mailer.GetHost(), mailer.GetPort()), mailer.GetAuth(), mailer.GetTls())
 }
 
-func (mailer *Mailer) SendQueue(mail Mail) error {
+func (mailer *Mailer) SendQueue(mail makeless_go_mailer.Mail) error {
 	return mailer.GetQueue().Add(&makeless_go_queue_basic.Node{
 		Data:    mail,
 		RWMutex: new(sync.RWMutex),
