@@ -3,6 +3,7 @@ package makeless_go_mailer_basic
 import (
 	"context"
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
 	"net/smtp"
 	"sync"
@@ -167,8 +168,14 @@ func (mailer *Mailer) Send(ctx context.Context, mail makeless_go_mailer.Mail) er
 }
 
 func (mailer *Mailer) SendQueue(mail makeless_go_mailer.Mail) error {
+	bytes, err := json.Marshal(mail)
+
+	if err != nil {
+		return err
+	}
+
 	return mailer.GetQueue().Add(&makeless_go_queue_basic.Node{
-		Data:    mail,
+		Data:    bytes,
 		RWMutex: new(sync.RWMutex),
 	})
 }

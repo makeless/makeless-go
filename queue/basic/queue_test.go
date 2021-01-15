@@ -15,19 +15,19 @@ func TestAdd(t *testing.T) {
 	}
 
 	var firstNode = &Node{
-		Data:    0,
+		Data:    []byte("0"),
 		next:    nil,
 		RWMutex: new(sync.RWMutex),
 	}
 
 	var secondNode = &Node{
-		Data:    1,
+		Data:    []byte("1"),
 		next:    firstNode,
 		RWMutex: new(sync.RWMutex),
 	}
 
 	var thirdNode = &Node{
-		Data:    2,
+		Data:    []byte("2"),
 		next:    secondNode,
 		RWMutex: new(sync.RWMutex),
 	}
