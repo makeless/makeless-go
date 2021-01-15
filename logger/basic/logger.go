@@ -1,6 +1,8 @@
 package makeless_go_logger_basic
 
-import "log"
+import (
+	"log"
+)
 
 type Logger struct {
 }

@@ -34,7 +34,7 @@ Makeless - SaaS Framework - Golang Implementation
 
 ## Usage
 
-Demo [main.go](https://github.com/makeless/makeless-demo/blob/master/backend/src/main.go)
+Demo [main.go](https://github.com/makeless/makeless-demo/blob/master/backend/main.go)
 
 ## Config
 
