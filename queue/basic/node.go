@@ -6,13 +6,13 @@ import (
 )
 
 type Node struct {
-	Data interface{}
+	Data []byte
 
 	next makeless_go_queue.Node
 	*sync.RWMutex
 }
 
-func (node *Node) GetData() interface{} {
+func (node *Node) GetData() []byte {
 	node.RLock()
 	defer node.RUnlock()
 
