@@ -68,6 +68,10 @@ func (makeless *Makeless) Init(dialector gorm.Dialector, path string) error {
 		return err
 	}
 
+	if err := makeless.GetMailer().GetQueue().Init(); err != nil {
+		return err
+	}
+
 	if err := makeless.GetMailer().Init(); err != nil {
 		return err
 	}
