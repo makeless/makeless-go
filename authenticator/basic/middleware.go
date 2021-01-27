@@ -19,10 +19,12 @@ func (authenticator *Authenticator) CreateMiddleware() error {
 		Unauthorized:    authenticator.UnauthorizedHandler,
 		TimeFunc:        time.Now,
 		SendCookie:      true,
-		SecureCookie:    false, //non HTTPS dev environments
+		SecureCookie:    authenticator.GetSecureCookie(),
 		CookieHTTPOnly:  true,
 		CookieName:      "jwt",
 		TokenLookup:     "cookie:jwt",
+		CookieDomain:    authenticator.GetCookieDomain(),
+		CookieSameSite:  authenticator.GetCookieSameSite(),
 	})
 
 	if err != nil {

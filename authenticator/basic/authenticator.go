@@ -3,18 +3,22 @@ package makeless_go_authenticator_basic
 import (
 	"github.com/appleboy/gin-jwt/v2"
 	"github.com/makeless/makeless-go/security"
+	"net/http"
 	"sync"
 	"time"
 )
 
 type Authenticator struct {
-	Middlware   *jwt.GinJWTMiddleware
-	Security    makeless_go_security.Security
-	Realm       string
-	Key         string
-	Timeout     time.Duration
-	MaxRefresh  time.Duration
-	IdentityKey string
+	Middlware      *jwt.GinJWTMiddleware
+	Security       makeless_go_security.Security
+	Realm          string
+	Key            string
+	Timeout        time.Duration
+	MaxRefresh     time.Duration
+	IdentityKey    string
+	SecureCookie   bool
+	CookieDomain   string
+	CookieSameSite http.SameSite
 	*sync.RWMutex
 }
 
@@ -72,4 +76,25 @@ func (authenticator *Authenticator) GetIdentityKey() string {
 	defer authenticator.RUnlock()
 
 	return authenticator.Key
+}
+
+func (authenticator *Authenticator) GetSecureCookie() bool {
+	authenticator.RLock()
+	defer authenticator.RUnlock()
+
+	return authenticator.SecureCookie
+}
+
+func (authenticator *Authenticator) GetCookieDomain() string {
+	authenticator.RLock()
+	defer authenticator.RUnlock()
+
+	return authenticator.CookieDomain
+}
+
+func (authenticator *Authenticator) GetCookieSameSite() http.SameSite {
+	authenticator.RLock()
+	defer authenticator.RUnlock()
+
+	return authenticator.CookieSameSite
 }
