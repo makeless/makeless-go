@@ -22,6 +22,7 @@ type Http interface {
 	GetMailer() makeless_go_mailer.Mailer
 	GetTls() makeless_go_tls.Tls
 	GetOrigins() []string
+	GetOriginsFunc() func(origin string) bool
 	GetHeaders() []string
 	GetPort() string
 	GetMode() string

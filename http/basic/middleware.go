@@ -13,9 +13,10 @@ import (
 	"sync"
 )
 
-func (http *Http) CorsMiddleware(Origins []string, AllowHeaders []string) gin.HandlerFunc {
+func (http *Http) CorsMiddleware(Origins []string, OriginsFunc func(origin string) bool, AllowHeaders []string) gin.HandlerFunc {
 	config := cors.DefaultConfig()
 	config.AllowOrigins = Origins
+	config.AllowOriginFunc = OriginsFunc
 	config.AllowCredentials = true
 	config.AddAllowHeaders(AllowHeaders...)
 

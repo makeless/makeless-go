@@ -23,6 +23,7 @@ type Http struct {
 	Mailer        makeless_go_mailer.Mailer
 	Tls           makeless_go_tls.Tls
 	Origins       []string
+	OriginsFunc   func(origin string) bool
 	Headers       []string
 	Port          string
 	Mode          string
@@ -97,6 +98,13 @@ func (http *Http) GetOrigins() []string {
 	defer http.RUnlock()
 
 	return http.Origins
+}
+
+func (http *Http) GetOriginsFunc() func(origin string) bool {
+	http.RLock()
+	defer http.RUnlock()
+
+	return http.OriginsFunc
 }
 
 func (http *Http) GetHeaders() []string {

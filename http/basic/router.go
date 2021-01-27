@@ -13,7 +13,7 @@ type Router struct {
 
 func (router *Router) Init(http makeless_go_http.Http) error {
 	r := gin.Default()
-	r.Use(http.CorsMiddleware(http.GetOrigins(), http.GetHeaders()))
+	r.Use(http.CorsMiddleware(http.GetOrigins(), http.GetOriginsFunc(), http.GetHeaders()))
 
 	router.SetEngine(r)
 	return nil
