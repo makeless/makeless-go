@@ -25,7 +25,7 @@ func (hub *Hub) GetUser(userId uint) *sync.Map {
 	return nil
 }
 
-func (hub *Hub) GetClient(userId uint, clientId uint) chan sse.Event {
+func (hub *Hub) GetClient(userId uint, clientId string) chan sse.Event {
 	var user = hub.GetUser(userId)
 	var client interface{}
 
@@ -40,7 +40,7 @@ func (hub *Hub) GetClient(userId uint, clientId uint) chan sse.Event {
 	return client.(chan sse.Event)
 }
 
-func (hub *Hub) DeleteClient(userId uint, clientId uint) {
+func (hub *Hub) DeleteClient(userId uint, clientId string) {
 	var user = hub.GetUser(userId)
 	var client = hub.GetClient(userId, clientId)
 
@@ -52,7 +52,7 @@ func (hub *Hub) DeleteClient(userId uint, clientId uint) {
 	user.Delete(clientId)
 }
 
-func (hub *Hub) NewClient(userId uint, clientId uint) {
+func (hub *Hub) NewClient(userId uint, clientId string) {
 	var user, _ = hub.GetList().LoadOrStore(userId, new(sync.Map))
 	user.(*sync.Map).Store(clientId, make(chan sse.Event))
 }

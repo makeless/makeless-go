@@ -2,9 +2,9 @@ package makeless_go_event_basic
 
 import (
 	"github.com/gin-contrib/sse"
+	"github.com/google/uuid"
 	"github.com/makeless/makeless-go/event"
 	"sync"
-	"time"
 )
 
 type Event struct {
@@ -31,15 +31,15 @@ func (event *Event) GetError() chan error {
 	return event.Error
 }
 
-func (event *Event) NewClientId() uint {
-	return uint(time.Now().Unix())
+func (event *Event) NewClientId() string {
+	return uuid.NewString()
 }
 
-func (event *Event) Subscribe(userId uint, clientId uint) {
+func (event *Event) Subscribe(userId uint, clientId string) {
 	event.GetHub().NewClient(userId, clientId)
 }
 
-func (event *Event) Unsubscribe(userId uint, clientId uint) {
+func (event *Event) Unsubscribe(userId uint, clientId string) {
 	event.GetHub().DeleteClient(userId, clientId)
 }
 
@@ -85,7 +85,7 @@ func (event *Event) Broadcast(channel string, id string, data interface{}) error
 	return err
 }
 
-func (event *Event) Listen(userId uint, clientId uint) chan sse.Event {
+func (event *Event) Listen(userId uint, clientId string) chan sse.Event {
 	return event.GetHub().GetClient(userId, clientId)
 }
 
