@@ -1,6 +1,6 @@
 # Makeless
 
-Makeless - SaaS Framework - Golang Implementation
+Makeless - SaaS Ecosystem - Golang Implementation
 
 [![License](https://img.shields.io/badge/license-polyform:noncommercial-blue)](https://polyformproject.org/licenses/noncommercial/1.0.0/)
 [![Build Status](https://ci.loeffel.io/api/badges/makeless/makeless-go/status.svg)](https://ci.loeffel.io/makeless/makeless-go)
