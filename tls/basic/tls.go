@@ -1,6 +1,9 @@
 package makeless_go_tls_basic
 
-import "sync"
+import (
+	"github.com/makeless/makeless-go/http"
+	"sync"
+)
 
 type Tls struct {
 	CertPath string
@@ -8,16 +11,20 @@ type Tls struct {
 	*sync.RWMutex
 }
 
-func (tls *Tls) GetCertPath() string {
+func (tls *Tls) getCertPath() string {
 	tls.RLock()
 	defer tls.RUnlock()
 
 	return tls.CertPath
 }
 
-func (tls *Tls) GetKeyPath() string {
+func (tls *Tls) getKeyPath() string {
 	tls.RLock()
 	defer tls.RUnlock()
 
 	return tls.KeyPath
+}
+
+func (tls *Tls) Run(http makeless_go_http.Http) error {
+	return http.GetRouter().GetEngine().RunTLS(":"+http.GetPort(), tls.getCertPath(), tls.getKeyPath())
 }
