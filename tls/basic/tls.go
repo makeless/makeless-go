@@ -1,7 +1,7 @@
 package makeless_go_tls_basic
 
 import (
-	"github.com/makeless/makeless-go/http"
+	"github.com/gin-gonic/gin"
 	"sync"
 )
 
@@ -25,6 +25,6 @@ func (tls *Tls) getKeyPath() string {
 	return tls.KeyPath
 }
 
-func (tls *Tls) Run(http makeless_go_http.Http) error {
-	return http.GetRouter().GetEngine().RunTLS(":"+http.GetPort(), tls.getCertPath(), tls.getKeyPath())
+func (tls *Tls) Run(port string, engine *gin.Engine) error {
+	return engine.RunTLS(":"+port, tls.getCertPath(), tls.getKeyPath())
 }

@@ -1,7 +1,9 @@
 package makeless_go_tls
 
-import "github.com/makeless/makeless-go/http"
+import (
+	"github.com/gin-gonic/gin"
+)
 
 type Tls interface {
-	Run(http makeless_go_http.Http) error
+	Run(port string, engine *gin.Engine) error
 }

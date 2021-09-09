@@ -12,7 +12,7 @@ func (http *Http) Start() error {
 	}
 
 	if http.GetTls() != nil {
-		return http.GetTls().Run(http)
+		return http.GetTls().Run(http.GetPort(), http.GetRouter().GetEngine())
 	}
 
 	return http.GetRouter().GetEngine().Run(":" + http.GetPort())
