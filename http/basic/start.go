@@ -6,6 +6,10 @@ func (http *Http) Start() error {
 	}
 
 	for _, handler := range http.GetHandlers() {
+		if handler == nil {
+			continue
+		}
+
 		if err := handler(http); err != nil {
 			return err
 		}
