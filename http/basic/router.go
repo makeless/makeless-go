@@ -12,6 +12,7 @@ type Router struct {
 }
 
 func (router *Router) Init(http makeless_go_http.Http) error {
+	gin.SetMode(http.GetMode())
 	r := gin.Default()
 	r.Use(http.CorsMiddleware(http.GetOrigins(), http.GetOriginsFunc(), http.GetHeaders()))
 

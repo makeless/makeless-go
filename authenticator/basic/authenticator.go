@@ -2,6 +2,7 @@ package makeless_go_authenticator_basic
 
 import (
 	"github.com/appleboy/gin-jwt/v2"
+	"github.com/gin-gonic/gin"
 	"github.com/makeless/makeless-go/security"
 	"net/http"
 	"sync"
@@ -34,6 +35,10 @@ func (authenticator *Authenticator) GetMiddleware() *jwt.GinJWTMiddleware {
 	defer authenticator.RUnlock()
 
 	return authenticator.Middlware
+}
+
+func (authenticator *Authenticator) AuthMiddleware() gin.HandlerFunc {
+	return authenticator.GetMiddleware().MiddlewareFunc()
 }
 
 func (authenticator *Authenticator) GetSecurity() makeless_go_security.Security {

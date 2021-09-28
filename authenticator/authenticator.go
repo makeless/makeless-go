@@ -12,6 +12,7 @@ type Authenticator interface {
 	SetMiddleware(middleware *jwt.GinJWTMiddleware)
 	GetMiddleware() *jwt.GinJWTMiddleware
 	CreateMiddleware() error
+	AuthMiddleware() gin.HandlerFunc
 	GetSecurity() makeless_go_security.Security
 	GetRealm() string
 	GetKey() []byte
