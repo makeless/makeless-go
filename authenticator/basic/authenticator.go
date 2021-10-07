@@ -77,10 +77,7 @@ func (authenticator *Authenticator) GetMaxRefresh() time.Duration {
 }
 
 func (authenticator *Authenticator) GetIdentityKey() string {
-	authenticator.RLock()
-	defer authenticator.RUnlock()
-
-	return authenticator.Key
+	return "id"
 }
 
 func (authenticator *Authenticator) GetSecureCookie() bool {
