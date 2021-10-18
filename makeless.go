@@ -140,8 +140,8 @@ func (makeless *Makeless) Init(dialector gorm.Dialector, path string) error {
 		}
 	}
 
-	makeless.SetMail("emailVerification", makeless.mailEmailVerification)
-	makeless.SetMail("passwordRequest", makeless.mailPasswordRequest)
+	makeless.SetMail("emailVerification", makeless.MailEmailVerification)
+	makeless.SetMail("passwordRequest", makeless.MailPasswordRequest)
 
 	if makeless.GetConfig().GetConfiguration().GetTeams() != nil {
 		makeless.SetMail("teamInvitation", makeless.mailTeamInvitation)
