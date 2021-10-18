@@ -10,7 +10,7 @@ import (
 	"github.com/matcornic/hermes/v2"
 )
 
-func (makeless *Makeless) MailPasswordRequest(data map[string]interface{}) (makeless_go_mailer.Mail, error) {
+func (makeless *Makeless) mailPasswordRequest(data map[string]interface{}) (makeless_go_mailer.Mail, error) {
 	var err error
 	var message, messageHtml string
 	var passwordRequest = data["passwordRequest"].(*makeless_go_model.PasswordRequest)
