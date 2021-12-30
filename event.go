@@ -35,7 +35,7 @@ func (makeless *Makeless) events(http makeless_go_http.Http) error {
 					sseEvent := sse.Event{
 						Event: event.GetChannel(),
 						Retry: 3,
-						Data:  event.GetData(),
+						Data:  event,
 					}
 
 					if err := sse.Encode(w, sseEvent); err != nil {
