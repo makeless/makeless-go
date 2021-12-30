@@ -62,6 +62,7 @@ func (event *Event) Trigger(userId uint, channel string, id string, data interfa
 			Channel: channel,
 			Id:      id,
 			Data:    data,
+			RWMutex: new(sync.RWMutex),
 		}
 
 		return true
