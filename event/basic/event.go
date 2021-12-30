@@ -1,13 +1,13 @@
 package makeless_go_event_basic
 
 import (
-	"github.com/gin-contrib/sse"
 	"github.com/google/uuid"
 	"github.com/makeless/makeless-go/event"
 	"sync"
 )
 
 type Event struct {
+	Name  string
 	Hub   makeless_go_event.Hub
 	Error chan error
 	*sync.RWMutex
@@ -15,6 +15,13 @@ type Event struct {
 
 func (event *Event) Init() error {
 	return nil
+}
+
+func (event *Event) GetName() string {
+	event.RLock()
+	defer event.RUnlock()
+
+	return event.Name
 }
 
 func (event *Event) GetHub() makeless_go_event.Hub {
@@ -51,14 +58,10 @@ func (event *Event) Trigger(userId uint, channel string, id string, data interfa
 	}
 
 	user.Range(func(clientId, client interface{}) bool {
-		client.(chan sse.Event) <- sse.Event{
-			Event: channel,
-			Retry: 3,
-			Data: &EventData{
-				Id:      id,
-				Data:    data,
-				RWMutex: new(sync.RWMutex),
-			},
+		client.(chan makeless_go_event.EventData) <- &EventData{
+			Channel: channel,
+			Id:      id,
+			Data:    data,
 		}
 
 		return true
@@ -85,7 +88,7 @@ func (event *Event) Broadcast(channel string, id string, data interface{}) error
 	return err
 }
 
-func (event *Event) Listen(userId uint, clientId string) chan sse.Event {
+func (event *Event) Listen(userId uint, clientId string) chan makeless_go_event.EventData {
 	return event.GetHub().GetClient(userId, clientId)
 }
 

@@ -1,9 +1,8 @@
 package makeless_go_event
 
-import "github.com/gin-contrib/sse"
-
 type Event interface {
 	Init() error
+	GetName() string
 	NewClientId() string
 	GetHub() Hub
 	Subscribe(userId uint, clientId string)
@@ -11,6 +10,6 @@ type Event interface {
 	Trigger(userId uint, channel string, id string, data interface{}) error
 	TriggerError(err error)
 	Broadcast(channel string, id string, data interface{}) error
-	Listen(userId uint, clientId string) chan sse.Event
+	Listen(userId uint, clientId string) chan EventData
 	ListenError() chan error
 }

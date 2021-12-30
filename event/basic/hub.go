@@ -1,7 +1,7 @@
 package makeless_go_event_basic
 
 import (
-	"github.com/gin-contrib/sse"
+	"github.com/makeless/makeless-go/event"
 	"sync"
 )
 
@@ -25,7 +25,7 @@ func (hub *Hub) GetUser(userId uint) *sync.Map {
 	return nil
 }
 
-func (hub *Hub) GetClient(userId uint, clientId string) chan sse.Event {
+func (hub *Hub) GetClient(userId uint, clientId string) chan makeless_go_event.EventData {
 	var user = hub.GetUser(userId)
 	var client interface{}
 
@@ -37,7 +37,7 @@ func (hub *Hub) GetClient(userId uint, clientId string) chan sse.Event {
 		return nil
 	}
 
-	return client.(chan sse.Event)
+	return client.(chan makeless_go_event.EventData)
 }
 
 func (hub *Hub) DeleteClient(userId uint, clientId string) {
@@ -54,5 +54,5 @@ func (hub *Hub) DeleteClient(userId uint, clientId string) {
 
 func (hub *Hub) NewClient(userId uint, clientId string) {
 	var user, _ = hub.GetList().LoadOrStore(userId, new(sync.Map))
-	user.(*sync.Map).Store(clientId, make(chan sse.Event))
+	user.(*sync.Map).Store(clientId, make(chan makeless_go_event.EventData))
 }
