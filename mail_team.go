@@ -9,7 +9,7 @@ import (
 	"sync"
 )
 
-func (makeless *Makeless) MailTeamInvitation(data map[string]interface{}) (makeless_go_mailer.Mail, error) {
+func (makeless *Makeless) mailTeamInvitation(data map[string]interface{}) (makeless_go_mailer.Mail, error) {
 	var err error
 	var name, link, message, messageHtml string
 	var user = data["user"].(*makeless_go_model.User)
