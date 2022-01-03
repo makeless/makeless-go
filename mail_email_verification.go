@@ -9,7 +9,7 @@ import (
 	"sync"
 )
 
-func (makeless *Makeless) mailEmailVerification(data map[string]interface{}) (makeless_go_mailer.Mail, error) {
+func (makeless *Makeless) MailEmailVerification(data map[string]interface{}) (makeless_go_mailer.Mail, error) {
 	var err error
 	var message, messageHtml string
 	var user = data["user"].(*makeless_go_model.User)
