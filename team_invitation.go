@@ -168,9 +168,12 @@ func (makeless *Makeless) registerTeamInvitation(http makeless_go_http.Http) err
 				return
 			}
 
-			if mail, err = http.GetMailer().GetMail("emailVerification", map[string]interface{}{
-				"user": user,
-			}); err != nil {
+			if mail, err = http.GetMailer().GetMail(
+				"emailVerification", map[string]interface{}{
+					"user": user,
+				},
+				makeless.GetConfig().GetConfiguration().GetLocale(),
+			); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

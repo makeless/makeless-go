@@ -4,4 +4,5 @@ type MailText interface {
 	GetGreeting() string
 	GetSignature() string
 	GetCopyright() string
+	GetTroubleText() string
 }

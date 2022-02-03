@@ -58,9 +58,13 @@ func (makeless *Makeless) passwordRequest(http makeless_go_http.Http) error {
 				return
 			}
 
-			if mail, err = http.GetMailer().GetMail("passwordRequest", map[string]interface{}{
-				"passwordRequest": passwordRequest,
-			}); err != nil {
+			if mail, err = http.GetMailer().GetMail(
+				"passwordRequest",
+				map[string]interface{}{
+					"passwordRequest": passwordRequest,
+				},
+				makeless.GetConfig().GetConfiguration().GetLocale(),
+			); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

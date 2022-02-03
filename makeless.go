@@ -59,7 +59,7 @@ func (makeless *Makeless) SetRoute(name string, handler func(http makeless_go_ht
 	makeless.GetHttp().SetHandler(name, handler)
 }
 
-func (makeless *Makeless) SetMail(name string, handler func(data map[string]interface{}) (makeless_go_mailer.Mail, error)) {
+func (makeless *Makeless) SetMail(name string, handler func(data map[string]interface{}, locale string) (makeless_go_mailer.Mail, error)) {
 	makeless.GetMailer().SetHandler(name, handler)
 }
 

@@ -101,12 +101,15 @@ func (makeless *Makeless) createTeam(http makeless_go_http.Http) error {
 					return
 				}
 
-				if mail, err = http.GetMailer().GetMail("teamInvitation", map[string]interface{}{
-					"user":           user,
-					"userInvited":    userInvited,
-					"teamName":       *teamCreate.GetName(),
-					"teamInvitation": teamInvitations[i],
-				}); err != nil {
+				if mail, err = http.GetMailer().GetMail(
+					"teamInvitation", map[string]interface{}{
+						"user":           user,
+						"userInvited":    userInvited,
+						"teamName":       *teamCreate.GetName(),
+						"teamInvitation": teamInvitations[i],
+					},
+					makeless.GetConfig().GetConfiguration().GetLocale(),
+				); err != nil {
 					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 					return
 				}

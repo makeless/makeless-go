@@ -5,17 +5,16 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"net/smtp"
-	"sync"
-
 	"github.com/jordan-wright/email"
 	"github.com/makeless/makeless-go/mailer"
 	"github.com/makeless/makeless-go/queue"
 	"github.com/makeless/makeless-go/queue/basic"
+	"net/smtp"
+	"sync"
 )
 
 type Mailer struct {
-	Handlers map[string]func(data map[string]interface{}) (makeless_go_mailer.Mail, error)
+	Handlers map[string]func(data map[string]interface{}, locale string) (makeless_go_mailer.Mail, error)
 	Queue    makeless_go_queue.Queue
 	Auth     smtp.Auth
 	Tls      *tls.Config
@@ -27,14 +26,14 @@ type Mailer struct {
 	*sync.RWMutex
 }
 
-func (mailer *Mailer) GetHandlers() map[string]func(data map[string]interface{}) (makeless_go_mailer.Mail, error) {
+func (mailer *Mailer) GetHandlers() map[string]func(data map[string]interface{}, locale string) (makeless_go_mailer.Mail, error) {
 	mailer.RLock()
 	defer mailer.RUnlock()
 
 	return mailer.Handlers
 }
 
-func (mailer *Mailer) GetHandler(name string) (func(data map[string]interface{}) (makeless_go_mailer.Mail, error), error) {
+func (mailer *Mailer) GetHandler(name string) (func(data map[string]interface{}, locale string) (makeless_go_mailer.Mail, error), error) {
 	mailer.RLock()
 	defer mailer.RUnlock()
 
@@ -47,21 +46,21 @@ func (mailer *Mailer) GetHandler(name string) (func(data map[string]interface{})
 	return handler, nil
 }
 
-func (mailer *Mailer) SetHandler(name string, handler func(data map[string]interface{}) (makeless_go_mailer.Mail, error)) {
+func (mailer *Mailer) SetHandler(name string, handler func(data map[string]interface{}, locale string) (makeless_go_mailer.Mail, error)) {
 	mailer.Lock()
 	defer mailer.Unlock()
 
 	mailer.Handlers[name] = handler
 }
 
-func (mailer *Mailer) GetMail(name string, data map[string]interface{}) (makeless_go_mailer.Mail, error) {
+func (mailer *Mailer) GetMail(name string, data map[string]interface{}, locale string) (makeless_go_mailer.Mail, error) {
 	handler, err := mailer.GetHandler(name)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return handler(data)
+	return handler(data, locale)
 }
 
 func (mailer *Mailer) GetQueue() makeless_go_queue.Queue {

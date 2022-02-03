@@ -9,7 +9,7 @@ import (
 	"sync"
 )
 
-func (makeless *Makeless) mailEmailVerification(data map[string]interface{}) (makeless_go_mailer.Mail, error) {
+func (makeless *Makeless) mailEmailVerification(data map[string]interface{}, locale string) (makeless_go_mailer.Mail, error) {
 	var err error
 	var message, messageHtml string
 	var user = data["user"].(*makeless_go_model.User)
@@ -23,27 +23,28 @@ func (makeless *Makeless) mailEmailVerification(data map[string]interface{}) (ma
 
 	config := hermes.Hermes{
 		Product: hermes.Product{
-			Name:      makeless.GetConfig().GetConfiguration().GetMail().GetName(),
-			Link:      makeless.GetConfig().GetConfiguration().GetMail().GetLink(),
-			Logo:      makeless.GetConfig().GetConfiguration().GetMail().GetLogo(),
-			Copyright: makeless.GetConfig().GetConfiguration().GetMail().GetTexts(makeless.GetConfig().GetConfiguration().GetLocale()).GetCopyright(),
+			Name:        makeless.GetConfig().GetConfiguration().GetMail().GetName(),
+			Link:        makeless.GetConfig().GetConfiguration().GetMail().GetLink(),
+			Logo:        makeless.GetConfig().GetConfiguration().GetMail().GetLogo(),
+			Copyright:   makeless.GetConfig().GetConfiguration().GetMail().GetTexts(locale).GetCopyright(),
+			TroubleText: makeless.GetConfig().GetConfiguration().GetMail().GetTexts(locale).GetTroubleText(),
 		},
 	}
 
 	email := hermes.Email{
 		Body: hermes.Body{
 			Name:      *user.GetName(),
-			Greeting:  makeless.GetConfig().GetConfiguration().GetMail().GetTexts(makeless.GetConfig().GetConfiguration().GetLocale()).GetGreeting(),
-			Signature: makeless.GetConfig().GetConfiguration().GetMail().GetTexts(makeless.GetConfig().GetConfiguration().GetLocale()).GetSignature(),
+			Greeting:  makeless.GetConfig().GetConfiguration().GetMail().GetTexts(locale).GetGreeting(),
+			Signature: makeless.GetConfig().GetConfiguration().GetMail().GetTexts(locale).GetSignature(),
 			Actions: []hermes.Action{
 				{
 					Instructions: fmt.Sprintf(
 						"%s %s",
-						messages[makeless.GetConfig().GetConfiguration().GetLocale()]["instruction"],
+						messages[locale]["instruction"],
 						*user.GetEmail(),
 					),
 					Button: hermes.Button{
-						Text: messages[makeless.GetConfig().GetConfiguration().GetLocale()]["button"],
+						Text: messages[locale]["button"],
 						Link: fmt.Sprintf(
 							"%s/email-verification?token=%s",
 							makeless.GetConfig().GetConfiguration().GetMail().GetLink(),
@@ -68,7 +69,7 @@ func (makeless *Makeless) mailEmailVerification(data map[string]interface{}) (ma
 	return &makeless_go_mailer_basic.Mail{
 		To:          []string{*user.GetEmail()},
 		From:        makeless.GetConfig().GetConfiguration().GetMail().GetFrom(),
-		Subject:     messages[makeless.GetConfig().GetConfiguration().GetLocale()]["subject"],
+		Subject:     messages[locale]["subject"],
 		Message:     []byte(message),
 		HtmlMessage: []byte(messageHtml),
 		RWMutex:     new(sync.RWMutex),

@@ -126,12 +126,16 @@ func (makeless *Makeless) createTeamInvitationsTeam(http makeless_go_http.Http) 
 					return
 				}
 
-				if mail, err = http.GetMailer().GetMail("teamInvitation", map[string]interface{}{
-					"user":           teamUser.GetUser(),
-					"userInvited":    userInvited,
-					"teamName":       *team.GetName(),
-					"teamInvitation": teamInvitations[i],
-				}); err != nil {
+				if mail, err = http.GetMailer().GetMail(
+					"teamInvitation",
+					map[string]interface{}{
+						"user":           teamUser.GetUser(),
+						"userInvited":    userInvited,
+						"teamName":       *team.GetName(),
+						"teamInvitation": teamInvitations[i],
+					},
+					makeless.GetConfig().GetConfiguration().GetLocale(),
+				); err != nil {
 					c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 					return
 				}
@@ -202,12 +206,16 @@ func (makeless *Makeless) resendTeamInvitationTeam(http makeless_go_http.Http) e
 			teamInvitation.GetTeamUser().GetUser().RWMutex = new(sync.RWMutex)
 			teamInvitation.GetTeam().RWMutex = new(sync.RWMutex)
 
-			if mail, err = http.GetMailer().GetMail("teamInvitation", map[string]interface{}{
-				"user":           teamInvitation.GetTeamUser().GetUser(),
-				"userInvited":    userInvited,
-				"teamName":       *teamInvitation.GetTeam().GetName(),
-				"teamInvitation": teamInvitation,
-			}); err != nil {
+			if mail, err = http.GetMailer().GetMail(
+				"teamInvitation",
+				map[string]interface{}{
+					"user":           teamInvitation.GetTeamUser().GetUser(),
+					"userInvited":    userInvited,
+					"teamName":       *teamInvitation.GetTeam().GetName(),
+					"teamInvitation": teamInvitation,
+				},
+				makeless.GetConfig().GetConfiguration().GetLocale(),
+			); err != nil {
 				c.AbortWithStatusJSON(h.StatusInternalServerError, http.Response(err, nil))
 				return
 			}

@@ -3,9 +3,10 @@ package makeless_go_config_basic
 import "sync"
 
 type MailText struct {
-	Greeting  string `json:"greeting"`
-	Signature string `json:"signature"`
-	Copyright string `json:"copyright"`
+	Greeting    string `json:"greeting"`
+	Signature   string `json:"signature"`
+	Copyright   string `json:"copyright"`
+	TroubleText string `json:"troubleText"`
 	*sync.RWMutex
 }
 
@@ -28,4 +29,11 @@ func (mailText *MailText) GetCopyright() string {
 	defer mailText.RUnlock()
 
 	return mailText.Copyright
+}
+
+func (mailText *MailText) GetTroubleText() string {
+	mailText.RLock()
+	defer mailText.RUnlock()
+
+	return mailText.TroubleText
 }
