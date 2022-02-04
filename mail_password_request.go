@@ -19,6 +19,11 @@ func (makeless *Makeless) mailPasswordRequest(data map[string]interface{}, local
 			"instruction": "to reset your password, please click here:",
 			"button":      "Reset password",
 		},
+		"de": {
+			"subject":     "Passwort zurücksetzen",
+			"instruction": "Bitte hier klicken, um dein Passwort zurückzusetzen:",
+			"button":      "Passwort zurücksetzen",
+		},
 	}
 
 	config := hermes.Hermes{

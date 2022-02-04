@@ -35,6 +35,24 @@ func (makeless *Makeless) mailTeamInvitation(data map[string]interface{}, locale
 			"instruction": "You can accept or decline this invitation. This invitation will expire in 7 days.",
 			"button":      "View invitation",
 		},
+		"de": {
+			"subject": fmt.Sprintf(
+				"%s hat dich zu %s eingeladen.",
+				*user.GetName(),
+				teamName,
+			),
+			"intro": fmt.Sprintf(
+				"%s hat dich zu %s eingeladen.",
+				*user.GetName(),
+				teamName,
+			),
+			"outro": fmt.Sprintf(
+				"Hinweis: Diese Einladung ist für %s vorgesehen. Bitte ignoriere diese Email, falls du keine Einladung erwartest.",
+				*teamInvitation.GetEmail(),
+			),
+			"instruction": "Du kannst die Einladung annehmen oder ablehnen. Die Einladung ist 7 Tage lang gültig.",
+			"button":      "Einladung ansehen",
+		},
 	}
 
 	switch userInvited.GetName() {

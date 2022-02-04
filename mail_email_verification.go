@@ -19,6 +19,11 @@ func (makeless *Makeless) mailEmailVerification(data map[string]interface{}, loc
 			"instruction": "To complete your registration, we just need to verify your email address:",
 			"button":      "Verify email address",
 		},
+		"de": {
+			"subject":     "Bitte verifiziere deine Email Adresse",
+			"instruction": "Bitte verifziere deine Email Adresse, um deine Registrierung abzuschließen:",
+			"button":      "Email Adresse verifizieren",
+		},
 	}
 
 	config := hermes.Hermes{
