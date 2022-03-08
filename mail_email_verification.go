@@ -16,7 +16,7 @@ func (makeless *Makeless) mailEmailVerification(data map[string]interface{}, loc
 	var messages = map[string]map[string]string{
 		"en": {
 			"subject":     "Please verify your email address",
-			"instruction": "To complete your registration, we just need to verify your email address:",
+			"instruction": "to complete your registration, we just need to verify your email address:",
 			"button":      "Verify email address",
 		},
 		"de": {

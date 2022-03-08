@@ -21,7 +21,7 @@ func (makeless *Makeless) mailPasswordRequest(data map[string]interface{}, local
 		},
 		"de": {
 			"subject":     "Passwort zurücksetzen",
-			"instruction": "Bitte hier klicken, um dein Passwort zurückzusetzen:",
+			"instruction": "bitte hier klicken, um dein Passwort zurückzusetzen:",
 			"button":      "Passwort zurücksetzen",
 		},
 	}

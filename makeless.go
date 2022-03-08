@@ -92,6 +92,10 @@ func (makeless *Makeless) Init(dialector gorm.Dialector, path string) error {
 		return err
 	}
 
+	if err := makeless.GetHttp().GetRouter().Init(makeless.GetHttp()); err != nil {
+		return err
+	}
+
 	makeless.SetRoute("ok", makeless.ok)
 	makeless.SetRoute("passwordRequest", makeless.passwordRequest)
 	makeless.SetRoute("passwordReset", makeless.passwordReset)
