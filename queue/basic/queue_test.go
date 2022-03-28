@@ -3,7 +3,7 @@ package makeless_go_queue_basic
 import (
 	"context"
 	"github.com/makeless/makeless-go/queue"
-	"github.com/stretchr/testify/assert"
+	"reflect"
 	"sync"
 	"testing"
 )
@@ -33,43 +33,52 @@ func TestAdd(t *testing.T) {
 	}
 
 	tests := []struct {
-		Queue        *Queue
-		Node         makeless_go_queue.Node
-		Err          error
-		ExpectedHead makeless_go_queue.Node
-		ExpectedTail makeless_go_queue.Node
+		queue        *Queue
+		node         makeless_go_queue.Node
+		err          error
+		expectedHead makeless_go_queue.Node
+		expectedTail makeless_go_queue.Node
 	}{
 		{
-			Queue:        queue,
-			Node:         firstNode,
-			Err:          nil,
-			ExpectedHead: firstNode,
-			ExpectedTail: firstNode,
+			queue:        queue,
+			node:         firstNode,
+			err:          nil,
+			expectedHead: firstNode,
+			expectedTail: firstNode,
 		},
 		{
-			Queue:        queue,
-			Node:         secondNode,
-			Err:          nil,
-			ExpectedHead: firstNode,
-			ExpectedTail: secondNode,
+			queue:        queue,
+			node:         secondNode,
+			err:          nil,
+			expectedHead: firstNode,
+			expectedTail: secondNode,
 		},
 		{
-			Queue:        queue,
-			Node:         thirdNode,
-			Err:          nil,
-			ExpectedHead: firstNode,
-			ExpectedTail: thirdNode,
+			queue:        queue,
+			node:         thirdNode,
+			err:          nil,
+			expectedHead: firstNode,
+			expectedTail: thirdNode,
 		},
 	}
 
 	for i, test := range tests {
-		err := test.Queue.Add(test.Node)
-		assert.Equalf(t, test.Err, err, "%d: error not equal", i)
+		err := test.queue.Add(test.node)
 
-		head := test.Queue.getHead()
-		assert.Equal(t, test.ExpectedHead, head)
+		if err != nil {
+			t.Fatalf("%d: error not equal", i)
+		}
 
-		tail := test.Queue.getTail()
-		assert.Equal(t, test.ExpectedTail, tail)
+		head := test.queue.getHead()
+
+		if !reflect.DeepEqual(head, test.expectedHead) {
+			t.Fatalf("%d: head not equal", i)
+		}
+
+		tail := test.queue.getTail()
+
+		if !reflect.DeepEqual(tail, test.expectedTail) {
+			t.Fatalf("%d: tail not equal", i)
+		}
 	}
 }

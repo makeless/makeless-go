@@ -1,0 +1,33 @@
+syntax = "proto3";
+package protobuf;
+
+option go_package = ".;makeless";
+
+import "validate/validate.proto";
+
+message User{
+  string name = 1;
+  string email = 2;
+}
+
+message CreateUserRequest {
+  string name = 1 [(validate.rules).string = {min_len: 4, max_len: 50}];
+  string email = 2 [(validate.rules).string.email = true];
+  string password = 3 [(validate.rules).string = {min_len: 6, max_len: 50}];
+}
+
+message CreateUserResponse {
+  User user = 1;
+}
+
+message UserRequest {
+}
+
+message UserResponse{
+  User user = 1;
+}
+
+service UserService {
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
+  rpc User(UserRequest) returns (UserResponse) {}
+}
