@@ -1,7 +1,10 @@
 package makeless_go_auth
 
-import "time"
+import (
+	"github.com/google/uuid"
+	"time"
+)
 
 type Auth interface {
-	Sign() (string, time.Time, error)
+	Sign(id uuid.UUID, email string) (string, time.Time, error)
 }
