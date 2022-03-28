@@ -1,4 +1,4 @@
-package makeless_go_service_server_user_basic
+package makeless_go_service_server_auth_basic
 
 import (
 	"context"
