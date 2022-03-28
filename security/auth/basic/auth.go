@@ -27,7 +27,7 @@ func (auth *Auth) Sign(id uuid.UUID, email string) (string, time.Time, error) {
 		Email: email,
 	}
 
-	if token, err = jwt.NewWithClaims(jwt.SigningMethodHS256, claim).SignedString(auth.Key); err != nil {
+	if token, err = jwt.NewWithClaims(jwt.SigningMethodHS256, claim).SignedString([]byte(auth.Key)); err != nil {
 		return "", expireAt, err
 	}
 
