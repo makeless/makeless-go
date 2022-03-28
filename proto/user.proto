@@ -4,10 +4,12 @@ package protobuf;
 option go_package = ".;makeless";
 
 import "validate/validate.proto";
+import "uuid.proto";
 
 message User{
-  string name = 1;
-  string email = 2;
+  Uuid id = 1;
+  string name = 2;
+  string email = 3;
 }
 
 message CreateUserRequest {
