@@ -27,9 +27,7 @@ func (userTransformer *UserTransformer) CreateUserRequestToUser(createUserReques
 // FIXME: Add email verification
 func (userTransformer *UserTransformer) UserToUser(user *makeless_go_model.User) (*makeless.User, error) {
 	return &makeless.User{
-		Id: &makeless.Uuid{
-			Value: []byte(user.Id.String()),
-		},
+		Uuid:  []byte(user.Id.String()),
 		Name:  user.Name,
 		Email: user.Email,
 	}, nil

@@ -1,8 +1,0 @@
-syntax = "proto3";
-package protobuf;
-
-option go_package = ".;makeless";
-
-message Uuid {
-  bytes value = 1;
-}
