@@ -7,6 +7,6 @@ type EmailVerification struct {
 	Token    string `gorm:"unique;not null"`
 	Verified bool   `gorm:"not null"`
 
-	UserId uuid.UUID `gorm:"not null;type:uuid"`
+	UserId uuid.UUID `gorm:"not null"`
 	User   *User
 }

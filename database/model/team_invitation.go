@@ -7,10 +7,10 @@ import (
 
 type TeamInvitation struct {
 	Model
-	TeamId uuid.UUID `gorm:"not null;type:uuid"`
+	TeamId uuid.UUID `gorm:"not null"`
 	Team   *Team
 
-	TeamUserId uuid.UUID `gorm:"not null;type:uuid"`
+	TeamUserId uuid.UUID `gorm:"not null"`
 	TeamUser   *TeamUser
 
 	Email    string    `gorm:"not null"`
