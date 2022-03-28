@@ -12,7 +12,7 @@ import (
 	"github.com/makeless/makeless-go/v2/mail"
 	"github.com/makeless/makeless-go/v2/mailer"
 	"github.com/makeless/makeless-go/v2/proto/basic"
-	makeless_go_crypto "github.com/makeless/makeless-go/v2/security/crypto"
+	"github.com/makeless/makeless-go/v2/security/crypto"
 	"github.com/makeless/makeless-go/v2/security/token"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

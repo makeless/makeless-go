@@ -1,10 +1,12 @@
 package makeless_go_model
 
+import "github.com/google/uuid"
+
 type EmailVerification struct {
 	Model
-	Token    string `basic:"unique;not null"`
-	Verified bool   `basic:"not null"`
+	Token    string `gorm:"unique;not null"`
+	Verified bool   `gorm:"not null"`
 
-	UserId uint `basic:"not null"`
+	UserId uuid.UUID `gorm:"not null;type:uuid"`
 	User   *User
 }

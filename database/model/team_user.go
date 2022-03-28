@@ -1,14 +1,16 @@
 package makeless_go_model
 
+import "github.com/google/uuid"
+
 type TeamUser struct {
 	Model
-	TeamId uint  `basic:"not null"`
-	Team   *Team `json:"team"`
+	TeamId uuid.UUID `gorm:"not null;type:uuid"`
+	Team   *Team     `json:"team"`
 
-	UserId uint  `basic:"not null"`
-	User   *User `json:"user"`
+	UserId uuid.UUID `gorm:"not null;type:uuid"`
+	User   *User     `json:"user"`
 
-	Role string `basic:"not null"`
+	Role string `gorm:"not null"`
 
 	TeamInvitations []*TeamInvitation
 }
