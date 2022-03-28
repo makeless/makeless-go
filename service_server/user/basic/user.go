@@ -12,6 +12,7 @@ import (
 	"github.com/makeless/makeless-go/v2/mail"
 	"github.com/makeless/makeless-go/v2/mailer"
 	"github.com/makeless/makeless-go/v2/proto/basic"
+	makeless_go_crypto "github.com/makeless/makeless-go/v2/security/crypto"
 	"github.com/makeless/makeless-go/v2/security/token"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -23,6 +24,7 @@ type UserServiceServer struct {
 	Config                makeless_go_config.Config
 	Database              makeless_go_database.Database
 	Mailer                makeless_go_mailer.Mailer
+	Crypto                makeless_go_crypto.Crypto
 	UserRepository        makeless_go_repository.UserRepository
 	GenericRepository     makeless_go_repository.GenericRepository
 	UserTransformer       makeless_go_model_transformer.UserTransformer
@@ -51,8 +53,12 @@ func (userServiceServer *UserServiceServer) CreateUser(ctx context.Context, crea
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}
 
-	if !userExists {
+	if userExists {
 		return nil, status.Errorf(codes.AlreadyExists, "%s", user.Email)
+	}
+
+	if user.Password, err = userServiceServer.Crypto.EncryptPassword(user.Password); err != nil {
+		return nil, status.Errorf(codes.Internal, err.Error())
 	}
 
 	if user, err = userServiceServer.UserRepository.CreateUser(userServiceServer.Database.GetConnection().WithContext(ctx), user); err != nil {
