@@ -1,0 +1,37 @@
+syntax = "proto3";
+package protobuf;
+
+option go_package = ".;makeless";
+
+import "validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+
+message LoginRequest {
+  string email = 1 [(validate.rules).string.email = true];
+  string password = 2 [(validate.rules).string = {min_len: 6, max_len: 50}];
+}
+
+message LoginResponse {
+  string token = 1;
+  google.protobuf.Timestamp expireAt = 2;
+}
+
+message LogoutRequest{
+}
+
+message LogoutResponse{
+}
+
+message RefreshRequest{
+}
+
+message RefreshResponse{
+  string token = 1;
+  google.protobuf.Timestamp expireAt = 2;
+}
+
+service AuthService {
+  rpc Login(LoginRequest) returns (LoginResponse) {}
+  rpc Logout(LogoutRequest) returns (LogoutResponse) {}
+  rpc Refresh(RefreshRequest) returns (RefreshResponse) {}
+}

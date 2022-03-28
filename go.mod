@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/envoyproxy/protoc-gen-validate v0.6.7
+	github.com/golang-jwt/jwt/v4 v4.4.1
 	github.com/google/uuid v1.3.0
 	github.com/matcornic/hermes/v2 v2.1.0
 	golang.org/x/crypto v0.0.0-20220321153916-2c7772ba3064
