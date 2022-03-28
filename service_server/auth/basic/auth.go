@@ -41,7 +41,7 @@ func (authServiceServer *AuthServiceServer) Login(ctx context.Context, loginRequ
 		return nil, status.Errorf(codes.Unauthenticated, err.Error())
 	}
 
-	if token, expireAt, err = authServiceServer.Auth.Sign(); err != nil {
+	if token, expireAt, err = authServiceServer.Auth.Sign(user.Id, user.Email); err != nil {
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}
 
