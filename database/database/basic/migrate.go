@@ -1,7 +1,7 @@
 package makeless_go_database_basic
 
 import (
-	"github.com/makeless/makeless-go/database/model"
+	"github.com/makeless/makeless-go/v2/database/model"
 )
 
 func (database *Database) Migrate() error {

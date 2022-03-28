@@ -1,7 +1,7 @@
 package makeless_go_queue_basic
 
 import (
-	"github.com/makeless/makeless-go/queue"
+	"github.com/makeless/makeless-go/v2/queue"
 	"sync"
 )
 

@@ -1,8 +1,8 @@
 package makeless_go_mail
 
 import (
-	"github.com/makeless/makeless-go/config"
-	"github.com/makeless/makeless-go/database/model"
+	"github.com/makeless/makeless-go/v2/config"
+	"github.com/makeless/makeless-go/v2/database/model"
 )
 
 type EmailVerificationMail interface {

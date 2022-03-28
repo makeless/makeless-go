@@ -2,7 +2,7 @@ package makeless_go_event_basic
 
 import (
 	"github.com/google/uuid"
-	"github.com/makeless/makeless-go/event"
+	"github.com/makeless/makeless-go/v2/event"
 	"sync"
 )
 

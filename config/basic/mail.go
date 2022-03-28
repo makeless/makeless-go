@@ -1,7 +1,7 @@
 package makeless_go_config_basic
 
 import (
-	"github.com/makeless/makeless-go/config"
+	"github.com/makeless/makeless-go/v2/config"
 	"sync"
 )
 

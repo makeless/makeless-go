@@ -2,7 +2,7 @@ package makeless_go_service_server_user
 
 import (
 	"context"
-	"github.com/makeless/makeless-go/proto/basic"
+	"github.com/makeless/makeless-go/v2/proto/basic"
 )
 
 type UserServiceServer interface {

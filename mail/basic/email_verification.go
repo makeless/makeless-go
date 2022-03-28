@@ -2,9 +2,9 @@ package makeless_go_mail_basic
 
 import (
 	"fmt"
-	"github.com/makeless/makeless-go/config"
-	"github.com/makeless/makeless-go/database/model"
-	"github.com/makeless/makeless-go/mail"
+	"github.com/makeless/makeless-go/v2/config"
+	"github.com/makeless/makeless-go/v2/database/model"
+	"github.com/makeless/makeless-go/v2/mail"
 	"github.com/matcornic/hermes/v2"
 	"sync"
 )

@@ -1,10 +1,10 @@
 package makeless_go_makeless_basic
 
 import (
-	"github.com/makeless/makeless-go/config"
-	"github.com/makeless/makeless-go/database/database"
-	"github.com/makeless/makeless-go/logger"
-	"github.com/makeless/makeless-go/mailer"
+	"github.com/makeless/makeless-go/v2/config"
+	"github.com/makeless/makeless-go/v2/database/database"
+	"github.com/makeless/makeless-go/v2/logger"
+	"github.com/makeless/makeless-go/v2/mailer"
 	"gorm.io/gorm"
 	"sync"
 )

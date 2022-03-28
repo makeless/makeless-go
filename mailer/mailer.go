@@ -2,8 +2,8 @@ package makeless_go_mailer
 
 import (
 	"context"
-	"github.com/makeless/makeless-go/mail"
-	"github.com/makeless/makeless-go/queue"
+	"github.com/makeless/makeless-go/v2/mail"
+	"github.com/makeless/makeless-go/v2/queue"
 )
 
 type Mailer interface {

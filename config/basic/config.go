@@ -2,7 +2,7 @@ package makeless_go_config_basic
 
 import (
 	"encoding/json"
-	"github.com/makeless/makeless-go/config"
+	"github.com/makeless/makeless-go/v2/config"
 	"io/ioutil"
 	"os"
 	"sync"

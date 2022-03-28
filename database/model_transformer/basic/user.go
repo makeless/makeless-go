@@ -1,8 +1,8 @@
 package makeless_go_model_transformer_basic
 
 import (
-	"github.com/makeless/makeless-go/database/model"
-	"github.com/makeless/makeless-go/proto/basic"
+	"github.com/makeless/makeless-go/v2/database/model"
+	"github.com/makeless/makeless-go/v2/proto/basic"
 	"strings"
 )
 

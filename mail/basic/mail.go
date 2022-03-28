@@ -1,7 +1,7 @@
 package makeless_go_mail_basic
 
 import (
-	"github.com/makeless/makeless-go/mail"
+	"github.com/makeless/makeless-go/v2/mail"
 	"net/textproto"
 	"sync"
 )
