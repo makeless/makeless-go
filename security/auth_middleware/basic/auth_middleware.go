@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/makeless/makeless-go/v2/security/auth"
+	makeless_go_auth_basic "github.com/makeless/makeless-go/v2/security/auth/basic"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
@@ -97,4 +98,14 @@ func (authMiddleware *AuthMiddleware) TokenLookup(ctx context.Context) (string, 
 	}
 
 	return "", false, nil
+}
+
+func (authMiddleware *AuthMiddleware) ClaimFromContext(ctx context.Context) (makeless_go_auth.Claim, error) {
+	var claim *makeless_go_auth_basic.Claim
+
+	if claim = ctx.Value(AuthMiddlewareContextKey{}).(*makeless_go_auth_basic.Claim); claim == nil {
+		return nil, status.Errorf(codes.PermissionDenied, "invalid claim")
+	}
+
+	return claim, nil
 }

@@ -3,7 +3,6 @@ package makeless_go_service_server_user_basic
 import (
 	"context"
 	"errors"
-	"github.com/google/uuid"
 	"github.com/makeless/makeless-go/v2/config"
 	"github.com/makeless/makeless-go/v2/database/database"
 	"github.com/makeless/makeless-go/v2/database/model"
@@ -12,6 +11,8 @@ import (
 	"github.com/makeless/makeless-go/v2/mail"
 	"github.com/makeless/makeless-go/v2/mailer"
 	"github.com/makeless/makeless-go/v2/proto/basic"
+	makeless_go_auth "github.com/makeless/makeless-go/v2/security/auth"
+	"github.com/makeless/makeless-go/v2/security/auth_middleware"
 	"github.com/makeless/makeless-go/v2/security/crypto"
 	"github.com/makeless/makeless-go/v2/security/token"
 	"google.golang.org/grpc/codes"
@@ -25,6 +26,7 @@ type UserServiceServer struct {
 	Database              makeless_go_database.Database
 	Mailer                makeless_go_mailer.Mailer
 	Crypto                makeless_go_crypto.Crypto
+	AuthMiddleware        makeless_go_auth_middleware.AuthMiddleware
 	UserRepository        makeless_go_repository.UserRepository
 	GenericRepository     makeless_go_repository.GenericRepository
 	UserTransformer       makeless_go_model_transformer.UserTransformer
@@ -85,8 +87,14 @@ func (userServiceServer *UserServiceServer) CreateUser(ctx context.Context, crea
 
 func (userServiceServer *UserServiceServer) User(ctx context.Context, userRequest *makeless.UserRequest) (*makeless.UserResponse, error) {
 	var err error
+	var claim makeless_go_auth.Claim
+
+	if claim, err = userServiceServer.AuthMiddleware.ClaimFromContext(ctx); err != nil {
+		return nil, err
+	}
+
 	var user = &makeless_go_model.User{
-		Model: makeless_go_model.Model{Id: uuid.New()},
+		Model: makeless_go_model.Model{Id: claim.GetId()},
 	}
 
 	if user, err = userServiceServer.UserRepository.GetUser(userServiceServer.Database.GetConnection().WithContext(ctx), user); err != nil {

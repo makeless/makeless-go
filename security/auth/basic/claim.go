@@ -10,3 +10,11 @@ type Claim struct {
 	Id    uuid.UUID `json:"id"`
 	Email string    `json:"email"`
 }
+
+func (claim *Claim) GetId() uuid.UUID {
+	return claim.Id
+}
+
+func (claim *Claim) GetEmail() string {
+	return claim.Email
+}
