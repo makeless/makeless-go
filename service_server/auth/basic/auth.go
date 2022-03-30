@@ -9,6 +9,7 @@ import (
 	"github.com/makeless/makeless-go/v2/database/repository"
 	"github.com/makeless/makeless-go/v2/proto/basic"
 	"github.com/makeless/makeless-go/v2/security/auth"
+	"github.com/makeless/makeless-go/v2/security/auth_middleware"
 	"github.com/makeless/makeless-go/v2/security/crypto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -24,6 +25,7 @@ type AuthServiceServer struct {
 	Auth              makeless_go_auth.Auth
 	Database          makeless_go_database.Database
 	Crypto            makeless_go_crypto.Crypto
+	AuthMiddleware    makeless_go_auth_middleware.AuthMiddleware
 	UserRepository    makeless_go_repository.UserRepository
 	GenericRepository makeless_go_repository.GenericRepository
 	UserTransformer   makeless_go_model_transformer.UserTransformer
@@ -74,7 +76,16 @@ func (authServiceServer *AuthServiceServer) Refresh(ctx context.Context, refresh
 	var err error
 	var token string
 	var expireAt time.Time
-	var user *makeless_go_model.User
+	var claim makeless_go_auth.Claim
+
+	if claim, err = authServiceServer.AuthMiddleware.ClaimFromContext(ctx); err != nil {
+		return nil, err
+	}
+
+	var user = &makeless_go_model.User{
+		Model: makeless_go_model.Model{Id: claim.GetId()},
+		Email: claim.GetEmail(),
+	}
 
 	if token, expireAt, err = authServiceServer.Auth.Sign(user.Id, user.Email); err != nil {
 		return nil, status.Errorf(codes.Internal, err.Error())
