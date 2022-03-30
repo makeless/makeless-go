@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
+	makeless_go_auth "github.com/makeless/makeless-go/v2/security/auth"
 	"net/http"
 	"time"
 )
@@ -38,7 +39,7 @@ func (auth *Auth) Sign(id uuid.UUID, email string) (string, time.Time, error) {
 	return token, expireAt, nil
 }
 
-func (auth *Auth) Verify(token string) (*Claim, error) {
+func (auth *Auth) Verify(token string) (makeless_go_auth.Claim, error) {
 	var err error
 	var ok bool
 	var claim = new(Claim)
