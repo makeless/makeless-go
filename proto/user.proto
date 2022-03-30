@@ -30,5 +30,5 @@ message CurrentUserResponse {
 
 service UserService {
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
-  rpc User(CurrentUserRequest) returns (CurrentUserResponse) {}
+  rpc CurrentUser(CurrentUserRequest) returns (CurrentUserResponse) {}
 }

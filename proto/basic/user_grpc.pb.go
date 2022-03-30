@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
-	User(ctx context.Context, in *CurrentUserRequest, opts ...grpc.CallOption) (*CurrentUserResponse, error)
+	CurrentUser(ctx context.Context, in *CurrentUserRequest, opts ...grpc.CallOption) (*CurrentUserResponse, error)
 }
 
 type userServiceClient struct {
@@ -43,9 +43,9 @@ func (c *userServiceClient) CreateUser(ctx context.Context, in *CreateUserReques
 	return out, nil
 }
 
-func (c *userServiceClient) User(ctx context.Context, in *CurrentUserRequest, opts ...grpc.CallOption) (*CurrentUserResponse, error) {
+func (c *userServiceClient) CurrentUser(ctx context.Context, in *CurrentUserRequest, opts ...grpc.CallOption) (*CurrentUserResponse, error) {
 	out := new(CurrentUserResponse)
-	err := c.cc.Invoke(ctx, "/protobuf.UserService/User", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protobuf.UserService/CurrentUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (c *userServiceClient) User(ctx context.Context, in *CurrentUserRequest, op
 // for forward compatibility
 type UserServiceServer interface {
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
-	User(context.Context, *CurrentUserRequest) (*CurrentUserResponse, error)
+	CurrentUser(context.Context, *CurrentUserRequest) (*CurrentUserResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -68,8 +68,8 @@ type UnimplementedUserServiceServer struct {
 func (UnimplementedUserServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
-func (UnimplementedUserServiceServer) User(context.Context, *CurrentUserRequest) (*CurrentUserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method User not implemented")
+func (UnimplementedUserServiceServer) CurrentUser(context.Context, *CurrentUserRequest) (*CurrentUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CurrentUser not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -102,20 +102,20 @@ func _UserService_CreateUser_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_User_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserService_CurrentUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CurrentUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).User(ctx, in)
+		return srv.(UserServiceServer).CurrentUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protobuf.UserService/User",
+		FullMethod: "/protobuf.UserService/CurrentUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).User(ctx, req.(*CurrentUserRequest))
+		return srv.(UserServiceServer).CurrentUser(ctx, req.(*CurrentUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -132,8 +132,8 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_CreateUser_Handler,
 		},
 		{
-			MethodName: "User",
-			Handler:    _UserService_User_Handler,
+			MethodName: "CurrentUser",
+			Handler:    _UserService_CurrentUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
