@@ -8,4 +8,5 @@ import (
 type PasswordServiceServer interface {
 	UpdatePassword(ctx context.Context, updatePasswordRequest *makeless.UpdatePasswordRequest) (*makeless.UpdatePasswordResponse, error)
 	CreatePasswordRequest(ctx context.Context, createPasswordRequestRequest *makeless.CreatePasswordRequestRequest) (*makeless.CreatePasswordRequestResponse, error)
+	ResetPassword(ctx context.Context, resetPasswordRequest *makeless.ResetPasswordRequest) (*makeless.ResetPasswordResponse, error)
 }

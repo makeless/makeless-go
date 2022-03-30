@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type PasswordServiceClient interface {
 	UpdatePassword(ctx context.Context, in *UpdatePasswordRequest, opts ...grpc.CallOption) (*UpdatePasswordResponse, error)
 	CreatePasswordRequest(ctx context.Context, in *CreatePasswordRequestRequest, opts ...grpc.CallOption) (*CreatePasswordRequestResponse, error)
+	ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error)
 }
 
 type passwordServiceClient struct {
@@ -52,12 +53,22 @@ func (c *passwordServiceClient) CreatePasswordRequest(ctx context.Context, in *C
 	return out, nil
 }
 
+func (c *passwordServiceClient) ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error) {
+	out := new(ResetPasswordResponse)
+	err := c.cc.Invoke(ctx, "/protobuf.PasswordService/ResetPassword", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PasswordServiceServer is the server API for PasswordService service.
 // All implementations must embed UnimplementedPasswordServiceServer
 // for forward compatibility
 type PasswordServiceServer interface {
 	UpdatePassword(context.Context, *UpdatePasswordRequest) (*UpdatePasswordResponse, error)
 	CreatePasswordRequest(context.Context, *CreatePasswordRequestRequest) (*CreatePasswordRequestResponse, error)
+	ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordResponse, error)
 	mustEmbedUnimplementedPasswordServiceServer()
 }
 
@@ -70,6 +81,9 @@ func (UnimplementedPasswordServiceServer) UpdatePassword(context.Context, *Updat
 }
 func (UnimplementedPasswordServiceServer) CreatePasswordRequest(context.Context, *CreatePasswordRequestRequest) (*CreatePasswordRequestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePasswordRequest not implemented")
+}
+func (UnimplementedPasswordServiceServer) ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ResetPassword not implemented")
 }
 func (UnimplementedPasswordServiceServer) mustEmbedUnimplementedPasswordServiceServer() {}
 
@@ -120,6 +134,24 @@ func _PasswordService_CreatePasswordRequest_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PasswordService_ResetPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ResetPasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PasswordServiceServer).ResetPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.PasswordService/ResetPassword",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PasswordServiceServer).ResetPassword(ctx, req.(*ResetPasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PasswordService_ServiceDesc is the grpc.ServiceDesc for PasswordService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +166,10 @@ var PasswordService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreatePasswordRequest",
 			Handler:    _PasswordService_CreatePasswordRequest_Handler,
+		},
+		{
+			MethodName: "ResetPassword",
+			Handler:    _PasswordService_ResetPassword_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

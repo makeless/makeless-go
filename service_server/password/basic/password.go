@@ -2,6 +2,8 @@ package makeless_go_password_basic
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"github.com/google/uuid"
 	"github.com/makeless/makeless-go/v2/config"
 	"github.com/makeless/makeless-go/v2/database/database"
@@ -16,6 +18,7 @@ import (
 	"github.com/makeless/makeless-go/v2/security/token"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -103,4 +106,63 @@ func (passwordServiceServer *PasswordServiceServer) CreatePasswordRequest(ctx co
 	}
 
 	return &makeless.CreatePasswordRequestResponse{}, nil
+}
+
+func (passwordServiceServer *PasswordServiceServer) ResetPassword(ctx context.Context, resetPasswordRequest *makeless.ResetPasswordRequest) (*makeless.ResetPasswordResponse, error) {
+	var err error
+	var tx = passwordServiceServer.Database.GetConnection().WithContext(ctx).Begin(new(sql.TxOptions))
+	var user *makeless_go_model.User
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+			panic(r)
+		}
+	}()
+
+	if err = tx.Error; err != nil {
+		return nil, status.Errorf(codes.Internal, err.Error())
+	}
+
+	var passwordRequest = &makeless_go_model.PasswordRequest{
+		Token: resetPasswordRequest.GetToken(),
+	}
+
+	if passwordRequest, err = passwordServiceServer.PasswordRepository.GetPasswordRequest(tx, passwordRequest); err != nil {
+		switch errors.Is(err, gorm.ErrRecordNotFound) {
+		case true:
+			return nil, status.Errorf(codes.InvalidArgument, err.Error())
+		default:
+			return nil, status.Errorf(codes.Internal, err.Error())
+		}
+	}
+
+	if user, err = passwordServiceServer.UserRepository.GetUserByField(tx, user, "email", passwordRequest.Email); err != nil {
+		switch errors.Is(err, gorm.ErrRecordNotFound) {
+		case true:
+			return nil, status.Errorf(codes.Unauthenticated, err.Error())
+		default:
+			return nil, status.Errorf(codes.Internal, err.Error())
+		}
+	}
+
+	if user.Password, err = passwordServiceServer.Crypto.EncryptPassword(resetPasswordRequest.GetPassword()); err != nil {
+		return nil, status.Errorf(codes.Internal, err.Error())
+	}
+
+	if _, err = passwordServiceServer.PasswordRepository.UpdatePassword(tx, user, user.Password); err != nil {
+		tx.Rollback()
+		return nil, status.Errorf(codes.Internal, err.Error())
+	}
+
+	if _, err = passwordServiceServer.PasswordRepository.UpdatePasswordRequest(tx, passwordRequest); err != nil {
+		tx.Rollback()
+		return nil, status.Errorf(codes.Internal, err.Error())
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return nil, status.Errorf(codes.Internal, err.Error())
+	}
+
+	return &makeless.ResetPasswordResponse{}, nil
 }
