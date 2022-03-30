@@ -40,7 +40,7 @@ func (authMiddleware *AuthMiddleware) AuthFunc(ctx context.Context) (context.Con
 
 	if token, ok, err = authMiddleware.TokenLookup(ctx); err != nil || !ok {
 		if err != nil {
-			return nil, status.Errorf(codes.Internal, err.Error())
+			return nil, status.Errorf(codes.Unauthenticated, err.Error())
 		}
 
 		if !ok {
