@@ -80,6 +80,12 @@ func (authServiceServer *AuthServiceServer) Refresh(ctx context.Context, refresh
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}
 
+	var authCookie = authServiceServer.Auth.Cookie(token, expireAt)
+
+	if err = grpc.SetHeader(ctx, metadata.Pairs("set-cookie", authCookie.String())); err != nil {
+		return nil, status.Errorf(codes.Internal, err.Error())
+	}
+
 	return &makeless.RefreshResponse{
 		Token:    token,
 		ExpireAt: timestamppb.New(expireAt),
