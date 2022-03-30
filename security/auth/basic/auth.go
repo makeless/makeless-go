@@ -1,6 +1,7 @@
 package makeless_go_auth_basic
 
 import (
+	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
 	"net/http"
@@ -35,6 +36,25 @@ func (auth *Auth) Sign(id uuid.UUID, email string) (string, time.Time, error) {
 	}
 
 	return token, expireAt, nil
+}
+
+func (auth *Auth) Verify(token string) (*Claim, error) {
+	var err error
+	var ok bool
+	var claim = new(Claim)
+	var jwtToken *jwt.Token
+
+	if jwtToken, err = jwt.ParseWithClaims(token, claim, func(token *jwt.Token) (interface{}, error) {
+		return []byte(auth.Key), nil
+	}); err != nil {
+		return nil, fmt.Errorf("unable to parse token: %s", err.Error())
+	}
+
+	if claim, ok = jwtToken.Claims.(*Claim); !ok || !jwtToken.Valid {
+		return nil, fmt.Errorf("invalid token")
+	}
+
+	return claim, nil
 }
 
 func (auth *Auth) Cookie(token string, expireAt time.Time) http.Cookie {
