@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
-	makeless_go_auth "github.com/makeless/makeless-go/v2/security/auth"
+	"github.com/makeless/makeless-go/v2/security/auth"
 	"net/http"
 	"time"
 )
