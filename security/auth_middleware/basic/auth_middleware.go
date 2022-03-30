@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/makeless/makeless-go/v2/security/auth"
-	makeless_go_auth_basic "github.com/makeless/makeless-go/v2/security/auth/basic"
+	"github.com/makeless/makeless-go/v2/security/auth/basic"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
