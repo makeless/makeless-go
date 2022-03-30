@@ -85,7 +85,7 @@ func (userServiceServer *UserServiceServer) CreateUser(ctx context.Context, crea
 	}, nil
 }
 
-func (userServiceServer *UserServiceServer) User(ctx context.Context, currentUserRequest *makeless.CurrentUserRequest) (*makeless.CurrentUserResponse, error) {
+func (userServiceServer *UserServiceServer) CurrentUser(ctx context.Context, currentUserRequest *makeless.CurrentUserRequest) (*makeless.CurrentUserResponse, error) {
 	var err error
 	var claim makeless_go_auth.Claim
 
@@ -106,12 +106,12 @@ func (userServiceServer *UserServiceServer) User(ctx context.Context, currentUse
 		}
 	}
 
-	var userResponseUser *makeless.User
-	if userResponseUser, err = userServiceServer.UserTransformer.UserToUser(user); err != nil {
+	var currentUserResponseUser *makeless.User
+	if currentUserResponseUser, err = userServiceServer.UserTransformer.UserToUser(user); err != nil {
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}
 
 	return &makeless.CurrentUserResponse{
-		User: userResponseUser,
+		User: currentUserResponseUser,
 	}, nil
 }
