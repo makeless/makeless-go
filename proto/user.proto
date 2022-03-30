@@ -21,14 +21,14 @@ message CreateUserResponse {
   User user = 1;
 }
 
-message UserRequest {
+message CurrentUserRequest {
 }
 
-message UserResponse{
+message CurrentUserResponse {
   User user = 1;
 }
 
 service UserService {
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
-  rpc User(UserRequest) returns (UserResponse) {}
+  rpc User(CurrentUserRequest) returns (CurrentUserResponse) {}
 }

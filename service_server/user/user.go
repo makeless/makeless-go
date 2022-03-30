@@ -7,5 +7,5 @@ import (
 
 type UserServiceServer interface {
 	CreateUser(ctx context.Context, createUserRequest *makeless.CreateUserRequest) (*makeless.CreateUserResponse, error)
-	User(ctx context.Context, userRequest *makeless.UserRequest) (*makeless.UserResponse, error)
+	CurrentUser(ctx context.Context, userRequest *makeless.CurrentUserRequest) (*makeless.CurrentUserResponse, error)
 }

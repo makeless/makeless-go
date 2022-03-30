@@ -18,7 +18,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
-	"log"
 )
 
 type UserServiceServer struct {
@@ -86,15 +85,13 @@ func (userServiceServer *UserServiceServer) CreateUser(ctx context.Context, crea
 	}, nil
 }
 
-func (userServiceServer *UserServiceServer) User(ctx context.Context, userRequest *makeless.UserRequest) (*makeless.UserResponse, error) {
+func (userServiceServer *UserServiceServer) User(ctx context.Context, currentUserRequest *makeless.CurrentUserRequest) (*makeless.CurrentUserResponse, error) {
 	var err error
 	var claim makeless_go_auth.Claim
 
 	if claim, err = userServiceServer.AuthMiddleware.ClaimFromContext(ctx); err != nil {
 		return nil, err
 	}
-
-	log.Printf("%+v", claim)
 
 	var user = &makeless_go_model.User{
 		Model: makeless_go_model.Model{Id: claim.GetId()},
@@ -114,7 +111,7 @@ func (userServiceServer *UserServiceServer) User(ctx context.Context, userReques
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}
 
-	return &makeless.UserResponse{
+	return &makeless.CurrentUserResponse{
 		User: userResponseUser,
 	}, nil
 }
