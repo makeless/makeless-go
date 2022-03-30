@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PasswordServiceClient interface {
 	UpdatePassword(ctx context.Context, in *UpdatePasswordRequest, opts ...grpc.CallOption) (*UpdatePasswordResponse, error)
+	CreatePasswordRequest(ctx context.Context, in *CreatePasswordRequestRequest, opts ...grpc.CallOption) (*CreatePasswordRequestResponse, error)
 }
 
 type passwordServiceClient struct {
@@ -42,11 +43,21 @@ func (c *passwordServiceClient) UpdatePassword(ctx context.Context, in *UpdatePa
 	return out, nil
 }
 
+func (c *passwordServiceClient) CreatePasswordRequest(ctx context.Context, in *CreatePasswordRequestRequest, opts ...grpc.CallOption) (*CreatePasswordRequestResponse, error) {
+	out := new(CreatePasswordRequestResponse)
+	err := c.cc.Invoke(ctx, "/protobuf.PasswordService/CreatePasswordRequest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PasswordServiceServer is the server API for PasswordService service.
 // All implementations must embed UnimplementedPasswordServiceServer
 // for forward compatibility
 type PasswordServiceServer interface {
 	UpdatePassword(context.Context, *UpdatePasswordRequest) (*UpdatePasswordResponse, error)
+	CreatePasswordRequest(context.Context, *CreatePasswordRequestRequest) (*CreatePasswordRequestResponse, error)
 	mustEmbedUnimplementedPasswordServiceServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedPasswordServiceServer struct {
 
 func (UnimplementedPasswordServiceServer) UpdatePassword(context.Context, *UpdatePasswordRequest) (*UpdatePasswordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdatePassword not implemented")
+}
+func (UnimplementedPasswordServiceServer) CreatePasswordRequest(context.Context, *CreatePasswordRequestRequest) (*CreatePasswordRequestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreatePasswordRequest not implemented")
 }
 func (UnimplementedPasswordServiceServer) mustEmbedUnimplementedPasswordServiceServer() {}
 
@@ -88,6 +102,24 @@ func _PasswordService_UpdatePassword_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PasswordService_CreatePasswordRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreatePasswordRequestRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PasswordServiceServer).CreatePasswordRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.PasswordService/CreatePasswordRequest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PasswordServiceServer).CreatePasswordRequest(ctx, req.(*CreatePasswordRequestRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PasswordService_ServiceDesc is the grpc.ServiceDesc for PasswordService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var PasswordService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdatePassword",
 			Handler:    _PasswordService_UpdatePassword_Handler,
+		},
+		{
+			MethodName: "CreatePasswordRequest",
+			Handler:    _PasswordService_CreatePasswordRequest_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

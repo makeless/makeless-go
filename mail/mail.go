@@ -1,6 +1,8 @@
 package makeless_go_mail
 
-import "net/textproto"
+import (
+	"net/textproto"
+)
 
 type Mail interface {
 	GetTo() []string
