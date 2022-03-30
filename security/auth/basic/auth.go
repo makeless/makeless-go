@@ -8,17 +8,17 @@ import (
 )
 
 type Auth struct {
-	Key            string
-	SigningMethod  jwt.SigningMethod
-	ExpireDuration time.Duration
-	CookieDomain   string
-	CookieSameSite http.SameSite
+	Key               string
+	KeySigningMethod  jwt.SigningMethod
+	KeyExpireDuration time.Duration
+	CookieDomain      string
+	CookieSameSite    http.SameSite
 }
 
 func (auth *Auth) Sign(id uuid.UUID, email string) (string, time.Time, error) {
 	var err error
 	var token string
-	var expireAt = time.Now().UTC().Add(auth.ExpireDuration)
+	var expireAt = time.Now().UTC().Add(auth.KeyExpireDuration)
 	var issuedAt = time.Now().UTC()
 
 	var claim = Claim{
