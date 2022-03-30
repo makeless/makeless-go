@@ -2,6 +2,7 @@ package makeless_go_password_basic
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"github.com/makeless/makeless-go/v2/config"
 	"github.com/makeless/makeless-go/v2/database/database"
 	"github.com/makeless/makeless-go/v2/database/model"
@@ -82,6 +83,7 @@ func (passwordServiceServer *PasswordServiceServer) CreatePasswordRequest(ctx co
 	}
 
 	var passwordRequest = &makeless_go_model.PasswordRequest{
+		Model:  makeless_go_model.Model{Id: uuid.New()},
 		Email:  createPasswordRequestRequest.GetEmail(),
 		Token:  token,
 		Expire: tokenExpire,
