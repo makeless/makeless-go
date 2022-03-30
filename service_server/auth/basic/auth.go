@@ -10,7 +10,9 @@ import (
 	"github.com/makeless/makeless-go/v2/proto/basic"
 	"github.com/makeless/makeless-go/v2/security/auth"
 	"github.com/makeless/makeless-go/v2/security/crypto"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"time"
@@ -42,6 +44,12 @@ func (authServiceServer *AuthServiceServer) Login(ctx context.Context, loginRequ
 	}
 
 	if token, expireAt, err = authServiceServer.Auth.Sign(user.Id, user.Email); err != nil {
+		return nil, status.Errorf(codes.Internal, err.Error())
+	}
+
+	var authCookie = authServiceServer.Auth.Cookie(token, expireAt)
+
+	if err = grpc.SetHeader(ctx, metadata.Pairs("set-cookie", authCookie.String())); err != nil {
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}
 

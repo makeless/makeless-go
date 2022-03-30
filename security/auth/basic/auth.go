@@ -3,6 +3,7 @@ package makeless_go_auth_basic
 import (
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
+	"net/http"
 	"time"
 )
 
@@ -10,6 +11,8 @@ type Auth struct {
 	Key            string
 	SigningMethod  jwt.SigningMethod
 	ExpireDuration time.Duration
+	CookieDomain   string
+	CookieSameSite http.SameSite
 }
 
 func (auth *Auth) Sign(id uuid.UUID, email string) (string, time.Time, error) {
@@ -32,4 +35,17 @@ func (auth *Auth) Sign(id uuid.UUID, email string) (string, time.Time, error) {
 	}
 
 	return token, expireAt, nil
+}
+
+func (auth *Auth) Cookie(token string, expireAt time.Time) http.Cookie {
+	return http.Cookie{
+		Name:     "jwt",
+		Value:    token,
+		Domain:   auth.CookieDomain,
+		Expires:  expireAt,
+		MaxAge:   int(auth.ExpireDuration.Seconds()),
+		Secure:   true,
+		HttpOnly: true,
+		SameSite: auth.CookieSameSite,
+	}
 }
