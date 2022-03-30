@@ -11,13 +11,14 @@ import (
 	"github.com/makeless/makeless-go/v2/mail"
 	"github.com/makeless/makeless-go/v2/mailer"
 	"github.com/makeless/makeless-go/v2/proto/basic"
-	makeless_go_auth "github.com/makeless/makeless-go/v2/security/auth"
+	"github.com/makeless/makeless-go/v2/security/auth"
 	"github.com/makeless/makeless-go/v2/security/auth_middleware"
 	"github.com/makeless/makeless-go/v2/security/crypto"
 	"github.com/makeless/makeless-go/v2/security/token"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
+	"log"
 )
 
 type UserServiceServer struct {
@@ -92,6 +93,8 @@ func (userServiceServer *UserServiceServer) User(ctx context.Context, userReques
 	if claim, err = userServiceServer.AuthMiddleware.ClaimFromContext(ctx); err != nil {
 		return nil, err
 	}
+
+	log.Printf("%+v", claim)
 
 	var user = &makeless_go_model.User{
 		Model: makeless_go_model.Model{Id: claim.GetId()},
