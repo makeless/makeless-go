@@ -60,6 +60,13 @@ func (authServiceServer *AuthServiceServer) Login(ctx context.Context, loginRequ
 }
 
 func (authServiceServer *AuthServiceServer) Logout(ctx context.Context, logoutRequest *makeless.LogoutRequest) (*makeless.LogoutResponse, error) {
+	var err error
+	var authCookie = authServiceServer.Auth.Cookie("", time.Time{})
+
+	if err = grpc.SetHeader(ctx, metadata.Pairs("set-cookie", authCookie.String())); err != nil {
+		return nil, status.Errorf(codes.Internal, err.Error())
+	}
+
 	return &makeless.LogoutResponse{}, nil
 }
 

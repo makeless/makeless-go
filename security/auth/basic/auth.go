@@ -43,7 +43,6 @@ func (auth *Auth) Cookie(token string, expireAt time.Time) http.Cookie {
 		Value:    token,
 		Domain:   auth.CookieDomain,
 		Expires:  expireAt,
-		MaxAge:   int(auth.ExpireDuration.Seconds()),
 		Secure:   true,
 		HttpOnly: true,
 		SameSite: auth.CookieSameSite,
