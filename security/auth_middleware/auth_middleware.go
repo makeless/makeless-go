@@ -1,4 +1,4 @@
-package auth_middleware
+package makeless_go_auth_middleware
 
 import (
 	"context"
