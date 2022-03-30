@@ -50,3 +50,23 @@ func (authServiceServer *AuthServiceServer) Login(ctx context.Context, loginRequ
 		ExpireAt: timestamppb.New(expireAt),
 	}, nil
 }
+
+func (authServiceServer *AuthServiceServer) Logout(ctx context.Context, logoutRequest *makeless.LogoutRequest) (*makeless.LogoutResponse, error) {
+	return &makeless.LogoutResponse{}, nil
+}
+
+func (authServiceServer *AuthServiceServer) Refresh(ctx context.Context, refreshRequest *makeless.RefreshRequest) (*makeless.RefreshResponse, error) {
+	var err error
+	var token string
+	var expireAt time.Time
+	var user *makeless_go_model.User
+
+	if token, expireAt, err = authServiceServer.Auth.Sign(user.Id, user.Email); err != nil {
+		return nil, status.Errorf(codes.Internal, err.Error())
+	}
+
+	return &makeless.RefreshResponse{
+		Token:    token,
+		ExpireAt: timestamppb.New(expireAt),
+	}, nil
+}
