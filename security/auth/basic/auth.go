@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
-	"github.com/makeless/makeless-go/v2/security/auth"
 	"net/http"
 	"time"
 )
 
-type Auth struct {
+type Auth[T any] struct {
 	Key               string
 	KeySigningMethod  jwt.SigningMethod
 	KeyExpireDuration time.Duration
@@ -39,19 +38,19 @@ func (auth *Auth) Sign(id uuid.UUID, email string) (string, time.Time, error) {
 	return token, expireAt, nil
 }
 
-func (auth *Auth) Verify(token string) (makeless_go_auth.Claim, error) {
+func (auth *Auth[T]) Verify(token string) (T, error) {
 	var err error
 	var ok bool
-	var claim = new(Claim)
+	var claim T
 	var jwtToken *jwt.Token
 
-	if jwtToken, err = jwt.ParseWithClaims(token, claim, func(token *jwt.Token) (interface{}, error) {
+	if jwtToken, err = jwt.ParseWithClaims(token, claim.(jwt.Claims), func(token *jwt.Token) (interface{}, error) {
 		return []byte(auth.Key), nil
 	}); err != nil {
 		return nil, fmt.Errorf("unable to parse token: %s", err.Error())
 	}
 
-	if claim, ok = jwtToken.Claims.(*Claim); !ok || !jwtToken.Valid {
+	if claim, ok = jwtToken.Claims.(T); !ok || !jwtToken.Valid {
 		return nil, fmt.Errorf("invalid token")
 	}
 

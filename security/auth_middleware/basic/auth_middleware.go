@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/makeless/makeless-go/v2/security/auth"
-	"github.com/makeless/makeless-go/v2/security/auth/basic"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
@@ -13,19 +12,19 @@ import (
 	"strings"
 )
 
-type AuthMiddleware struct {
-	Auth           makeless_go_auth.Auth
+type AuthMiddleware[T any] struct {
+	Auth           makeless_go_auth.Auth[T]
 	AuthMethods    map[string]bool
 	NonAuthMethods map[string]bool
 }
 
 type AuthMiddlewareContextKey struct{}
 
-func (authMiddleware *AuthMiddleware) AuthFunc(ctx context.Context) (context.Context, error) {
+func (authMiddleware *AuthMiddleware[T]) AuthFunc(ctx context.Context) (context.Context, error) {
 	var err error
 	var ok bool
 	var token, method string
-	var claim makeless_go_auth.Claim
+	var claim any
 
 	if method, ok = grpc.Method(ctx); !ok {
 		return nil, status.Errorf(codes.Unauthenticated, "invalid method")
@@ -100,10 +99,10 @@ func (authMiddleware *AuthMiddleware) TokenLookup(ctx context.Context) (string, 
 	return "", false, nil
 }
 
-func (authMiddleware *AuthMiddleware) ClaimFromContext(ctx context.Context) (makeless_go_auth.Claim, error) {
-	var claim *makeless_go_auth_basic.Claim
+func (authMiddleware *AuthMiddleware[T]) ClaimFromContext(ctx context.Context) (T, error) {
+	var claim T
 
-	if claim = ctx.Value(AuthMiddlewareContextKey{}).(*makeless_go_auth_basic.Claim); claim == nil {
+	if claim = ctx.Value(AuthMiddlewareContextKey{}).(T); claim == nil {
 		return nil, status.Errorf(codes.PermissionDenied, "invalid claim")
 	}
 
