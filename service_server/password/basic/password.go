@@ -1,4 +1,4 @@
-package makeless_go_password_basic
+package makeless_go_service_server_password_basic
 
 import (
 	"context"
@@ -16,6 +16,7 @@ import (
 	"github.com/makeless/makeless-go/v2/security/auth_middleware"
 	"github.com/makeless/makeless-go/v2/security/crypto"
 	"github.com/makeless/makeless-go/v2/security/token"
+	"github.com/makeless/makeless-go/v2/service_server/password"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
@@ -23,7 +24,7 @@ import (
 )
 
 type PasswordServiceServer struct {
-	makeless.PasswordServiceServer
+	makeless_go_service_server_password.PasswordServiceServer
 	Config              makeless_go_config.Config
 	Database            makeless_go_database.Database
 	Mailer              makeless_go_mailer.Mailer

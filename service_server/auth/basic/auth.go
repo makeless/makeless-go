@@ -11,6 +11,7 @@ import (
 	"github.com/makeless/makeless-go/v2/security/auth"
 	"github.com/makeless/makeless-go/v2/security/auth_middleware"
 	"github.com/makeless/makeless-go/v2/security/crypto"
+	"github.com/makeless/makeless-go/v2/service_server/auth"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
@@ -20,7 +21,7 @@ import (
 )
 
 type AuthServiceServer struct {
-	makeless.AuthServiceServer
+	makeless_go_service_server_auth.AuthServiceServer
 	Config            makeless_go_config.Config
 	Auth              makeless_go_auth.Auth[makeless_go_auth.Claim]
 	Database          makeless_go_database.Database

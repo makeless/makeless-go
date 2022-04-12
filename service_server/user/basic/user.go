@@ -15,13 +15,14 @@ import (
 	"github.com/makeless/makeless-go/v2/security/auth_middleware"
 	"github.com/makeless/makeless-go/v2/security/crypto"
 	"github.com/makeless/makeless-go/v2/security/token"
+	"github.com/makeless/makeless-go/v2/service_server/user"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
 )
 
 type UserServiceServer struct {
-	makeless.UserServiceServer
+	makeless_go_service_server_user.UserServiceServer
 	Config                makeless_go_config.Config
 	Database              makeless_go_database.Database
 	Mailer                makeless_go_mailer.Mailer
