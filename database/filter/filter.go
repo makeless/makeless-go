@@ -1,4 +1,4 @@
-package filter
+package makeless_go_filter
 
 import "gorm.io/gorm"
 

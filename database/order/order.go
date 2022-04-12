@@ -1,4 +1,4 @@
-package order
+package makeless_go_order
 
 import "gorm.io/gorm"
 
