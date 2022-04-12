@@ -1,5 +1,5 @@
 install:
-	go get
+	go get ./...
 	go install github.com/envoyproxy/protoc-gen-validate@v0.6.7
 
 linter:
