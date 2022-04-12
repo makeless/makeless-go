@@ -24,7 +24,7 @@ func (authMiddleware *AuthMiddleware[T]) AuthFunc(ctx context.Context) (context.
 	var err error
 	var ok bool
 	var token, method string
-	var claim any
+	var claim *T
 
 	if method, ok = grpc.Method(ctx); !ok {
 		return nil, status.Errorf(codes.Unauthenticated, "invalid method")
@@ -55,7 +55,7 @@ func (authMiddleware *AuthMiddleware[T]) AuthFunc(ctx context.Context) (context.
 	return context.WithValue(ctx, AuthMiddlewareContextKey{}, claim), nil
 }
 
-func (authMiddleware *AuthMiddleware) TokenLookup(ctx context.Context) (string, bool, error) {
+func (authMiddleware *AuthMiddleware[T]) TokenLookup(ctx context.Context) (string, bool, error) {
 	var err error
 	var ok bool
 	var md metadata.MD
@@ -99,10 +99,10 @@ func (authMiddleware *AuthMiddleware) TokenLookup(ctx context.Context) (string, 
 	return "", false, nil
 }
 
-func (authMiddleware *AuthMiddleware[T]) ClaimFromContext(ctx context.Context) (T, error) {
-	var claim T
+func (authMiddleware *AuthMiddleware[T]) ClaimFromContext(ctx context.Context) (*T, error) {
+	var claim *T
 
-	if claim = ctx.Value(AuthMiddlewareContextKey{}).(T); claim == nil {
+	if claim = ctx.Value(AuthMiddlewareContextKey{}).(*T); claim == nil {
 		return nil, status.Errorf(codes.PermissionDenied, "invalid claim")
 	}
 

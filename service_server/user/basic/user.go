@@ -26,7 +26,7 @@ type UserServiceServer struct {
 	Database              makeless_go_database.Database
 	Mailer                makeless_go_mailer.Mailer
 	Crypto                makeless_go_crypto.Crypto
-	AuthMiddleware        makeless_go_auth_middleware.AuthMiddleware
+	AuthMiddleware        makeless_go_auth_middleware.AuthMiddleware[makeless_go_auth.Claim]
 	UserRepository        makeless_go_repository.UserRepository
 	GenericRepository     makeless_go_repository.GenericRepository
 	UserTransformer       makeless_go_model_transformer.UserTransformer
@@ -85,16 +85,16 @@ func (userServiceServer *UserServiceServer) CreateUser(ctx context.Context, crea
 	}, nil
 }
 
-func (userServiceServer *UserServiceServer) CurrentUser(ctx context.Context, currentUserRequest *makeless.CurrentUserRequest) (*makeless.CurrentUserResponse, error) {
+func (userServiceServer UserServiceServer) CurrentUser(ctx context.Context, currentUserRequest *makeless.CurrentUserRequest) (*makeless.CurrentUserResponse, error) {
 	var err error
-	var claim makeless_go_auth.Claim
+	var claim *makeless_go_auth.Claim
 
 	if claim, err = userServiceServer.AuthMiddleware.ClaimFromContext(ctx); err != nil {
 		return nil, err
 	}
 
 	var user = &makeless_go_model.User{
-		Model: makeless_go_model.Model{Id: claim.GetId()},
+		Model: makeless_go_model.Model{Id: (*claim).GetId()},
 	}
 
 	if user, err = userServiceServer.UserRepository.GetUser(userServiceServer.Database.GetConnection().WithContext(ctx), user); err != nil {

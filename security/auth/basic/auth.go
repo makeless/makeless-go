@@ -16,7 +16,7 @@ type Auth[T any] struct {
 	CookieSameSite    http.SameSite
 }
 
-func (auth *Auth) Sign(id uuid.UUID, email string) (string, time.Time, error) {
+func (auth *Auth[T]) Sign(id uuid.UUID, email string) (string, time.Time, error) {
 	var err error
 	var token string
 	var expireAt = time.Now().UTC().Add(auth.KeyExpireDuration)
@@ -38,13 +38,13 @@ func (auth *Auth) Sign(id uuid.UUID, email string) (string, time.Time, error) {
 	return token, expireAt, nil
 }
 
-func (auth *Auth[T]) Verify(token string) (T, error) {
+func (auth *Auth[T]) Verify(token string) (*T, error) {
 	var err error
 	var ok bool
-	var claim T
 	var jwtToken *jwt.Token
+	var claim T
 
-	if jwtToken, err = jwt.ParseWithClaims(token, claim.(jwt.Claims), func(token *jwt.Token) (interface{}, error) {
+	if jwtToken, err = jwt.ParseWithClaims(token, any(claim).(jwt.Claims), func(token *jwt.Token) (interface{}, error) {
 		return []byte(auth.Key), nil
 	}); err != nil {
 		return nil, fmt.Errorf("unable to parse token: %s", err.Error())
@@ -54,10 +54,10 @@ func (auth *Auth[T]) Verify(token string) (T, error) {
 		return nil, fmt.Errorf("invalid token")
 	}
 
-	return claim, nil
+	return &claim, nil
 }
 
-func (auth *Auth) Cookie(token string, expireAt time.Time) http.Cookie {
+func (auth *Auth[T]) Cookie(token string, expireAt time.Time) http.Cookie {
 	return http.Cookie{
 		Name:     "jwt",
 		Value:    token,

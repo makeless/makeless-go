@@ -22,10 +22,10 @@ import (
 type AuthServiceServer struct {
 	makeless.AuthServiceServer
 	Config            makeless_go_config.Config
-	Auth              makeless_go_auth.Auth
+	Auth              makeless_go_auth.Auth[makeless_go_auth.Claim]
 	Database          makeless_go_database.Database
 	Crypto            makeless_go_crypto.Crypto
-	AuthMiddleware    makeless_go_auth_middleware.AuthMiddleware
+	AuthMiddleware    makeless_go_auth_middleware.AuthMiddleware[makeless_go_auth.Claim]
 	UserRepository    makeless_go_repository.UserRepository
 	GenericRepository makeless_go_repository.GenericRepository
 	UserTransformer   makeless_go_model_transformer.UserTransformer
@@ -76,15 +76,15 @@ func (authServiceServer *AuthServiceServer) Refresh(ctx context.Context, refresh
 	var err error
 	var token string
 	var expireAt time.Time
-	var claim makeless_go_auth.Claim
+	var claim *makeless_go_auth.Claim
 
 	if claim, err = authServiceServer.AuthMiddleware.ClaimFromContext(ctx); err != nil {
 		return nil, err
 	}
 
 	var user = &makeless_go_model.User{
-		Model: makeless_go_model.Model{Id: claim.GetId()},
-		Email: claim.GetEmail(),
+		Model: makeless_go_model.Model{Id: (*claim).GetId()},
+		Email: (*claim).GetEmail(),
 	}
 
 	if token, expireAt, err = authServiceServer.Auth.Sign(user.Id, user.Email); err != nil {

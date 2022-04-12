@@ -8,6 +8,6 @@ import (
 
 type Auth[T any] interface {
 	Sign(id uuid.UUID, email string) (string, time.Time, error)
-	Verify[T](token string) (T, error)
+	Verify(token string) (*T, error)
 	Cookie(token string, expireAt time.Time) http.Cookie
 }
