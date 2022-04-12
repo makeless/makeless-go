@@ -3,6 +3,7 @@ package makeless_go_makeless_basic
 import (
 	"github.com/makeless/makeless-go/v2/config"
 	"github.com/makeless/makeless-go/v2/database/database"
+	"github.com/makeless/makeless-go/v2/database/model"
 	"github.com/makeless/makeless-go/v2/logger"
 	"github.com/makeless/makeless-go/v2/mailer"
 	"gorm.io/gorm"
@@ -62,7 +63,14 @@ func (makeless *Makeless) Init(dialector gorm.Dialector, path string) error {
 		return err
 	}
 
-	if err := makeless.GetDatabase().Migrate(); err != nil {
+	if err := makeless.GetDatabase().Migrate(
+		new(makeless_go_model.User),
+		new(makeless_go_model.EmailVerification),
+		new(makeless_go_model.PasswordRequest),
+		new(makeless_go_model.Team),
+		new(makeless_go_model.TeamUser),
+		new(makeless_go_model.TeamInvitation),
+	); err != nil {
 		return err
 	}
 

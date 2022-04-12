@@ -7,5 +7,5 @@ type Database interface {
 	SetConnection(connection *gorm.DB)
 	GetConnectionString() string
 	Connect(dialector gorm.Dialector) error
-	Migrate() error
+	Migrate(dst ...interface{}) error
 }
