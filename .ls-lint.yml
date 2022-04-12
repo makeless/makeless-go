@@ -1,6 +1,8 @@
 ls:
   .dir: snake_case
   .go: snake_case
+  .pb.go: snake_case
+  .pb.validate.go: snake_case
 
 ignore:
   - .git
