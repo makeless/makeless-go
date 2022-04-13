@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
+	"log"
 	"net/http"
 	"time"
 )
 
-type Auth[T any] struct {
+type Auth[T jwt.Claims] struct {
+	Claim             T
 	Key               string
 	KeySigningMethod  jwt.SigningMethod
 	KeyExpireDuration time.Duration
@@ -42,13 +44,15 @@ func (auth *Auth[T]) Verify(token string) (*T, error) {
 	var err error
 	var ok bool
 	var jwtToken *jwt.Token
-	var claim T
+	var claim = auth.Claim
 
-	if jwtToken, err = jwt.ParseWithClaims(token, any(claim).(jwt.Claims), func(token *jwt.Token) (interface{}, error) {
+	if jwtToken, err = jwt.ParseWithClaims(token, claim, func(token *jwt.Token) (interface{}, error) {
 		return []byte(auth.Key), nil
 	}); err != nil {
 		return nil, fmt.Errorf("unable to parse token: %s", err.Error())
 	}
+
+	log.Printf("%+v %+v", jwtToken, claim)
 
 	if claim, ok = jwtToken.Claims.(T); !ok || !jwtToken.Valid {
 		return nil, fmt.Errorf("invalid token")

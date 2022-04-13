@@ -3,6 +3,7 @@ package makeless_go_auth_middleware_basic
 import (
 	"context"
 	"fmt"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/makeless/makeless-go/v2/security/auth"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -12,7 +13,7 @@ import (
 	"strings"
 )
 
-type AuthMiddleware[T any] struct {
+type AuthMiddleware[T jwt.Claims] struct {
 	Auth           makeless_go_auth.Auth[T]
 	AuthMethods    map[string]bool
 	NonAuthMethods map[string]bool
