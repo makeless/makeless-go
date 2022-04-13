@@ -11,7 +11,7 @@ import (
 	"github.com/makeless/makeless-go/v2/mail"
 	"github.com/makeless/makeless-go/v2/mailer"
 	"github.com/makeless/makeless-go/v2/proto/basic"
-	"github.com/makeless/makeless-go/v2/security/auth"
+	"github.com/makeless/makeless-go/v2/security/auth/basic"
 	"github.com/makeless/makeless-go/v2/security/auth_middleware"
 	"github.com/makeless/makeless-go/v2/security/crypto"
 	"github.com/makeless/makeless-go/v2/security/token"
@@ -27,7 +27,7 @@ type UserServiceServer struct {
 	Database              makeless_go_database.Database
 	Mailer                makeless_go_mailer.Mailer
 	Crypto                makeless_go_crypto.Crypto
-	AuthMiddleware        makeless_go_auth_middleware.AuthMiddleware[makeless_go_auth.Claim]
+	AuthMiddleware        makeless_go_auth_middleware.AuthMiddleware[makeless_go_auth_basic.Claim]
 	UserRepository        makeless_go_repository.UserRepository
 	GenericRepository     makeless_go_repository.GenericRepository
 	UserTransformer       makeless_go_model_transformer.UserTransformer
@@ -88,7 +88,7 @@ func (userServiceServer *UserServiceServer) CreateUser(ctx context.Context, crea
 
 func (userServiceServer UserServiceServer) CurrentUser(ctx context.Context, currentUserRequest *makeless.CurrentUserRequest) (*makeless.CurrentUserResponse, error) {
 	var err error
-	var claim *makeless_go_auth.Claim
+	var claim *makeless_go_auth_basic.Claim
 
 	if claim, err = userServiceServer.AuthMiddleware.ClaimFromContext(ctx); err != nil {
 		return nil, err
