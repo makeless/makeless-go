@@ -25,10 +25,10 @@ import (
 type AuthServiceServer struct {
 	makeless_go_service_server_auth.AuthServiceServer
 	Config            makeless_go_config.Config
-	Auth              makeless_go_auth.Auth[makeless_go_auth_basic.Claim]
+	Auth              makeless_go_auth.Auth[*makeless_go_auth_basic.Claim]
 	Database          makeless_go_database.Database
 	Crypto            makeless_go_crypto.Crypto
-	AuthMiddleware    makeless_go_auth_middleware.AuthMiddleware[makeless_go_auth_basic.Claim]
+	AuthMiddleware    makeless_go_auth_middleware.AuthMiddleware[*makeless_go_auth_basic.Claim]
 	UserRepository    makeless_go_repository.UserRepository
 	GenericRepository makeless_go_repository.GenericRepository
 	UserTransformer   makeless_go_model_transformer.UserTransformer
@@ -47,7 +47,7 @@ func (authServiceServer *AuthServiceServer) Login(ctx context.Context, loginRequ
 		return nil, status.Errorf(codes.Unauthenticated, err.Error())
 	}
 
-	var claim = makeless_go_auth_basic.Claim{
+	var claim = &makeless_go_auth_basic.Claim{
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    authServiceServer.Auth.GetCookieDomain(),
 			Audience:  []string{authServiceServer.Auth.GetCookieDomain()},
@@ -99,7 +99,7 @@ func (authServiceServer *AuthServiceServer) Refresh(ctx context.Context, refresh
 	claim.NotBefore = jwt.NewNumericDate(time.Now())
 	claim.ExpiresAt = jwt.NewNumericDate(time.Now().Add(authServiceServer.Auth.GetKeyExpireDuration()))
 
-	if token, err = authServiceServer.Auth.Sign(*claim); err != nil {
+	if token, err = authServiceServer.Auth.Sign(claim); err != nil {
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}
 
