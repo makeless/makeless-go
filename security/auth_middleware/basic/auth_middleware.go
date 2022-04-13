@@ -25,7 +25,7 @@ func (authMiddleware *AuthMiddleware[T]) AuthFunc(ctx context.Context) (context.
 	var err error
 	var ok bool
 	var token, method string
-	var claim *T
+	var claim T
 
 	if method, ok = grpc.Method(ctx); !ok {
 		return nil, status.Errorf(codes.Unauthenticated, "invalid method")

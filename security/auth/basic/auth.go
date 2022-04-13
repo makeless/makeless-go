@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
-	"log"
 	"net/http"
 	"time"
 )
@@ -40,7 +39,7 @@ func (auth *Auth[T]) Sign(id uuid.UUID, email string) (string, time.Time, error)
 	return token, expireAt, nil
 }
 
-func (auth *Auth[T]) Verify(token string) (*T, error) {
+func (auth *Auth[T]) Verify(token string) (T, error) {
 	var err error
 	var ok bool
 	var jwtToken *jwt.Token
@@ -49,16 +48,14 @@ func (auth *Auth[T]) Verify(token string) (*T, error) {
 	if jwtToken, err = jwt.ParseWithClaims(token, claim, func(token *jwt.Token) (interface{}, error) {
 		return []byte(auth.Key), nil
 	}); err != nil {
-		return nil, fmt.Errorf("unable to parse token: %s", err.Error())
+		return claim, fmt.Errorf("unable to parse token: %s", err.Error())
 	}
-
-	log.Printf("%+v %+v", jwtToken, claim)
 
 	if claim, ok = jwtToken.Claims.(T); !ok || !jwtToken.Valid {
-		return nil, fmt.Errorf("invalid token")
+		return claim, fmt.Errorf("invalid token")
 	}
 
-	return &claim, nil
+	return claim, nil
 }
 
 func (auth *Auth[T]) Cookie(token string, expireAt time.Time) http.Cookie {
