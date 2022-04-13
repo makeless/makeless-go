@@ -100,12 +100,6 @@ func (authMiddleware *AuthMiddleware[T]) TokenFromContext(ctx context.Context) (
 	return "", false, nil
 }
 
-func (authMiddleware *AuthMiddleware[T]) ClaimFromContext(ctx context.Context) (*T, error) {
-	var claim *T
-
-	if claim = ctx.Value(AuthMiddlewareContextKey{}).(*T); claim == nil {
-		return nil, status.Errorf(codes.PermissionDenied, "invalid claim")
-	}
-
-	return claim, nil
+func (authMiddleware *AuthMiddleware[T]) ClaimFromContext(ctx context.Context) (T, error) {
+	return ctx.Value(AuthMiddlewareContextKey{}).(T), nil
 }

@@ -8,5 +8,5 @@ import (
 type AuthMiddleware[T jwt.Claims] interface {
 	AuthFunc(ctx context.Context) (context.Context, error)
 	TokenFromContext(ctx context.Context) (string, bool, error)
-	ClaimFromContext(ctx context.Context) (*T, error)
+	ClaimFromContext(ctx context.Context) (T, error)
 }
