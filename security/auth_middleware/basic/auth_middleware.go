@@ -39,7 +39,7 @@ func (authMiddleware *AuthMiddleware[T]) AuthFunc(ctx context.Context) (context.
 		return nil, status.Errorf(codes.Unauthenticated, "unknown method")
 	}
 
-	if token, ok, err = authMiddleware.TokenLookup(ctx); err != nil || !ok {
+	if token, ok, err = authMiddleware.TokenFromContext(ctx); err != nil || !ok {
 		if err != nil {
 			return nil, status.Errorf(codes.Unauthenticated, err.Error())
 		}
@@ -56,7 +56,7 @@ func (authMiddleware *AuthMiddleware[T]) AuthFunc(ctx context.Context) (context.
 	return context.WithValue(ctx, AuthMiddlewareContextKey{}, claim), nil
 }
 
-func (authMiddleware *AuthMiddleware[T]) TokenLookup(ctx context.Context) (string, bool, error) {
+func (authMiddleware *AuthMiddleware[T]) TokenFromContext(ctx context.Context) (string, bool, error) {
 	var err error
 	var ok bool
 	var md metadata.MD

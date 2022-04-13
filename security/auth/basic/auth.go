@@ -3,7 +3,6 @@ package makeless_go_auth_basic
 import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/google/uuid"
 	"net/http"
 	"time"
 )
@@ -17,26 +16,23 @@ type Auth[T jwt.Claims] struct {
 	CookieSameSite    http.SameSite
 }
 
-func (auth *Auth[T]) Sign(id uuid.UUID, email string) (string, time.Time, error) {
+func (auth *Auth[T]) GetKeyExpireDuration() time.Duration {
+	return auth.KeyExpireDuration
+}
+
+func (auth *Auth[T]) GetCookieDomain() string {
+	return auth.CookieDomain
+}
+
+func (auth *Auth[T]) Sign(claim T) (string, error) {
 	var err error
 	var token string
-	var expireAt = time.Now().UTC().Add(auth.KeyExpireDuration)
-	var issuedAt = time.Now().UTC()
-
-	var claim = Claim{
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(expireAt),
-			IssuedAt:  jwt.NewNumericDate(issuedAt),
-		},
-		Id:    id,
-		Email: email,
-	}
 
 	if token, err = jwt.NewWithClaims(jwt.SigningMethodHS256, claim).SignedString([]byte(auth.Key)); err != nil {
-		return "", expireAt, err
+		return "", err
 	}
 
-	return token, expireAt, nil
+	return token, nil
 }
 
 func (auth *Auth[T]) Verify(token string) (T, error) {
